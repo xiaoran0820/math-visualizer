@@ -1,0 +1,21 @@
+{
+  "name": "math-visualizer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "拍照或输入数学题，用本地大模型识别题目，并自动生成可交互的可视化图形",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "lan": "HOST=0.0.0.0 node --env-file-if-exists=.env server.js",
+    "dev": "node --watch --env-file-if-exists=.env server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22.9"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "jsxgraph": "^1.14.3",
+    "katex": "^0.19.1"
+  }
+}
