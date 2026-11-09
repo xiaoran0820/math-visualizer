@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>数形 · 数学题可视化</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f6fed'/%3E%3Cpath d='M6 24 Q16 2 26 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='13' r='2.6' fill='%23ffb27a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="/vendor/jsxgraph/jsxgraph.css">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/vendor/katex/katex.min.js" defer></script>
+  <script src="/vendor/jsxgraph/jsxgraphcore.js" defer></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><path d="M6 24 Q16 2 26 24"/><circle cx="16" cy="13" r="2.6"/></svg>
+      <strong>数形</strong><span class="sub">数学题可视化</span>
+    </div>
+    <div class="model" id="modelBox">
+      <span class="dot" id="modelDot" title="本地模型状态"></span>
+      <label class="sr-only" for="modelSelect">本地模型</label>
+      <select id="modelSelect" title="选择本地模型"><option>正在连接本地模型…</option></select>
+      <button id="helpBtn" class="icon-btn" title="使用说明" aria-label="使用说明">?</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <main class="layout">
+    <section class="panel input-panel" aria-label="输入题目">
+      <div class="seg" role="tablist">
+        <button class="seg-btn active" data-mode="photo" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>拍照 / 图片
+        </button>
+        <button class="seg-btn" data-mode="text" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h1M11 10h1M15 10h2M7 14h10"/></svg>输入题目
+        </button>
+      </div>
+
+      <div id="photoPane">
+        <div id="drop" class="drop">
+          <div class="drop-empty" id="dropEmpty">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="28" rx="4"/><path d="M6 32l10-10 8 8 6-6 12 12"/><circle cx="32" cy="19" r="3"/></svg>
+            <p class="drop-title">拍照或选择一张题目图片</p>
+            <p class="drop-sub">也可以把图片拖到这里，或直接粘贴截图</p>
+            <div class="row center">
+              <button id="cameraBtn" class="btn primary">拍照</button>
+              <button id="pickBtn" class="btn">选择图片</button>
+            </div>
+          </div>
+          <div class="drop-preview" id="dropPreview" hidden>
+            <div class="canvas-wrap"><canvas id="imgCanvas"></canvas></div>
+            <div class="img-tools">
+              <button id="rotateBtn" class="btn ghost small" title="旋转 90°">旋转</button>
+              <button id="clearCropBtn" class="btn ghost small" hidden>取消框选</button>
+              <button id="replaceBtn" class="btn ghost small">换一张</button>
+            </div>
+            <p class="tip">一张图里有多道题时，可以在图上拖动框选要识别的那一道</p>
+          </div>
+        </div>
+        <input id="fileInput" type="file" accept="image/*" hidden>
+        <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
+        <input id="hint" class="input" maxlength="200" placeholder="补充说明（可选），例如：只识别第 2 题">
+      </div>
+
+      <div id="textPane" hidden>
+        <div class="symbols" id="symbols" aria-label="常用符号"></div>
+        <textarea id="textInput" class="input" rows="7" placeholder="输入或粘贴题目，例如：已知函数 f(x)=x²-2ax+3，求 f(x) 在 [0,2] 上的最小值。&#10;也支持 LaTeX 公式：$\frac{x^2}{4}+\frac{y^2}{3}=1$"></textarea>
+        <div id="textPreview" class="preview md" hidden></div>
+      </div>
+
+      <div class="actions">
+        <button id="runBtn" class="btn primary wide">识别并可视化</button>
+        <button id="stopBtn" class="btn" hidden>停止</button>
+      </div>
+
+      <div class="examples">
+        <div class="label">示例题 <span class="muted">（不需要模型，点击即可查看效果）</span></div>
+        <div id="exampleList" class="chips"></div>
+      </div>
+      <p class="privacy">全部在本机运行：图片和题目只发送给这台电脑上的本地模型，不会上传到云端。</p>
+    </section>
+
+    <section class="results" id="results" aria-live="polite">
+      <div id="empty" class="empty">
+        <svg viewBox="0 0 200 120" aria-hidden="true">
+          <path class="e-axis" d="M20 100H186M30 112V10"/>
+          <path class="e-curve" d="M36 26 Q80 150 128 54 T182 34"/>
+          <path class="e-tri" d="M120 20 L96 70 L160 70Z"/>
+          <circle class="e-pt" cx="96" cy="70" r="4"/><circle class="e-pt" cx="160" cy="70" r="4"/><circle class="e-pt2" cx="120" cy="20" r="5"/>
+        </svg>
+        <h2>把数学题变成可以动手的图形</h2>
+        <p>拍一张题目照片，或者直接输入题目。本地模型会识别题目、分析已知条件，并生成可拖动、可调参数的函数图像、几何图形和立体图。</p>
+        <ul class="feature">
+          <li><b>拍照识别</b>：支持框选、旋转，公式自动转成 LaTeX</li>
+          <li><b>可交互</b>：拖动点、拖动滑块，观察图形怎样变化</li>
+          <li><b>立体几何</b>：可旋转，被遮挡的棱自动画成虚线</li>
+        </ul>
+      </div>
+
+      <div id="progress" class="progress" hidden>
+        <div class="step" data-step="ocr"><span class="ic"></span><span class="name">识别题目</span><span class="meta"></span></div>
+        <div class="step" data-step="analyze"><span class="ic"></span><span class="name">分析题意并作图</span><span class="meta"></span></div>
+        <div class="step skip" data-step="repair"><span class="ic"></span><span class="name">自动修正作图命令</span><span class="meta"></span></div>
+      </div>
+      <div id="errorBox" class="error-box" hidden></div>
+
+      <article class="card" id="problemCard" hidden>
+        <header>
+          <h3>题目</h3>
+          <div class="card-actions"><button id="editBtn" class="btn ghost small">修改</button></div>
+        </header>
+        <div id="problemView" class="md problem"></div>
+        <div id="problemEdit" hidden>
+          <textarea id="problemText" class="input" rows="7"></textarea>
+          <div class="row">
+            <button id="reanalyzeBtn" class="btn primary small">重新分析</button>
+            <button id="cancelEditBtn" class="btn ghost small">取消</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card figure-card" id="figureCard" hidden>
+        <header>
+          <div class="fig-head"><h3 id="figTitle">图形</h3><span id="figCategory" class="tag" hidden></span></div>
+          <div class="fig-tools" id="figTools"></div>
+        </header>
+        <div id="figure" class="figure"></div>
+        <div id="sliders" class="sliders"></div>
+        <div id="insight" class="insight md" hidden></div>
+        <p class="fig-tip" id="figTip"></p>
+      </article>
+
+      <article class="card" id="analysisCard" hidden>
+        <header><h3>题意分析</h3></header>
+        <div class="kv">
+          <div class="k">已知</div><ul id="knowns" class="md"></ul>
+          <div class="k">所求</div><div id="goal" class="md"></div>
+        </div>
+        <details class="layout-detail"><summary>作图依据</summary><div id="layoutText" class="md"></div></details>
+      </article>
+
+      <article class="card" id="commandsCard" hidden>
+        <details id="cmdDetails">
+          <summary><span class="h3">作图命令</span><span class="muted">可以直接修改，然后重新绘制</span></summary>
+          <textarea id="cmdText" class="code" spellcheck="false" rows="10"></textarea>
+          <div class="row">
+            <button id="applyCmdBtn" class="btn small">重新绘制</button>
+            <button id="syntaxBtn" class="btn ghost small">命令说明</button>
+          </div>
+          <ul id="cmdErrors" class="errors"></ul>
+        </details>
+      </article>
+
+      <article class="card" id="solutionCard" hidden>
+        <header>
+          <h3>解题思路</h3>
+          <button id="solveBtn" class="btn small">生成解题思路</button>
+        </header>
+        <div id="thinking" class="thinking" hidden></div>
+        <div id="solution" class="md"></div>
+      </article>
+    </section>
+  </main>
+
+  <dialog id="helpDialog" class="dialog">
+    <form method="dialog">
+      <header><h3 id="helpTitle">使用说明</h3><button class="icon-btn" value="close" aria-label="关闭">×</button></header>
+      <div id="helpBody" class="dialog-body md"></div>
+    </form>
+  </dialog>
+
+  <dialog id="cameraDialog" class="dialog camera">
+    <video id="cameraVideo" playsinline autoplay muted></video>
+    <div class="row center">
+      <button id="shootBtn" class="btn primary">拍摄</button>
+      <button id="cameraCancelBtn" class="btn">取消</button>
+    </div>
+  </dialog>
+</body>
+</html>
