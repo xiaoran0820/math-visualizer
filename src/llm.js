@@ -1,7 +1,8 @@
 // 本地模型客户端。默认使用 Ollama；也兼容 LM Studio、llama.cpp server、vLLM 等 OpenAI 格式的本地服务。
-// 所有请求都只发往本机（或你在 .env 里配置的地址），不会调用任何云端 API。
+// 请求只发往 .env 里配置的地址（默认是本机）。若把地址改成其他机器，图片和题目会发送到那台机器。
 
 const withScheme = (u) => (/^https?:\/\//.test(u) ? u : `http://${u}`).replace(/\/+$/, '');
+const seconds = (v, d) => (Number(v) > 0 ? Number(v) : d) * 1000;
 
 export const config = {
   provider: (process.env.LLM_PROVIDER || 'ollama').toLowerCase(),
@@ -13,6 +14,12 @@ export const config = {
   numCtx: Number(process.env.NUM_CTX) || 16384,
   solveThink: (process.env.SOLVE_THINK || 'true') !== 'false',
   keepAlive: process.env.KEEP_ALIVE || '30m',
+  // 超时（秒）：等待模型开始输出（包括第一次把模型加载进内存）、输出中途停顿、整次调用总时长
+  timeouts: {
+    firstByteMs: seconds(process.env.LLM_FIRST_BYTE_TIMEOUT, 180),
+    idleMs: seconds(process.env.LLM_IDLE_TIMEOUT, 60),
+    totalMs: seconds(process.env.LLM_TIMEOUT, 300),
+  },
 };
 
 export class LlmError extends Error {
@@ -22,10 +29,52 @@ export class LlmError extends Error {
   }
 }
 
+export function endpoint() {
+  return config.provider === 'ollama' ? config.ollamaHost : config.openaiBase;
+}
+
+// 模型服务是否在本机（用于界面上的隐私说明）
+export function isLocalEndpoint(url = endpoint()) {
+  try {
+    const h = new URL(url).hostname.replace(/^\[|\]$/g, '');
+    return h === 'localhost' || h === '::1' || /^127\./.test(h) || h.endsWith('.localhost');
+  } catch {
+    return false;
+  }
+}
+
 function unreachable() {
   return config.provider === 'ollama'
     ? new LlmError(`无法连接本地模型服务 Ollama（${config.ollamaHost}）。请先打开 Ollama 应用，或在终端运行 ollama serve。`, 'unreachable')
     : new LlmError(`无法连接本地模型服务（${config.openaiBase}）。请确认 LM Studio / llama.cpp 等服务已经启动。`, 'unreachable');
+}
+
+// 把“外部取消”和三种超时合成一个 AbortSignal，并记录是哪一种原因
+function deadline(external, t) {
+  const ac = new AbortController();
+  let reason = null;
+  const fire = (r) => { if (!ac.signal.aborted) { reason = r; ac.abort(); } };
+  const onExternal = () => fire('client');
+  if (external) {
+    if (external.aborted) fire('client');
+    else external.addEventListener('abort', onExternal, { once: true });
+  }
+  const total = setTimeout(() => fire('total'), t.totalMs);
+  let phase = setTimeout(() => fire('first'), t.firstByteMs);
+  return {
+    signal: ac.signal,
+    get reason() { return reason; },
+    // 收到数据：重新开始“空闲”计时
+    alive() { clearTimeout(phase); phase = setTimeout(() => fire('idle'), t.idleMs); },
+    done() { clearTimeout(total); clearTimeout(phase); external?.removeEventListener('abort', onExternal); },
+  };
+}
+
+function timeoutError(reason, t) {
+  const s = (ms) => Math.round(ms / 1000);
+  if (reason === 'first') return new LlmError(`本地模型在 ${s(t.firstByteMs)} 秒内没有开始响应（可能正在加载模型或电脑负载过高），请稍后重试。`, 'timeout');
+  if (reason === 'idle') return new LlmError(`本地模型输出中途停顿超过 ${s(t.idleMs)} 秒，已中止。`, 'timeout');
+  return new LlmError(`本次请求超过 ${s(t.totalMs)} 秒仍未完成，已中止。可以换一个更快的模型，或调大 LLM_TIMEOUT。`, 'timeout');
 }
 
 async function post(url, body, signal) {
@@ -44,7 +93,7 @@ async function post(url, body, signal) {
   if (!res.ok) {
     const text = await res.text().catch(() => '');
     let msg = text;
-    try { msg = JSON.parse(text).error?.message || JSON.parse(text).error || text; } catch { /* 原样使用 */ }
+    try { const j = JSON.parse(text); msg = j.error?.message || j.error || text; } catch { /* 原样使用 */ }
     msg = String(msg);
     if (res.status === 404 || /not found/i.test(msg)) {
       throw new LlmError(`本地没有找到模型「${body.model}」。请先下载：ollama pull ${body.model}`, 'model_missing');
@@ -56,10 +105,11 @@ async function post(url, body, signal) {
   return res;
 }
 
-async function* lines(res) {
+async function* lines(res, onChunk) {
   const decoder = new TextDecoder();
   let buf = '';
   for await (const chunk of res.body) {
+    onChunk();
     buf += decoder.decode(chunk, { stream: true });
     let i;
     while ((i = buf.indexOf('\n')) >= 0) {
@@ -72,7 +122,7 @@ async function* lines(res) {
 }
 
 // ---------------- Ollama ----------------
-async function* ollamaChat({ model, messages, format, think, options, signal }) {
+async function* ollamaChat({ model, messages, format, think, options, dl }) {
   const body = {
     model,
     messages: messages.map((m) => ({ role: m.role, content: m.content, ...(m.images?.length ? { images: m.images } : {}) })),
@@ -82,8 +132,9 @@ async function* ollamaChat({ model, messages, format, think, options, signal }) 
   };
   if (format) body.format = format;
   if (think !== undefined) body.think = think;
-  const res = await post(`${config.ollamaHost}/api/chat`, body, signal);
-  for await (const line of lines(res)) {
+  const res = await post(`${config.ollamaHost}/api/chat`, body, dl.signal);
+  dl.alive();
+  for await (const line of lines(res, () => dl.alive())) {
     let d;
     try { d = JSON.parse(line); } catch { continue; }
     if (d.error) throw new LlmError(`本地模型出错：${d.error}`);
@@ -104,7 +155,7 @@ async function* ollamaChat({ model, messages, format, think, options, signal }) 
 }
 
 // ---------------- OpenAI 兼容（LM Studio / llama.cpp / vLLM） ----------------
-async function* openaiChat({ model, messages, format, options, signal }) {
+async function* openaiChat({ model, messages, format, options, dl }) {
   const body = {
     model,
     stream: true,
@@ -117,17 +168,18 @@ async function* openaiChat({ model, messages, format, options, signal }) {
   if (format) body.response_format = { type: 'json_schema', json_schema: { name: 'analysis', strict: true, schema: format } };
   let res;
   try {
-    res = await post(`${config.openaiBase}/chat/completions`, body, signal);
+    res = await post(`${config.openaiBase}/chat/completions`, body, dl.signal);
   } catch (e) {
     // 有些本地服务不支持 json_schema，退回到只靠提示词约束格式
     if (format && e instanceof LlmError && e.code === 'llm_error') {
       delete body.response_format;
-      res = await post(`${config.openaiBase}/chat/completions`, body, signal);
+      res = await post(`${config.openaiBase}/chat/completions`, body, dl.signal);
     } else throw e;
   }
+  dl.alive();
   const t0 = Date.now();
   let outputTokens = 0;
-  for await (const line of lines(res)) {
+  for await (const line of lines(res, () => dl.alive())) {
     if (!line.startsWith('data:')) continue;
     const data = line.slice(5).trim();
     if (data === '[DONE]') break;
@@ -141,15 +193,30 @@ async function* openaiChat({ model, messages, format, options, signal }) {
   yield { type: 'done', stats: { outputTokens, seconds: (Date.now() - t0) / 1000 } };
 }
 
+/**
+ * 流式调用本地模型，产出 {type:'content'|'thinking'|'done'} 事件。
+ * params.signal 用于外部取消；params.timeouts 可以覆盖默认超时（单位毫秒）。
+ */
 export async function* chatStream(params) {
-  if (config.provider !== 'ollama') { yield* openaiChat(params); return; }
+  const t = { ...config.timeouts, ...(params.timeouts || {}) };
+  const run = (p) => (config.provider === 'ollama' ? ollamaChat(p) : openaiChat(p));
+  let dl = deadline(params.signal, t);
   try {
-    yield* ollamaChat(params);
+    try {
+      yield* run({ ...params, dl });
+    } catch (e) {
+      // 模型不支持“思考”开关时，去掉该参数重试一次
+      if (e instanceof LlmError && e.code === 'no_thinking' && params.think !== undefined && config.provider === 'ollama') {
+        dl.done();
+        dl = deadline(params.signal, t);
+        yield* run({ ...params, think: undefined, dl });
+      } else throw e;
+    }
   } catch (e) {
-    // 模型不支持“思考”开关时，去掉该参数重试一次
-    if (e instanceof LlmError && e.code === 'no_thinking' && params.think !== undefined) {
-      yield* ollamaChat({ ...params, think: undefined });
-    } else throw e;
+    if (dl.reason && dl.reason !== 'client') throw timeoutError(dl.reason, t);
+    throw e;
+  } finally {
+    dl.done();
   }
 }
 
@@ -157,24 +224,22 @@ export async function* chatStream(params) {
 let cache = { at: 0, data: null };
 export async function listModels() {
   if (cache.data && Date.now() - cache.at < 15000) return cache.data;
+  const get = (url, init = {}) => fetch(url, { ...init, signal: AbortSignal.timeout(4000) }).then((r) => r.json());
   let data;
   try {
     if (config.provider === 'ollama') {
-      const [ver, tags] = await Promise.all([
-        fetch(`${config.ollamaHost}/api/version`).then((r) => r.json()),
-        fetch(`${config.ollamaHost}/api/tags`).then((r) => r.json()),
-      ]);
+      const [ver, tags] = await Promise.all([get(`${config.ollamaHost}/api/version`), get(`${config.ollamaHost}/api/tags`)]);
       const models = await Promise.all((tags.models || []).map(async (m) => {
         let caps = [];
         try {
-          const show = await fetch(`${config.ollamaHost}/api/show`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: m.name }) }).then((r) => r.json());
+          const show = await get(`${config.ollamaHost}/api/show`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: m.name }) });
           caps = show.capabilities || [];
         } catch { /* 忽略 */ }
         return { name: m.name, size: m.size, vision: caps.includes('vision'), thinking: caps.includes('thinking'), embedding: caps.includes('embedding') && !caps.includes('completion') };
       }));
       data = { connected: true, version: ver.version, models: models.filter((m) => !m.embedding) };
     } else {
-      const res = await fetch(`${config.openaiBase}/models`, { headers: config.openaiKey ? { Authorization: `Bearer ${config.openaiKey}` } : {} }).then((r) => r.json());
+      const res = await get(`${config.openaiBase}/models`, { headers: config.openaiKey ? { Authorization: `Bearer ${config.openaiKey}` } : {} });
       data = { connected: true, models: (res.data || []).map((m) => ({ name: m.id, vision: true })) };
     }
   } catch {
@@ -182,4 +247,8 @@ export async function listModels() {
   }
   cache = { at: Date.now(), data };
   return data;
+}
+
+export function clearModelCache() {
+  cache = { at: 0, data: null };
 }
