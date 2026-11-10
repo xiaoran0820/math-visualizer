@@ -146,3 +146,139 @@ test('小模型常见写法：别名、Point(x, y)、Label 参数顺序', () => 
   assert.equal(s.objects.find((o) => o.name === 'A').role, 'free');
   close(Math.hypot(s.values.F.x - 6, s.values.F.y - 8), 24 / Math.sqrt(17), 1e-9);
 });
+
+test('函数关键点与小模型的常见写法：x-axis、Vertex、Root、四个数的 Line', () => {
+  const s = buildScene([
+    'f(x) = x^2 - 2x - 3', 'A = Intersect(f, x-axis, 1)', 'B = Intersect(f, x轴, 2)', 'C = Vertex(f)',
+    'R2 = Root(f, 2)', 'E = Extremum(f)', 'l = Line(-1, 0, 1, 0)', 'P = Intersect(f, l, 1)', 'Segment(0, 0, 1, 1)',
+  ]);
+  assert.deepEqual(s.errors, []);
+  close(s.values.A.x, -1);
+  close(s.values.B.x, 3);
+  close(s.values.C.x, 1);
+  close(s.values.C.y, -4);
+  close(s.values.R2.x, 3);
+  close(s.values.E.y, -4);
+  close(s.values.P.x, -1);
+});
+
+test('多元函数：线性规划的目标函数 f(x, y) 可以代入点求值', () => {
+  const s = buildScene([
+    'Region(x + y <= 4, x >= 0, y >= 0)', 'l1: x + y = 4', 'B = Intersect(l1, xAxis)',
+    'f(x, y) = 2x + y', 'z = 3x - y', 'zmax = f(B)', 'Text("z 最大值 = {f(B)}，{z(1, 2)}", (1, 5))',
+  ]);
+  assert.deepEqual(s.errors, []);
+  close(s.values.zmax, 8);
+  assert.equal(s.objects.find((o) => o.kind === 'text').value.text, 'z 最大值 = 8，1');
+  assert.equal(s.objects.find((o) => o.name === 'f').tex, 'f(x, y) = 2x + y');
+});
+
+test('小模型写法：f(x) 作为函数参数、O.x 取坐标', () => {
+  const s = buildScene(['f(x) = x^2 - 1', 'l: y = x + 1', 'A = Intersect(l, f(x), 2)', 'S = Integral(f(x), 1, 2)', 'O = (3, 4)', 'P = (O.x, O.y + 1)', 'g(t) = 2t', 'B = Intersect(g(t), xAxis, 1)']);
+  assert.deepEqual(s.errors, []);
+  close(s.values.A.x, 2);
+  close(s.values.S.value, 4 / 3);
+  close(s.values.P.y, 5);
+  close(s.values.B.x, 0);
+});
+
+test('小模型写法：先用后定义、标签前多余的逗号、未定义的 O、Center(点)、Circle(x, y, r)', () => {
+  const s = buildScene([
+    'a = Slider(-1, 3, 1)', 'f(x) = x^2 - 2a x + 3', 'P = (m, f(m)) "最小值点"', 'm = If(a < 0, 0, If(a > 2, 2, a))',
+    'g(x) = x + 3', 'Q = Intersect(f, g, 1), "交点"', 'c = Circle(O, 2)', 'K = Center((1, -2))', 'k = Circle(0, 1, 2)',
+  ]);
+  assert.deepEqual(s.errors, []);
+  close(s.values.P.x, 1);
+  close(s.values.P.y, 2);
+  assert.equal(s.objects.find((o) => o.name === 'Q').labelText, '交点');
+  close(s.values.c.r, 2);
+  assert.equal(s.notes.length, 1);
+  close(s.values.K.y, -2);
+  close(s.values.k.c.y, 1);
+});
+
+test('重复的命令只执行一次；Brace 可以写两个数；JSON 吃掉反斜杠的 LaTeX 能还原', () => {
+  const s = buildScene(['a = Slider(0, 4, 1)', 'P = (a, 1)', 'a = Slider(0, 4, 1)', 'P = (a, 1)', 'Brace(0, 360, "360 千米")',
+    'D = (4cos(60^\bullet), 4sin(60^\bullet))', 'h = \frac{1}{2}', 'k = 2 \times 3', 'T = Text("\frac{1}{2}", (0, 0))']);
+  assert.deepEqual(s.errors, []);
+  assert.equal(s.notes.length, 1);
+  const brace = s.objects.find((o) => o.value?.T === 'brace').value;
+  close(brace.q.x, 360);
+  close(s.values.D.x, 2);
+  close(s.values.h, 0.5);
+  close(s.values.k, 6);
+});
+
+test('具名的 Region、Function、Curve 不会被当成二元函数', () => {
+  const s = buildScene(['R = Region(x + y <= 3, x >= 0, y >= 0)', 'g = Function(x^2, 0, 2)', 'c = Curve(cos(t), sin(t), t, 0, 2pi)'], {});
+  assert.deepEqual(s.errors, []);
+  assert.deepEqual(s.objects.map((o) => o.value.T), ['region', 'function', 'curve']);
+});
+
+test('小模型写法：把 y = … 画出的曲线叫作 y；上下文参数前多写的参数', () => {
+  const s = buildScene(['y = x^2 - 2x - 3', 'l1: y = 0 #aux', 'P1 = Intersect(l1, y, 1)', 'P2 = Intersect(l1, y, 2)', 'V = Vertex(y, 1, 1)', 'Q = Intersect(l1, y, 1, 1)'], {});
+  assert.deepEqual(s.errors, []);
+  const xs = [s.values.P1.x, s.values.P2.x].sort((a, b) => a - b);
+  close(xs[0], -1, 1e-6);
+  close(xs[1], 3, 1e-6);
+  close(s.values.V.x, 1, 1e-4);
+  close(s.values.V.y, -4, 1e-6);
+  close(Math.min(Math.abs(s.values.Q.x + 1), Math.abs(s.values.Q.x - 3)), 0, 1e-6);
+  assert.equal(s.notes.length, 1);
+  // 有两条“y = …”曲线时不猜
+  const s2 = buildScene(['y = x^2', 'y = x + 2', 'P = Intersect(y, xAxis, 1)'], {});
+  assert.equal(s2.errors.length, 1);
+});
+
+test('有函数图像、方程曲线时一律画坐标系，忽略模型写的 ShowAxes(false)；纯几何图仍按模型的设置', () => {
+  assert.equal(buildScene(['ShowAxes(false)', 'f(x) = log((e^x + e^(-x))/2)'], {}).axesShown(), true);
+  assert.equal(buildScene(['ShowAxes(false)', 'l: y = 2x + 1'], {}).axesShown(), true);
+  assert.equal(buildScene(['ShowAxes(false)', 'x^2/4 + y^2/3 = 1'], {}).axesShown(), true);
+  assert.equal(buildScene(['ShowAxes(false)', 'Region(x + y <= 4, x >= 0, y >= 0)'], {}).axesShown(), true);
+  assert.equal(buildScene(['ShowAxes(false)', 'A = (0, 4)', 'B = (-3, 0)', 'C = (3, 0)', 'Polygon(A, B, C)', 'Line(A, B)', 'c = Circle(A, 2)'], {}).axesShown(), false);
+  assert.equal(buildScene(['ShowAxes(false)', 'A = (0, 0)', 'B = (6, 0)', 'Brace(A, B, "360 千米")'], {}).axesShown(), false);
+  assert.equal(buildScene(['A = (0, 0)', 'B = (6, 0)', 'Segment(A, B)'], {}).axesShown(), true);
+  assert.equal(buildScene(['ShowAxes(false)', 'f(x) = x^2 #hidden', 'A = (0, 0)', 'B = (1, 1)', 'Segment(A, B)'], {}).axesShown(), false);
+});
+
+test('表格：Table 开始一个表格，Row 每行一条；数值由程序计算，能化成分数的显示分数，随滑块变化', () => {
+  const s = buildScene(['Table("性别与是否近视")', 'Row("", "近视", "不近视")', 'Row("男生", 0.6*0.3, 0.6*0.7)',
+    'Row("P(男生|近视)", 0.6*0.3/(0.6*0.3+0.4*0.2))', 'p = Slider(0, 1, 0.5)', 'Row("P(X=1)", 3p(1-p)^2, "{p^2}")'], {});
+  assert.deepEqual(s.errors, []);
+  const rows = s.objects.filter((o) => o.kind === 'row').map((o) => o.value.cells);
+  assert.deepEqual(rows, [['', '近视', '不近视'], ['男生', '0.18', '0.42'], ['P(男生|近视)', '9/13'], ['P(X=1)', '0.375', '0.25']]);
+  assert.equal(s.objects[0].value.title, '性别与是否近视');
+  s.state.p = 0.2;
+  s.recompute();
+  assert.deepEqual(s.objects.find((o) => o.src.startsWith('Row("P(X=1)"')).value.cells, ['P(X=1)', '0.384', '0.04']);
+  assert.equal(s.mode, '2d');
+});
+
+test('表格单元格可以不加引号：文字原样显示，算式由程序计算，写了除号的显示分数', () => {
+  const s = buildScene(['Table(性别与是否近视的概率)', 'Row(性别, 近视, 不近视, 合计)', 'Row(男生, 0.6*0.3, 0.6*0.7, 0.6)',
+    'Row(P(男生|近视), 0.6*0.3/(0.6*0.3+0.4*0.2))', 'Row(X, 0, 1, 2, 3)', 'Row(P, 1/8, 3/8, 3/8, 1/8)', 'p = Slider(0, 1, 0.3)',
+    'Row(p 的值, p, 1-p)', 'Row(，近视，不近视)'], {});
+  assert.deepEqual(s.errors, []);
+  assert.equal(s.objects[0].value.title, '性别与是否近视的概率');
+  const rows = s.objects.filter((o) => o.kind === 'row').map((o) => o.value.cells);
+  assert.deepEqual(rows, [
+    ['性别', '近视', '不近视', '合计'], ['男生', '0.18', '0.42', '0.6'], ['P(男生|近视)', '9/13'],
+    ['X', '0', '1', '2', '3'], ['P', '1/8', '3/8', '3/8', '1/8'], ['p 的值', '0.3', '0.7'], ['', '近视', '不近视'],
+  ]);
+  s.state.p = 0.5;
+  s.recompute();
+  assert.deepEqual(s.objects.find((o) => o.src.startsWith('Row(p 的值')).value.cells, ['p 的值', '0.5', '0.5']);
+});
+
+test("导函数 f'(x) 写错时改由程序求导；写对时保留模型的式子（R7-1）", () => {
+  const s = buildScene(['f(x) = log((e^x + e^(-x))/2)', "f'(x) = (e^x + e^(-x))/2", "f''(x) = (e^x - e^(-x))/2"], {});
+  assert.deepEqual(s.errors, []);
+  close(s.values["f'"].f(1), Math.tanh(1), 1e-6);
+  close(s.values["f''"].f(1), 1 / Math.cosh(1) ** 2, 1e-4);
+  assert.equal(s.notes.length, 2);
+  assert.match(s.objects[1].tex, /Derivative/);
+  const ok = buildScene(['f(x) = x^3 - 3x', "f'(x) = 3x^2 - 3"], {});
+  assert.deepEqual(ok.notes, []);
+  close(ok.values["f'"].f(2), 9);
+  assert.doesNotMatch(ok.objects[1].tex, /Derivative/);
+});
