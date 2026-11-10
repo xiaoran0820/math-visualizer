@@ -1,0 +1,4 @@
+CAPACITOR_DEBUG = true
+
+// llama.cpp 只提供 arm64；Apple 芯片的 Mac 上模拟器也是 arm64
+EXCLUDED_ARCHS[sdk=iphonesimulator*] = x86_64
