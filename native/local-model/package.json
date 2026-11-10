@@ -1,0 +1,12 @@
+{
+  "name": "@shuxing/local-model",
+  "version": "0.1.0",
+  "private": true,
+  "description": "数形 App 的本机模型插件：在 iPhone 上用 llama.cpp（Metal）运行 Qwen3.5 小模型，接口见 docs/ios-plugin.md",
+  "license": "MIT",
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  }
+}
