@@ -1,0 +1,2 @@
+FROM qwen3.5:2b-q4_K_M
+ADAPTER /Users/xiaoran/Desktop/java_project/math-visualizer/train/smoke/fakeX.gguf
