@@ -1,3 +1,14 @@
 node_modules/
 .env
 .DS_Store
+dist/
+
+# iOS：构建产物、cap sync 复制的网页、下载的 llama.cpp 框架（用 native/local-model/fetch-llama.sh 重新获取）
+ios/build/
+ios/App/App/public/
+native/local-model/ios/Frameworks/
+*.gguf
+ios/iphone-install/
+
+# 第 0 轮拍的题目照片（课本内容，不提交）
+eval/round0/photos/
