@@ -9,8 +9,20 @@ const SUBSCRIPTS = { '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4',
 const GREEK_LATEX = 'alpha beta gamma delta epsilon theta lambda mu rho sigma tau phi omega'.split(' ');
 const GREEK_CHARS = 'αβγδεθλμρστφω';
 
+// 模型在 JSON 里写 LaTeX 时常常只写一个反斜杠："\\frac" 被 JSON 解码成换页符 + "rac"，"\\times" 变成制表符 + "imes"。
+// 控制字符后面紧跟字母时，还原成原来的反斜杠写法（换行、回车只在常见的 LaTeX 命令前还原）。
+export function restoreEscapes(s) {
+  if (typeof s !== 'string') return s;
+  return s
+    .replace(/[\b\f](?=[a-zA-Z])/g, (c) => (c === '\b' ? '\\b' : '\\f'))
+    .replace(/\t(?=[a-z])/g, '\\t')
+    .replace(/\r(?=(?:ight|ho(?![a-z])|angle|ceil|floor))/g, '\\r')
+    .replace(/\n(?=(?:eq|eg|e(?![a-z])|u(?![a-z])|abla|ot(?![a-z])|ewline))/g, '\\n');
+}
+
 // 把 LaTeX / Unicode 写法统一成 ASCII 表达式（只处理字符串字面量之外的部分）
 export function normalizeSource(src) {
+  src = restoreEscapes(String(src));
   let out = '';
   let i = 0;
   while (i < src.length) {
@@ -77,11 +89,16 @@ function normalizeMathPart(s) {
     .replace(/≤|⩽/g, '<=').replace(/≥|⩾/g, '>=').replace(/≠/g, '!=')
     .replace(/²/g, '^2').replace(/³/g, '^3').replace(/π/g, 'pi').replace(/∞/g, 'Infinity')
     .replace(/[₀-₉]+/g, m => '_' + [...m].map(ch => SUBSCRIPTS[ch]).join(''))
-    .replace(/√/g, ' sqrt ').replace(/∧/g, '&&').replace(/∨/g, '||').replace(/′/g, "'");
+    .replace(/√/g, ' sqrt ').replace(/∧/g, '&&').replace(/∨/g, '||').replace(/′/g, "'")
+    // 用“点.x”取坐标的写法：O.x → x(O)
+    .replace(/\b([A-Za-z][A-Za-z0-9_]*'*)\.([xyz])\b/g, '$2($1)')
+    // 坐标轴的各种写法：x-axis、x_axis、xaxis、x轴 → xAxis
+    .replace(/\b([xyXY])\s*[-_]?\s*axis\b/g, (m, a) => `${a.toLowerCase()}Axis`).replace(/([xyXY])\s*轴/g, (m, a) => `${a.toLowerCase()}Axis`);
   if (s.includes('\\')) {
     s = s.replace(/\\left|\\right/g, '').replace(/\\cdot|\\times/g, '*').replace(/\\div/g, '/')
       .replace(/\\leq?(?![a-z])/g, '<=').replace(/\\geq?(?![a-z])/g, '>=').replace(/\\neq?(?![a-z])/g, '!=')
       .replace(/\\infty/g, 'Infinity').replace(/\\pi/g, 'pi').replace(/\\circ/g, '°').replace(/\\degree/g, '°')
+      .replace(/\^\s*\{?\s*\\bullet\s*\}?/g, '°').replace(/\\bullet/g, '*')
       .replace(/\\(arcsin|arccos|arctan|sin|cos|tan|cot|sec|csc|ln|log|lg|exp)/g, '$1')
       .replace(/\\[,;!: ]/g, ' ');
     GREEK_LATEX.forEach((g, n) => { s = s.replace(new RegExp('\\\\' + g + '(?![a-z])', 'g'), GREEK_CHARS[n]); });
@@ -175,10 +192,20 @@ export function parseExpression(src, opts = {}) {
     }
   }
 
-  // 不带括号的函数参数：sin 2x → sin(2x)，在遇到下一个函数名或显式运算符时停止
+  // 不带括号的函数参数：sin 2x → sin(2x)，sin x cos x → sin(x)·cos(x)。
+  // 遇到下一个函数名（sin、cos…，或紧跟括号的命令/自定义函数）或显式运算符时停止。
+  // 注意 x、y、z、t 虽然可以写成 x(A) 取坐标，但在这里一律当作变量。
+  const stopsImplicitArg = () => {
+    const t = peek();
+    if (t.t !== 'id') return false;
+    if (isPrefixFunc(t.v)) return true;
+    if (/^[xyzt]$/.test(t.v)) return false;
+    const after = toks[p + 1];
+    return isCallable(t.v) && !!after && after.t === 'op' && after.v === '(';
+  };
   function parseImplicitArg() {
     let node = parseExpr(8);
-    while (startsPrimary(peek()) && !(peek().t === 'id' && (isCallable(peek().v) || isPrefixFunc(peek().v)))) {
+    while (startsPrimary(peek()) && !stopsImplicitArg()) {
       node = { type: 'bin', op: '*', left: node, right: parseExpr(8) };
     }
     return node;
@@ -256,6 +283,7 @@ export function parseExpression(src, opts = {}) {
 
   const ast = parseExpr(0);
   let label = null;
+  if (isOp(peek(), ',') && toks[p + 1]?.t === 'str' && toks[p + 2]?.t === 'eof') next(); // P = Intersect(f, g), "标签"
   if (peek().t === 'str') label = next().v;
   if (peek().t !== 'eof') {
     const tok = peek();
@@ -271,4 +299,92 @@ export function collectVars(ast, out = new Set()) {
   for (const key of ['arg', 'left', 'right']) if (ast[key]) collectVars(ast[key], out);
   for (const key of ['items', 'args']) if (ast[key]) ast[key].forEach(n => collectVars(n, out));
   return out;
+}
+
+// ---------------- 把 AST 还原成 LaTeX：让用户看到程序“实际理解成了什么” ----------------
+// 例：1/2x → \frac{1}{2}x（而不是 \frac{1}{2x}），sin 2x → \sin\left(2x\right)
+const TEX_FUNCS = {
+  sin: '\\sin', cos: '\\cos', tan: '\\tan', cot: '\\cot', sec: '\\sec', csc: '\\csc',
+  asin: '\\arcsin', acos: '\\arccos', atan: '\\arctan', arcsin: '\\arcsin', arccos: '\\arccos', arctan: '\\arctan',
+  sinh: '\\sinh', cosh: '\\cosh', tanh: '\\tanh', ln: '\\ln', lg: '\\lg', log: '\\log', exp: '\\exp',
+};
+const TEX_CMP = { '<': '<', '<=': '\\le', '>': '>', '>=': '\\ge', '==': '=', '!=': '\\ne' };
+
+function texPrec(n) {
+  switch (n.type) {
+    case 'eq': return 1;
+    case 'logic': return 2;
+    case 'cmp': return 4;
+    case 'bin': return n.op === '+' || n.op === '-' ? 5 : n.op === '^' ? 8 : n.op === '/' ? 10 : 6;
+    case 'neg': case 'not': return 7;
+    case 'deg': return 9;
+    case 'group': return texPrec(n.arg);
+    default: return 10;
+  }
+}
+
+function texName(name) {
+  if (name === 'pi') return '\\pi';
+  if (name === 'Infinity' || name === 'inf') return '\\infty';
+  let base = name, primes = '';
+  const pm = /'+$/.exec(base);
+  if (pm) { primes = "'".repeat(pm[0].length); base = base.slice(0, -pm[0].length); }
+  const m = /^([A-Za-zͰ-Ͽ]+?)_?(\d+)$/.exec(base) || /^([A-Za-zͰ-Ͽ]+)_(\w+)$/.exec(base);
+  const core = m ? `${m[1]}_{${m[2]}}` : base;
+  return (/^[A-Za-z]{2,}/.test(core) ? `\\mathrm{${core}}` : core) + primes;
+}
+
+function texNum(v) {
+  if (!Number.isFinite(v)) return v > 0 ? '\\infty' : '-\\infty';
+  return String(Number(v.toPrecision(10)));
+}
+
+export function toLatex(n) {
+  const wrap = (child, minPrec) => {
+    const s = toLatex(child);
+    return texPrec(child) < minPrec ? `\\left(${s}\\right)` : s;
+  };
+  switch (n.type) {
+    case 'num': return texNum(n.value);
+    case 'str': return `\\text{「${n.value.replace(/[{}\\]/g, '')}」}`;
+    case 'var': return texName(n.name);
+    case 'group': return toLatex(n.arg);
+    case 'neg': return `-${wrap(n.arg, 7)}`;
+    case 'not': return `\\lnot ${wrap(n.arg, 7)}`;
+    case 'deg': return `${wrap(n.arg, 10)}^{\\circ}`;
+    case 'tuple': return `\\left(${n.items.map(toLatex).join(',\\ ')}\\right)`;
+    case 'eq': return `${toLatex(n.left)} = ${toLatex(n.right)}`;
+    case 'logic': return `${wrap(n.left, 2)} ${n.op === '&&' ? '\\land' : '\\lor'} ${wrap(n.right, 3)}`;
+    case 'cmp': return n.args.map((a, i) => (i ? ` ${TEX_CMP[n.ops[i - 1]]} ` : '') + wrap(a, 5)).join('');
+    case 'bin': {
+      const { op, left, right } = n;
+      if (op === '+') return `${wrap(left, 5)} + ${wrap(right, 5)}`;
+      if (op === '-') return `${wrap(left, 5)} - ${wrap(right, 6)}`;
+      if (op === '/') return `\\frac{${toLatex(left)}}{${toLatex(right)}}`;
+      if (op === '^') return `{${wrap(left, 10)}}^{${toLatex(right)}}`;
+      // 乘法：数字乘字母写成 2x，其余写 ·，让结合方式一目了然
+      const l = wrap(left, 6), r = wrap(right, 7);
+      const juxt = (left.type === 'num' || (left.type === 'bin' && left.op === '/')) && (right.type === 'var' || (right.type === 'bin' && right.op === '^' && right.left.type === 'var'));
+      return juxt ? `${l}${r}` : `${l} \\cdot ${r}`;
+    }
+    case 'call': {
+      const a = n.args.map(toLatex);
+      if (n.name === 'sqrt' && a.length === 1) return `\\sqrt{${a[0]}}`;
+      if (n.name === 'cbrt' && a.length === 1) return `\\sqrt[3]{${a[0]}}`;
+      if (n.name === 'nroot' && a.length === 2) return `\\sqrt[${a[1]}]{${a[0]}}`;
+      if (n.name === 'abs' && a.length === 1) return `\\left|${a[0]}\\right|`;
+      if (n.name === 'log' && a.length === 2) return `\\log_{${a[0]}}\\left(${a[1]}\\right)`;
+      if (TEX_FUNCS[n.name] && a.length === 1) return `${TEX_FUNCS[n.name]}\\left(${a[0]}\\right)`;
+      if (n.name === 'Region' && a.length) return `\\begin{cases}${a.join('\\\\')}\\end{cases}`;
+      if (n.name === 'If' && a.length >= 2) {
+        const rows = [];
+        let i = 0;
+        for (; i + 1 < a.length; i += 2) rows.push(`${a[i + 1]}, & ${a[i]}`);
+        if (i < a.length) rows.push(`${a[i]}, & \\text{其他}`);
+        return `\\begin{cases}${rows.join('\\\\')}\\end{cases}`;
+      }
+      return `\\mathrm{${n.name.replace(/[^A-Za-z0-9]/g, '')}}\\left(${a.join(',\\ ')}\\right)`;
+    }
+    default: return '';
+  }
 }

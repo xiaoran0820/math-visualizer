@@ -5,6 +5,7 @@
 import * as G from './geom.js';
 import { labelHtml, nameHtml } from './labels.js';
 import { readTheme } from './theme.js';
+import { layoutLabels } from './labelLayout.js';
 
 const { finite } = G;
 
@@ -29,7 +30,7 @@ export function render2d(container, scene, opts = {}) {
     name, withLabel: true, strokeColor: theme.axis, highlightStrokeColor: theme.axis, strokeWidth: 1.2,
     lastArrow: { type: 2, size: 7 },
     label: { position: name === 'x' ? 'rt' : 'rt', offset: name === 'x' ? [-12, 14] : [10, -6], fontSize: 14, strokeColor: theme.muted, cssClass: 'jxg-axisname', highlightCssClass: 'jxg-axisname' },
-    ticks: { strokeColor: theme.axis, strokeOpacity: 0.6, majorHeight: 6, minorTicks: 0, insertTicks: true, minTicksDistance: 30, label: tickLabel, drawZero: name === 'x' },
+    ticks: { strokeColor: theme.axis, strokeOpacity: 0.6, majorHeight: 6, minorTicks: 0, insertTicks: true, minTicksDistance: 30, label: tickLabel, drawZero: false },
   });
 
   const board = JXG.JSXGraph.initBoard(div, {
@@ -40,12 +41,25 @@ export function render2d(container, scene, opts = {}) {
     grid: grid ? { majorStep: 'auto', minorElements: 0, strokeColor: theme.grid, strokeOpacity: 1, strokeWidth: 1, highlight: false } : false,
     showCopyright: false, showNavigation: false, showFullscreen: false, showScreenshot: false, showInfobox: false,
     pan: { enabled: true, needShift: false, needTwoFingers: true },
+    browserPan: true, // 手机上：手指按在图形空白处可以滚动页面，按在点上才是拖动
     zoom: { enabled: true, wheel: true, needShift: false, pinch: true, min: 0.05, max: 60, factorX: 1.15, factorY: 1.15 },
     resize: { enabled: false },
     renderer: 'svg',
   });
 
   if (axes && usesTrig(scene)) setPiTicks(board);
+  // 所有标签（点的名字、曲线的名字、文字），画完后统一做避让，见 layoutLabels
+  const labelEntries = [];
+  if (axes) for (const ax of [board.defaultAxes?.x, board.defaultAxes?.y]) if (ax?.label) labelEntries.push({ kind: 'fixed', node: () => ax.label.rendNode });
+  // 课本式的坐标系：原点标 O（图里已经有一个叫 O 的点时不标：在原点就重复了，不在原点会出现两个 O）
+  const oPoint = scene.values.O;
+  if (axes && !(oPoint && oPoint.T === 'point')) {
+    const oText = board.create('text', [() => -5 / board.unitX, () => -5 / board.unitY, 'O'], {
+      anchorX: 'right', anchorY: 'top', fixed: true, highlight: false, fontSize: 14, strokeColor: theme.muted,
+      cssClass: 'jxg-axisname', highlightCssClass: 'jxg-axisname', layer: 9,
+    });
+    labelEntries.push({ kind: 'fixed', node: () => oText.rendNode });
+  }
 
   const els = [];
   const dynamicLabels = [];
@@ -79,7 +93,7 @@ export function render2d(container, scene, opts = {}) {
       highlightStrokeColor: color, highlightFillColor: t.has('open') ? theme.bg : color,
       strokeWidth: t.has('open') ? 2 : draggable ? 2 : 1,
       showInfobox: false, layer: 9,
-      label: { offset: [7, 9], autoPosition: true, fontSize: 16, strokeColor: theme.ink, cssClass: label.cls, highlightCssClass: label.cls, layer: 9 },
+      label: { offset: [7, 9], autoPosition: false, fontSize: 16, strokeColor: theme.ink, cssClass: label.cls, highlightCssClass: label.cls, layer: 9 },
     };
     let p;
     if (draggable) {
@@ -102,6 +116,7 @@ export function render2d(container, scene, opts = {}) {
       p = board.create('point', [() => val(o)?.x ?? NaN, () => val(o)?.y ?? NaN], { ...attrs, fixed: true });
     }
     if (o.labelFn) dynamicLabels.push({ o, el: p, last: label.html, point: true });
+    if (attrs.withLabel || o.labelFn) labelEntries.push({ kind: 'point', node: () => p.label?.rendNode });
     void st;
     els.push(p);
   }
@@ -169,6 +184,7 @@ export function render2d(container, scene, opts = {}) {
         visible: true,
       });
       els.push(txt);
+      labelEntries.push({ kind: 'curve', node: () => txt.rendNode });
     }
   }
 
@@ -207,6 +223,7 @@ export function render2d(container, scene, opts = {}) {
       cssClass: 'jxg-text-box', highlightCssClass: 'jxg-text-box', highlight: false, layer: 9,
     });
     els.push(t);
+    labelEntries.push({ kind: 'text', node: () => t.rendNode });
   }
 
   // 按图层顺序创建：填充 → 线 → 角 → 点 → 文字
@@ -232,8 +249,39 @@ export function render2d(container, scene, opts = {}) {
     const bb = board.getBoundingBox();
     scene.setRange({ x0: bb[0], x1: bb[2], y0: bb[3], y1: bb[1] });
   });
+  // 标签避让：每次图形更新（拖动、滑块、缩放）后，量出各标签在屏幕上的位置，把重叠的标签错开。
+  // 用 CSS 的 translate 属性偏移，不影响 JSXGraph 自己设置的 left / top。
+  const applied = new Map();
+  function layout() {
+    const host = div.getBoundingClientRect();
+    if (!host.width) return;
+    const entries = labelEntries.map((e) => ({ kind: e.kind, node: e.node() })).filter((e) => e.node && e.node.isConnected);
+    const items = entries.map(({ kind, node }) => {
+      const r = node.getBoundingClientRect();
+      const off = applied.get(node) || { dx: 0, dy: 0 };
+      const visible = r.width > 0 && r.height > 0 && node.textContent.trim() && getComputedStyle(node).visibility !== 'hidden';
+      return visible ? { x: r.left - host.left - off.dx, y: r.top - host.top - off.dy, w: r.width, h: r.height, kind } : { x: 0, y: 0, w: 0, h: 0, kind };
+    });
+    const offs = layoutLabels(items, { w: host.width, h: host.height });
+    entries.forEach(({ node }, i) => {
+      const { dx, dy } = offs[i];
+      const prev = applied.get(node) || { dx: 0, dy: 0 };
+      if (prev.dx === dx && prev.dy === dy) return;
+      node.style.translate = dx || dy ? `${dx}px ${dy}px` : '';
+      applied.set(node, { dx, dy });
+    });
+  }
+  let layoutQueued = false;
+  const scheduleLayout = () => {
+    if (layoutQueued) return;
+    layoutQueued = true;
+    requestAnimationFrame(() => { layoutQueued = false; try { layout(); } catch { /* 避让失败不影响作图 */ } });
+  };
+  board.on('update', scheduleLayout);
+
   // 曲线的 updateDataArray 是在创建之后才挂上的，需要整体刷新一次
   board.fullUpdate();
+  scheduleLayout();
 
   return {
     board,
@@ -292,7 +340,7 @@ function jump(f, x0, y0, x1, y1, thr) {
   return true;
 }
 
-function sampleFunction(fv, B, nPix) {
+export function sampleFunction(fv, B, nPix) {
   const xs = [], ys = [];
   const a = Math.max(fv.a, B.x0 - B.w * 0.02), b = Math.min(fv.b, B.x1 + B.w * 0.02);
   if (!(b > a)) return { xs, ys };

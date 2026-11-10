@@ -2,7 +2,7 @@
 // 例：A = (0, 4)、D = Midpoint(B, C)、f(x) = x^2 - 2a x、E: x^2/4 + y^2/3 = 1、Segment(A, D) #aux
 // 引擎只负责计算，渲染交给 render2d.js / render3d.js。
 
-import { parseExpression, collectVars, ParseError } from './expr.js';
+import { parseExpression, collectVars, ParseError, toLatex, restoreEscapes } from './expr.js';
 import * as G from './geom.js';
 
 const { pt, isPt, okPt, finite, EPS } = G;
@@ -37,6 +37,52 @@ export function fmtNum(x) {
   if (Math.abs(r) < 1e-12) return '0';
   return String(r);
 }
+// 表格里的数：整数、有限小数照常显示（0.18）；1/3、9/13 这类显示成分数；其余保留三位小数。
+// preferFraction：算式里写了除号（1/8、0.18/0.26）时优先显示分数
+export function fmtCell(x, preferFraction = false) {
+  if (!finite(x)) return '—';
+  if (Math.abs(x - Math.round(x)) < 1e-9) return String(Math.round(x));
+  const frac = () => {
+    for (let q = 2; q <= 1000; q++) {
+      const n = Math.round(x * q);
+      if (Math.abs(x * q - n) < 1e-7 * q) return `${n}/${q}`;
+    }
+    return null;
+  };
+  if (preferFraction) { const f = frac(); if (f) return f; }
+  for (const d of [10, 100, 1000, 10000]) {
+    const r = Math.round(x * d);
+    if (Math.abs(x * d - r) < 1e-7) return String(r / d);
+  }
+  return frac() || `≈${Math.round(x * 1000) / 1000}`;
+}
+
+// 表格命令的参数按顶层逗号切开（括号、引号里的逗号不算）
+function splitCells(s) {
+  const out = [];
+  let depth = 0, quote = null, cur = '';
+  for (const ch of s) {
+    if (quote) { cur += ch; if (ch === quote || (quote === '“' && ch === '”')) quote = null; continue; }
+    if (ch === '"' || ch === '“') { quote = ch === '“' ? '“' : '"'; cur += ch; continue; }
+    if ('([{（'.includes(ch)) depth++;
+    if (')]}）'.includes(ch)) depth = Math.max(0, depth - 1);
+    if ((ch === ',' || ch === '，') && depth === 0) { out.push(cur); cur = ''; continue; }
+    cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+// 数值经过四舍五入显示时，视为近似值（界面上用“≈”代替“=”）
+export function isApprox(v) {
+  const off = (x) => finite(x) && Math.abs(x - Math.round(x * 100) / 100) > 1e-9 * (1 + Math.abs(x));
+  if (typeof v === 'number') return off(v);
+  if (v && (v.T === 'angle')) return off(v.deg);
+  if (v && (v.T === 'integral')) return off(v.value);
+  if (v && v.T === 'point') return off(v.x) || off(v.y) || (v.z !== undefined && off(v.z));
+  return false;
+}
+
 export function formatValue(v) {
   if (v === null || v === undefined) return '—';
   if (typeof v === 'number') return fmtNum(v);
@@ -126,8 +172,12 @@ const CMD = {
     if (a && a.T === 'line') return G.lerp(a.p, a.q, 0.5);
     return okPt(a) && okPt(b) ? G.lerp(a, b, 0.5) : null;
   },
-  Segment: (a, b) => G.lineThrough(a, b, 'segment'),
-  Line(a, b) {
+  Segment(a, b, c, d) {
+    if ([a, b, c, d].every((v) => typeof v === 'number')) return G.lineThrough(pt(a, b), pt(c, d), 'segment'); // Segment(x1, y1, x2, y2)
+    return G.lineThrough(a, b, 'segment');
+  },
+  Line(a, b, c, d) {
+    if ([a, b, c, d].every((v) => typeof v === 'number')) return G.lineThrough(pt(a, b), pt(c, d), 'line'); // Line(x1, y1, x2, y2)
     if (okPt(a) && okPt(b)) return G.lineThrough(a, b, 'line');
     if (okPt(a) && asLine(b)) return G.lineThrough(a, G.vadd(a, dirOf(b)), 'line');
     return null;
@@ -193,7 +243,29 @@ const CMD = {
     if (okPt(obj) && hint === undefined) return obj;
     return G.project(obj, okPt(hint) ? hint : defaultOn(obj, ctx.range), ctx.range);
   },
+  // 函数的关键点：由程序计算，不需要模型自己算坐标
+  Root(f, n, ctx) {
+    if (!f || f.T !== 'function') return null;
+    const roots = G.findRoots(f.f, Math.max(f.a, -100), Math.min(f.b, 100), 4000);
+    const k = n === undefined ? 1 : Math.round(toNum(n));
+    const x = roots[k - 1];
+    return x === undefined ? null : pt(x, 0);
+  },
+  Extremum(f, n, ctx) {
+    if (!f || f.T !== 'function') return null;
+    const ex = G.findExtrema(f.f, Math.max(f.a, -100), Math.min(f.b, 100), 4000);
+    const k = n === undefined ? 1 : Math.round(toNum(n));
+    const e = ex[k - 1];
+    return e ? pt(e.x, e.y) : null;
+  },
+  Vertex(f, ctx) {
+    // 抛物线的顶点（取离 y 轴最近的极值点）
+    if (!f || f.T !== 'function') return null;
+    const ex = G.findExtrema(f.f, Math.max(f.a, -100), Math.min(f.b, 100), 4000).sort((p, q) => Math.abs(p.x) - Math.abs(q.x));
+    return ex.length ? pt(ex[0].x, ex[0].y) : null;
+  },
   Circle(a, b, c) {
+    if ([a, b, c].every((v) => typeof v === 'number')) return { T: 'circle', c: pt(a, b), r: Math.abs(c) }; // Circle(x, y, r)
     if (c !== undefined) {
       if (!okPt(a) || !okPt(b) || !okPt(c)) return null;
       const O = G.circumcenter(a, b, c);
@@ -233,7 +305,7 @@ const CMD = {
     if (pts.length < 2 || !pts.every(okPt)) return null;
     return { T: 'polyline', pts };
   },
-  Center: (c) => (c && (c.T === 'circle' || c.T === 'arc' || c.T === 'sector' || c.T === 'sphere') ? c.c : null),
+  Center: (c) => (isPt(c) ? c : c && (c.T === 'circle' || c.T === 'arc' || c.T === 'sector' || c.T === 'sphere') ? c.c : null),
   Radius: (c) => (c && c.r !== undefined ? c.r : NaN),
   Centroid(...pts) {
     if (pts.length === 1 && pts[0] && pts[0].T === 'polygon') pts = pts[0].pts;
@@ -342,7 +414,16 @@ const CMD = {
     if (isPt(s) && typeof P === 'string') [s, P] = [P, s];
     return { T: 'text', text: typeof s === 'string' ? s : formatValue(s), pos: okPt(P) ? P : null };
   },
+  // 表格（概率、统计题）：Table("标题") 开始一个表格；Row(…) 每行一条，第一行是表头。
+  // 数值单元格由程序计算（能化成分数的显示分数），含滑块参数时随滑块变化
+  Table(title) {
+    return { T: 'table', title: title === undefined ? '' : typeof title === 'string' ? title : formatValue(title) };
+  },
+  Row(...cells) {
+    return { T: 'row', cells: cells.map((c) => (typeof c === 'number' ? fmtCell(c) : c === undefined || c === null ? '' : typeof c === 'string' ? c : formatValue(c))) };
+  },
   Brace(A, B, s) {
+    if (typeof A === 'number' && typeof B === 'number') { A = pt(A, 0); B = pt(B, 0); } // Brace(0, 360, "…")：x 轴上的一段
     if (!okPt(A) || !okPt(B)) return null;
     return { T: 'brace', p: A, q: B, text: s === undefined ? '' : typeof s === 'string' ? s : formatValue(s) };
   },
@@ -408,15 +489,16 @@ const ALIASES = {
   RightAngle: 'Angle', AngleMark: 'Angle', MarkAngle: 'Angle',
   Circumcircle: 'Circle', Dist: 'Distance', Vec: 'Vector', Rotation: 'Rotate', Translation: 'Translate', Scale: 'Dilate',
   Label: 'Text', TextLabel: 'Text', Caption: 'Text',
+  Roots: 'Root', Zero: 'Root', Zeros: 'Root', ZeroPoint: 'Root', Extrema: 'Extremum', TurningPoint: 'Extremum', Apex: 'Vertex',
 };
-const CTX_CMDS = new Set(['ClosestPoint', 'Intersect', 'Point', 'Tangent']); // 需要额外的上下文参数
+const CTX_CMDS = new Set(['ClosestPoint', 'Intersect', 'Point', 'Tangent', 'Root', 'Extremum', 'Vertex']); // 需要额外的上下文参数
 
 // 推断命令的结果类型（初值为空时，渲染器仍需要知道该画什么）
 const KIND_OF_CMD = {
-  point: ['Midpoint', 'Intersect', 'Foot', 'ClosestPoint', 'Point', 'Center', 'Centroid', 'Circumcenter', 'Incenter', 'Orthocenter'],
+  point: ['Midpoint', 'Intersect', 'Foot', 'ClosestPoint', 'Point', 'Center', 'Centroid', 'Circumcenter', 'Incenter', 'Orthocenter', 'Root', 'Extremum', 'Vertex'],
   line: ['Segment', 'Line', 'Ray', 'Vector', 'Perpendicular', 'Parallel', 'PerpendicularBisector', 'AngleBisector', 'Tangent'],
   circle: ['Circle', 'Incircle'], arc: ['Arc', 'Semicircle'], sector: ['Sector'],
-  polygon: ['Polygon'], polyline: ['Polyline'], angle: ['Angle'], text: ['Text'], brace: ['Brace'],
+  polygon: ['Polygon'], polyline: ['Polyline'], angle: ['Angle'], text: ['Text'], brace: ['Brace'], table: ['Table'], row: ['Row'],
   integral: ['Integral', 'IntegralBetween'], function: ['Function', 'Derivative'], curve: ['Curve'],
   sphere: ['Sphere'], cylinder: ['Cylinder'], cone: ['Cone'], solid: ['Pyramid', 'Prism'], region: ['Region'],
 };
@@ -425,6 +507,17 @@ for (const [k, list] of Object.entries(KIND_OF_CMD)) list.forEach((c) => { CMD_K
 
 const SETTINGS = new Set(['ShowAxes', 'ShowGrid', 'ZoomIn', 'SetView']);
 const SPECIAL = new Set(['If', 'Function', 'Curve', 'Region', 'Slider', ...SETTINGS]);
+
+// 两个函数在几个点上的值是否一致（核对模型写的导函数用；没有可比较的点时当作一致，不改动）
+function sameFunctionValues(a, b) {
+  if (!a || !b || a.T !== 'function' || b.T !== 'function') return true;
+  for (const x of [-2.3, -1.1, -0.4, 0.3, 0.9, 1.7, 2.6, 3.4]) {
+    const u = callFn(a, x), v = callFn(b, x);
+    if (!finite(u) || !finite(v)) continue;
+    if (Math.abs(u - v) > 1e-3 * (1 + Math.abs(v))) return false;
+  }
+  return true;
+}
 
 function derivativeOf(fv) {
   const f = fv.f;
@@ -474,7 +567,7 @@ function extractTags(src, tags) {
   return src.slice(0, cut).trim();
 }
 
-const LHS_RE = /^([A-Za-z_Ͱ-Ͽ][A-Za-z0-9_Ͱ-Ͽ]*'*)\s*(?:\(\s*([a-z])\s*\))?\s*(=|:)(?!=)\s*/;
+const LHS_RE = /^([A-Za-z_Ͱ-Ͽ][A-Za-z0-9_Ͱ-Ͽ]*'*)\s*(?:\(\s*([a-z](?:\s*,\s*[a-z])*)\s*\))?\s*(=|:)(?!=)\s*/;
 
 // ---------------- 场景 ----------------
 export class Scene {
@@ -482,6 +575,7 @@ export class Scene {
     this.objects = [];
     this.byName = new Map();
     this.errors = [];
+    this.notes = [];
     this.settings = { axes: null, grid: null, view: null };
     this.state = state;
     this.values = Object.create(null);
@@ -497,7 +591,7 @@ export class Scene {
     if (CMD[name] || ALIASES[name] || MATH1[name] || MATHN[name] || SPECIAL.has(name)) return true;
     if (name === 'x' || name === 'y' || name === 'z') return true;
     const o = this.byName.get(name);
-    if (o && o.kind === 'function') return true;
+    if (o && (o.kind === 'function' || o.kind === 'function2')) return true;
     if (name.endsWith("'")) {
       const base = this.byName.get(name.replace(/'+$/, ''));
       return !!base && base.kind === 'function';
@@ -575,6 +669,16 @@ export class Scene {
   compileVar(name, locals) {
     if (locals && locals.has(name)) return (env) => env.locals[name];
     if (this.byName.has(name)) return (env) => env.values[name];
+    if (name === 'O') { this.addImplicitOrigin(); return (env) => env.values.O; }
+    if (name === 'y') {
+      // 模型把 y = x^2 - 2x - 3 画出的曲线直接叫作 y（如 Intersect(l, y, 1)）：只有一条这样的曲线时就是它
+      const curves = this.objects.filter((o) => o.auto && /^\s*y\s*=/.test(o.src) && (o.kind === 'function' || o.kind === 'line'));
+      if (curves.length === 1) {
+        const n = curves[0].name;
+        if (!this.notes.some((t) => t.startsWith('命令里用 y 指代'))) this.notes.push(`命令里用 y 指代曲线「${curves[0].src}」，已按这条曲线处理`);
+        return (env) => env.values[n];
+      }
+    }
     if (name in CONSTANTS) { const v = CONSTANTS[name]; return () => v; }
     if (name === 'xAxis') return () => G.lineThrough(pt(0, 0), pt(1, 0));
     if (name === 'yAxis') return () => G.lineThrough(pt(0, 0), pt(0, 1));
@@ -608,6 +712,19 @@ export class Scene {
     return go(0);
   }
 
+  // 模型用了 O 却没定义时，按原点处理，并记一条提示（不算错误）
+  addImplicitOrigin() {
+    if (this.byName.has('O')) return;
+    const o = {
+      name: 'O', auto: false, src: 'O = (0, 0)', lineNo: -1, tags: new Set(['fixed']), role: 'fixed', slider: null,
+      label: null, labelFn: null, labelText: null, compute: () => pt(0, 0), kind: 'point', value: pt(0, 0), tex: null,
+    };
+    this.objects.push(o);
+    this.byName.set('O', o);
+    this.values.O = o.value;
+    this.notes.push('命令里用到了点 O 但没有定义，已按原点 (0, 0) 处理');
+  }
+
   compileTemplate(s, locals) {
     const parts = [];
     let buf = '', inMath = false;
@@ -636,7 +753,16 @@ export class Scene {
     }
     if (buf) parts.push(buf);
     if (parts.every((p) => typeof p === 'string')) { const str = parts.join(''); return () => str; }
-    return (env) => parts.map((p) => (typeof p === 'string' ? p : formatValue(p(env)))).join('');
+    return (env) => {
+      let out = '';
+      for (const p of parts) {
+        if (typeof p === 'string') { out += p; continue; }
+        const v = p(env);
+        if (isApprox(v)) out = /=\s*$/.test(out) ? out.replace(/=(\s*)$/, '≈$1') : `${out}≈`;
+        out += formatValue(v);
+      }
+      return out;
+    };
   }
 
   withLocals(locals, names) {
@@ -656,13 +782,32 @@ export class Scene {
     };
   }
 
+  // 收集“自由变量”：f(x)、g(t) 这种整体代表函数本身的写法里的 x、t 不算
+  freeVars(ast, out = new Set()) {
+    if (!ast || typeof ast !== 'object') return out;
+    if (ast.type === 'var') out.add(ast.name);
+    if (ast.type === 'call' && ast.args.length === 1 && ast.args[0].type === 'var' && /^[xt]$/.test(ast.args[0].name)
+      && this.byName.get(ast.name)?.kind === 'function') return out;
+    for (const k of ['arg', 'left', 'right']) if (ast[k]) this.freeVars(ast[k], out);
+    for (const k of ['items', 'args']) if (ast[k]) ast[k].forEach((n) => this.freeVars(n, out));
+    return out;
+  }
+
+  makeFunction2(exprFn, vars) {
+    return (env) => {
+      const loc = Object.create(env.locals);
+      const e2 = { values: env.values, state: env.state, locals: loc, scene: env.scene };
+      return { T: 'function2', vars, f: (...args) => { vars.forEach((v, i) => { loc[v] = args[i]; }); return toNum(exprFn(e2)); } };
+    };
+  }
+
   compileCall(node, locals) {
     let name = node.name;
     const args = node.args;
     const c = (n) => this.compile(n, locals);
 
-    // 坐标分量 x(A)、y(A)、z(A)；x(x+1) 之类按乘法处理
-    if (name === 'x' || name === 'y' || name === 'z') {
+    // 坐标分量 x(A)、y(A)、z(A)；x(x+1) 之类按乘法处理（已经把 z 定义成函数时，按函数调用）
+    if ((name === 'x' || name === 'y' || name === 'z') && this.byName.get(name)?.kind !== 'function2') {
       const a0 = args[0];
       const isObj = args.length === 1 && a0.type === 'var' && !(locals && locals.has(a0.name)) && this.byName.has(a0.name);
       if (isObj || (args.length === 1 && a0.type === 'call')) {
@@ -676,7 +821,23 @@ export class Scene {
 
     // 用户定义的函数 f(2)，以及导数 f'(x)
     const obj = this.byName.get(name);
+    // 多元函数 f(x, y)：可以写 f(2, 3)，也可以直接代入一个点 f(B)
+    if (obj && obj.kind === 'function2') {
+      const fs = args.map(c);
+      return (env) => {
+        const fv = env.values[name];
+        if (!fv || fv.T !== 'function2') return NaN;
+        let vals = fs.map((g) => g(env));
+        if (vals.length === 1 && isPt(vals[0])) vals = [vals[0].x, vals[0].y, vals[0].z ?? 0];
+        return fv.f(...vals.map(toNum));
+      };
+    }
     if (obj && obj.kind === 'function') {
+      // f(x) 写在需要“函数”的地方（如 Intersect(l, f(x))、Integral(f(x), 0, 1)）时，指的就是函数 f 本身
+      const a0 = args[0];
+      if (args.length === 1 && a0.type === 'var' && /^[xt]$/.test(a0.name) && !(locals && locals.has(a0.name)) && !this.byName.has(a0.name)) {
+        return (env) => env.values[name];
+      }
       const a = c(args[0]);
       return (env) => { const fv = env.values[name]; return fv && fv.T === 'function' ? callFn(fv, toNum(a(env))) : NaN; };
     }
@@ -744,6 +905,8 @@ export class Scene {
     return (env) => {
       const vals = fs.map((g) => g(env));
       if (needCtx) {
+        // 多写的参数去掉，保证上下文总在最后一个参数的位置（Intersect(a, b, 1, 1) 不会把 1 当成上下文）
+        if (vals.length > arity - 1) vals.length = arity - 1;
         while (vals.length < arity - 1) vals.push(undefined);
         vals.push({ range: env.scene.range });
       }
@@ -818,7 +981,7 @@ export class Scene {
 
   // ---------- 添加一行命令 ----------
   addCommand(raw, lineNo = 0) {
-    let src = String(raw).trim();
+    let src = restoreEscapes(String(raw)).trim();
     if (!src || src.startsWith('//') || src.startsWith('%')) return null;
     const tags = new Set();
     src = extractTags(src, tags);
@@ -831,11 +994,15 @@ export class Scene {
     let name = null, fvar = null, sep = null, rhs = src;
     const m = LHS_RE.exec(src);
     if (m) {
-      const coordEq = !m[2] && m[3] === '=' && /^[xyz]$/.test(m[1]);
-      if (!coordEq) { name = m[1]; fvar = m[2] || null; sep = m[3]; rhs = src.slice(m[0].length); }
+      const coordEq = !m[2] && m[3] === '=' && /^[xy]$/.test(m[1]); // y = 2x + 1、x = 3 是方程；z = 2x + y 是二元函数
+      if (!coordEq) { name = m[1]; fvar = m[2] ? m[2].replace(/\s+/g, '') : null; sep = m[3]; rhs = src.slice(m[0].length); }
     }
     if (name && this.byName.has(name)) throw new ParseError(`名称「${name}」已经定义过了`);
     if (name && (CMD[name] || MATH1[name] || name in CONSTANTS) && name !== 'e') throw new ParseError(`「${name}」是保留字，请换一个名字`);
+
+    // 表格：单元格里的文字可以不加引号——小模型在 JSON 里写一串带引号的单元格时，常把转义写错
+    const tm = /^(Row|Table)\s*\(([\s\S]*)\)\s*$/.exec(rhs.trim());
+    if (tm) return this.addTableCommand(tm[1], tm[2], { name, raw, lineNo, tags });
 
     let { ast, label } = parseExpression(rhs, this.parseOpts);
     let role = 'derived';
@@ -861,10 +1028,25 @@ export class Scene {
       return null;
     }
 
-    if (fvar) {
+    if (fvar && fvar.includes(',')) {
+      // 多元函数，例如线性规划的目标函数 f(x, y) = 2x + y（不画图，可以被调用）
+      kindHint = 'function2';
+      compute = this.makeFunction2(this.compile(ast, this.withLocals(null, fvar.split(','))), fvar.split(','));
+    } else if (fvar) {
       kindHint = 'function';
       const fe = this.compile(ast, this.withLocals(null, [fvar]));
       compute = isCall('Function') || isCall('Derivative') ? fe : this.makeFunction(fe, fvar);
+      // f'(x)、f''(x) 就是 f 的导函数：和程序求出的导数核对，对不上就改用程序求的。
+      // 2B 自己求导常出错（R7-1 把 log((eˣ+e⁻ˣ)/2) 的导数写成了 (eˣ+e⁻ˣ)/2）
+      const base = name && /'$/.test(name) ? name.slice(0, -1) : null;
+      if (base && this.byName.get(base)?.kind === 'function' && !isCall('Derivative')) {
+        const exact = (env) => { const bv = env.values[base]; return bv && bv.T === 'function' ? derivativeOf(bv) : null; };
+        if (!sameFunctionValues(compute(this.env()), exact(this.env()))) {
+          compute = exact;
+          ast = { type: 'call', name: 'Derivative', args: [{ type: 'var', name: base }] };
+          this.notes.push(`${name}(x) 的式子和 ${base}(x) 的导数对不上，已改为由程序求导`);
+        }
+      }
     } else if (ast.type === 'eq') {
       compute = this.compileEquation(ast, null);
     } else if ((ast.type === 'cmp' || ast.type === 'logic') && (collectVars(ast).has('x') || collectVars(ast).has('y'))) {
@@ -909,9 +1091,15 @@ export class Scene {
       };
       kindHint = 'point';
     } else {
-      const vars = collectVars(ast);
+      // Region、Function、Curve 自己会绑定 x、y、t，不能因为里面出现 x、y 就当成函数
+      const binds = ast.type === 'call' && ['Region', 'Function', 'Curve'].includes(ALIASES[ast.name] || ast.name);
+      const vars = binds ? new Set() : this.freeVars(ast);
       const freeX = vars.has('x') && !this.byName.has('x');
-      if (freeX && !vars.has('y') && name) {
+      if (name && freeX && vars.has('y') && !this.byName.has('y')) {
+        // z = 2x + y 视为二元函数
+        compute = this.makeFunction2(this.compile(ast, this.withLocals(null, ['x', 'y'])), ['x', 'y']);
+        kindHint = 'function2';
+      } else if (freeX && !vars.has('y') && name) {
         // g = 2x + 1 视为函数
         const fe = this.compile(ast, this.withLocals(null, ['x']));
         compute = this.makeFunction(fe, 'x');
@@ -934,6 +1122,7 @@ export class Scene {
       name: objName, auto: !name, src: String(raw).trim(), lineNo, tags, role, slider,
       label, labelFn: label !== null ? this.compileTemplate(label, null) : null, labelText: label,
       compute, kind: kindHint, value: null,
+      tex: formulaTex(ast, name, fvar, kindHint),
     };
     const env = this.env();
     const v = compute(env);
@@ -941,6 +1130,47 @@ export class Scene {
     obj.kind = kindOf(obj.value) || kindHint;
     if (!obj.kind) throw new ParseError('无法确定这条命令要画什么');
     if (obj.labelFn) obj.labelText = obj.labelFn(env);
+    this.values[objName] = obj.value;
+    this.objects.push(obj);
+    this.byName.set(objName, obj);
+    return obj;
+  }
+
+  // 一个单元格：带引号的是文字（可以含 {实时表达式}）；能算出数的按数显示；其余（男生、近视、P(男生|近视)、X）当文字
+  compileCell(raw) {
+    const t = raw.trim();
+    if (!t) return () => '';
+    const q = /^["“]([\s\S]*)["”]$/.exec(t);
+    if (q) return this.compileTemplate(q[1], null);
+    if (/^[A-Za-zͰ-Ͽ][A-Za-z0-9_Ͱ-Ͽ]*'*$/.test(t)) {
+      // 单独的名字：滑块、常数取它的值；X、P、点名等当作文字
+      if (this.byName.get(t)?.kind === 'number') return (env) => fmtCell(toNum(env.values[t]));
+      return () => t;
+    }
+    try {
+      const { ast, label } = parseExpression(t, this.parseOpts);
+      if (label !== null) return () => t;
+      const f = this.compile(ast, null);
+      const v0 = f(this.env());
+      if (typeof v0 !== 'number' && !isPt(v0)) return () => t;
+      const preferFraction = /\//.test(t);
+      return (env) => { const v = f(env); return typeof v === 'number' ? fmtCell(v, preferFraction) : formatValue(v); };
+    } catch {
+      return () => t;
+    }
+  }
+
+  addTableCommand(kind, inner, { name, raw, lineNo, tags }) {
+    const cells = splitCells(inner).map((c) => this.compileCell(c));
+    const compute = kind === 'Table'
+      ? (env) => ({ T: 'table', title: cells.map((f) => f(env)).join(', ') })
+      : (env) => ({ T: 'row', cells: cells.map((f) => f(env)) });
+    const objName = name || `_${++this.autoId}`;
+    const obj = {
+      name: objName, auto: !name, src: String(raw).trim(), lineNo, tags, role: 'derived', slider: null,
+      label: null, labelFn: null, labelText: null, compute, kind: kind === 'Table' ? 'table' : 'row', value: null, tex: null,
+    };
+    obj.value = compute(this.env());
     this.values[objName] = obj.value;
     this.objects.push(obj);
     this.byName.set(objName, obj);
@@ -1080,7 +1310,16 @@ export class Scene {
     return this.objects.some((o) => o.value && ['circle', 'polygon', 'angle', 'arc', 'sector', 'implicit'].includes(o.value.T));
   }
 
+  // 图里有函数图像、方程曲线、不等式区域、积分时，一律画标准坐标系：
+  // 2B 常照抄提示词里三角形例题的第一行 ShowAxes(false)，连函数图像的坐标轴也关掉了（日本考题 R6-1、R6-4、R7-1）。
+  // 纯几何图形、线段图仍按模型的设置。
+  hasAnalytic() {
+    return this.objects.some((o) => o.tex && !o.tags.has('hidden') && o.value
+      && ['function', 'curve', 'implicit', 'region', 'integral', 'line'].includes(o.value.T));
+  }
+
   axesShown() {
+    if (this.mode === '2d' && this.hasAnalytic()) return true;
     if (this.settings.axes !== null) return this.settings.axes;
     return this.mode === '2d';
   }
@@ -1094,6 +1333,20 @@ export class Scene {
     const w = v.x1 - v.x0, h = v.y1 - v.y0;
     this.range = { x0: v.x0 - w, x1: v.x1 + w, y0: v.y0 - h, y1: v.y1 + h, span: Math.max(w, h) * 3 };
   }
+}
+
+// 程序实际解析出的公式（只针对函数、方程、不等式这类“写公式”的命令），供界面核对
+function formulaTex(ast, name, fvar, kindHint) {
+  try {
+    const nm = name ? toLatex({ type: 'var', name }) : '';
+    if (fvar) return `${nm}(${fvar.split(',').join(', ')}) = ${toLatex(ast)}`;
+    if (ast.type === 'eq') return `${name ? `${nm}:\\ ` : ''}${toLatex(ast)}`;
+    if (ast.type === 'cmp' || ast.type === 'logic') return toLatex(ast);
+    if (ast.type === 'call' && ['Function', 'Curve', 'Region', 'If', 'Derivative'].includes(ast.name)) return `${name ? `${nm} = ` : ''}${toLatex(ast)}`;
+    if (kindHint === 'function' && name) return `${nm}(x) = ${toLatex(ast)}`;
+    if (kindHint === 'function2' && name) return `${nm}(x, y) = ${toLatex(ast)}`;
+  } catch { /* 打印失败不影响作图 */ }
+  return null;
 }
 
 function callFn(fv, x) {
@@ -1161,13 +1414,40 @@ function regionAnchors(v, addA) {
 export function buildScene(commands, state = {}) {
   const scene = new Scene(state);
   const lines = Array.isArray(commands) ? commands : String(commands).split(/\r?\n/);
+  // 后面才定义的名字：先用后定义（小模型常见）的命令推迟到定义之后再执行
+  const definedAt = new Map();
   lines.forEach((line, i) => {
+    const m = LHS_RE.exec(String(line).trim());
+    if (m && !definedAt.has(m[1])) definedAt.set(m[1], i);
+  });
+  const fail = (i, e) => scene.errors.push({ line: i, src: String(lines[i]).trim(), message: e instanceof ParseError ? e.message : `出错：${e.message}` });
+  let deferred = [];
+  // 小模型偶尔把整段命令重复输出好几遍：完全相同的行只执行一次
+  const seen = new Set();
+  let dup = 0;
+  lines.forEach((line, i) => {
+    const key = String(line).trim();
+    if (key && seen.has(key)) { dup++; return; }
+    seen.add(key);
     try {
       scene.addCommand(line, i);
     } catch (e) {
-      scene.errors.push({ line: i, src: String(line).trim(), message: e instanceof ParseError ? e.message : `出错：${e.message}` });
+      const missing = /未定义的名称「(.+?)」/.exec(e.message)?.[1];
+      if (missing && definedAt.get(missing) > i) deferred.push({ i, e });
+      else fail(i, e);
     }
   });
+  for (let pass = 0; pass < 3 && deferred.length; pass++) {
+    const next = [];
+    for (const d of deferred) {
+      try { scene.addCommand(lines[d.i], d.i); } catch (e) { next.push({ i: d.i, e }); }
+    }
+    if (next.length === deferred.length) break;
+    deferred = next;
+  }
+  deferred.forEach((d) => fail(d.i, d.e));
+  if (dup) scene.notes.push(`跳过了 ${dup} 条重复的命令`);
+  scene.errors.sort((a, b) => a.line - b.line);
   if (scene.mode === '2d') scene.setRange(scene.computeView());
   return scene;
 }

@@ -123,7 +123,7 @@ export class ImageEditor {
 
   down(e) {
     if (!this.img) return;
-    this.canvas.setPointerCapture(e.pointerId);
+    try { this.canvas.setPointerCapture(e.pointerId); } catch { /* 个别 WebView 不支持 */ }
     this.drag = this.local(e);
   }
 

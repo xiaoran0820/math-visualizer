@@ -73,10 +73,22 @@ export function findRoots(g, a, b, n = 800) {
   const h = (b - a) / n;
   const xs = new Array(n + 1), ys = new Array(n + 1);
   for (let i = 0; i <= n; i++) { xs[i] = a + i * h; ys[i] = g(xs[i]); }
+  const delta = h * 1e-6;
   for (let i = 0; i < n; i++) {
     const y0 = ys[i], y1 = ys[i + 1];
     if (!finite(y0) || !finite(y1)) continue;
-    if (y0 === 0) { roots.push(xs[i]); continue; }
+    if (y0 === 0 || y1 === 0) {
+      // 采样点恰好是根：它旁边可能还紧挨着另一个根（如 (x-1)(x-1.001) 在 x=1 处采样）
+      if (y0 === 0) {
+        roots.push(xs[i]);
+        const ye = g(xs[i] + delta);
+        if (y1 !== 0 && finite(ye) && ye * y1 < 0) roots.push(bisect(g, xs[i] + delta, xs[i + 1], ye));
+      } else {
+        const ye = g(xs[i + 1] - delta);
+        if (finite(ye) && ye * y0 < 0) roots.push(bisect(g, xs[i], xs[i + 1] - delta, y0));
+      }
+      continue;
+    }
     if (y0 * y1 < 0) {
       const r = bisect(g, xs[i], xs[i + 1], y0);
       const gr = Math.abs(g(r));
@@ -84,20 +96,27 @@ export function findRoots(g, a, b, n = 800) {
     }
   }
   if (finite(ys[n]) && ys[n] === 0) roots.push(xs[n]);
-  // 相切：|g| 的局部极小值接近 0 且两侧不变号
+  // 两侧同号但 |g| 在中间有局部极小：可能是相切（重根），也可能是一对挨得很近、采样没分开的根。
+  // 沿着“朝 0 的方向”找极值：极值越过 0 → 两个根；极值恰好接近 0 → 相切的重根。
   for (let i = 1; i < n; i++) {
     const y0 = ys[i - 1], y1 = ys[i], y2 = ys[i + 1];
     if (!finite(y0) || !finite(y1) || !finite(y2)) continue;
     if (y0 * y1 <= 0 || y1 * y2 <= 0) continue;
-    if (Math.abs(y1) <= Math.abs(y0) && Math.abs(y1) <= Math.abs(y2)) {
-      const m = goldenMin((x) => Math.abs(g(x)), xs[i - 1], xs[i + 1]);
-      const gm = Math.abs(g(m));
-      if (gm < 1e-9 * (1 + Math.abs(y0) + Math.abs(y2))) roots.push(m);
+    if (Math.abs(y1) > Math.abs(y0) || Math.abs(y1) > Math.abs(y2)) continue;
+    const s = y1 > 0 ? 1 : -1;
+    const m = goldenMin((x) => { const v = g(x); return finite(v) ? s * v : Infinity; }, xs[i - 1], xs[i + 1]);
+    const gm = g(m);
+    if (!finite(gm)) continue;
+    if (s * gm < 0) {
+      roots.push(bisect(g, xs[i - 1], m, y0), bisect(g, m, xs[i + 1], gm));
+    } else if (Math.abs(gm) < 1e-9 * (1 + Math.abs(y0) + Math.abs(y2))) {
+      roots.push(m);
     }
   }
   roots.sort((u, v) => u - v);
+  // 只合并真正重复的根（同一个根被两种方式找到），不能把相距很近的两个根合并
   const out = [];
-  for (const r of roots) if (!out.length || Math.abs(r - out[out.length - 1]) > h * 0.25) out.push(r);
+  for (const r of roots) if (!out.length || Math.abs(r - out[out.length - 1]) > 1e-9 * (1 + Math.abs(r)) + (b - a) * 1e-12) out.push(r);
   return out;
 }
 

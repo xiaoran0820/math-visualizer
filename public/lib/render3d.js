@@ -2,6 +2,7 @@
 // 被立体遮挡的棱按教材习惯画成虚线：用所有顶点的凸包作为“不透明的立体”，逐段判断可见性。
 import * as G from './geom.js';
 import { nameSvg } from './labels.js';
+import { layoutLabels } from './labelLayout.js';
 import { esc } from './markdown.js';
 import { readTheme } from './theme.js';
 
@@ -196,7 +197,7 @@ export function render3d(container, scene, opts = {}) {
         const dx = B.x - A.x, dy = B.y - A.y, l = Math.hypot(dx, dy) || 1;
         const ux = dx / l, uy = dy / l;
         parts.marks.push(`<path d="M${B.x} ${B.y}L${B.x - ux * 10 - uy * 4} ${B.y - uy * 10 + ux * 4}L${B.x - ux * 10 + uy * 4} ${B.y - uy * 10 - ux * 4}Z" fill="${theme.axis}"/>`);
-        parts.labels.push(`<text x="${B.x + ux * 12}" y="${B.y + uy * 12 + 5}" class="lbl3d math" text-anchor="middle" fill="${theme.muted}">${nm}</text>`);
+        parts.labels.push(`<text data-k="fixed" x="${B.x + ux * 12}" y="${B.y + uy * 12 + 5}" class="lbl3d math" text-anchor="middle" fill="${theme.muted}">${nm}</text>`);
       });
     }
 
@@ -221,7 +222,7 @@ export function render3d(container, scene, opts = {}) {
         if (o.labelText) {
           const mid = vadd(B, vscale(vnorm(vadd(uA, uC)) || uA, rho * 1.7));
           const P = proj(mid);
-          parts.labels.push(`<text x="${P.x.toFixed(1)}" y="${(P.y + 5).toFixed(1)}" class="lbl3d" text-anchor="middle" fill="${color}">${esc(o.labelText)}</text>`);
+          parts.labels.push(`<text data-k="curve" x="${P.x.toFixed(1)}" y="${(P.y + 5).toFixed(1)}" class="lbl3d" text-anchor="middle" fill="${color}">${esc(o.labelText)}</text>`);
         }
       }
     }
@@ -240,32 +241,54 @@ export function render3d(container, scene, opts = {}) {
       const lx = P.x + dx * 15, ly = P.y + dy * 15 + 5;
       const label = o.labelText ? esc(o.labelText) : nameSvg(o.name);
       const cls = o.labelText && /[㐀-鿿]/.test(o.labelText) ? 'lbl3d' : 'lbl3d math';
-      parts.labels.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" class="${cls}" text-anchor="middle" fill="${style === 'given' ? theme.ink : color}">${label}</text>`);
+      parts.labels.push(`<text data-k="point" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" class="${cls}" text-anchor="middle" fill="${style === 'given' ? theme.ink : color}">${label}</text>`);
     }
     for (const { v, style } of c.texts) {
       const P = proj(P3(v.pos));
-      parts.labels.push(`<text x="${P.x.toFixed(1)}" y="${P.y.toFixed(1)}" class="lbl3d" fill="${colorOf(style)}">${esc(v.text.replace(/\$/g, ''))}</text>`);
+      parts.labels.push(`<text data-k="text" x="${P.x.toFixed(1)}" y="${P.y.toFixed(1)}" class="lbl3d" fill="${colorOf(style)}">${esc(v.text.replace(/\$/g, ''))}</text>`);
     }
 
     svg.innerHTML = `<defs><radialGradient id="sph" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="${theme.face}" stop-opacity="0.04"/><stop offset="1" stop-color="${theme.face}" stop-opacity="0.14"/></radialGradient></defs>`
       + `<g>${parts.fills.join('')}</g><g>${parts.hidden.join('')}</g><g>${parts.visible.join('')}</g><g>${parts.marks.join('')}</g><g>${parts.points.join('')}</g><g>${parts.labels.join('')}</g>`;
+    // 标签避让：点的名字、文字重叠时错开（与二维共用 layoutLabels）
+    try {
+      const nodes = [...svg.querySelectorAll('text[data-k]')];
+      const items = nodes.map((n) => { const b = n.getBBox(); return { x: b.x, y: b.y, w: b.width, h: b.height, kind: n.dataset.k }; });
+      const offs = layoutLabels(items, { w: W, h: H });
+      nodes.forEach((n, i) => { const { dx, dy } = offs[i]; if (dx || dy) n.setAttribute('transform', `translate(${dx.toFixed(1)} ${dy.toFixed(1)})`); });
+    } catch { /* 避让失败不影响作图 */ }
   }
 
-  // ---------- 交互 ----------
-  let drag = null;
+  // ---------- 交互：单指/鼠标拖动旋转，双指捏合或滚轮缩放 ----------
+  const pointers = new Map();
+  let drag = null, pinch = null;
+  const spread = () => { const [a, b] = [...pointers.values()]; return Math.hypot(a.x - b.x, a.y - b.y) || 1; };
+  const beginDrag = () => { const p = [...pointers.values()][0]; drag = p ? { x: p.x, y: p.y, yaw, pitch } : null; };
   svg.addEventListener('pointerdown', (e) => {
-    drag = { x: e.clientX, y: e.clientY, yaw, pitch };
-    svg.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    try { svg.setPointerCapture(e.pointerId); } catch { /* 个别 WebView 不支持，不影响旋转 */ }
     stopSpin();
     tween = null;
+    if (pointers.size === 2) { drag = null; pinch = { d: spread(), zoom }; } else if (pointers.size === 1) beginDrag();
   });
   svg.addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    yaw = drag.yaw - (e.clientX - drag.x) * 0.01;
-    pitch = Math.max(-89.9 * DEG, Math.min(89.9 * DEG, drag.pitch + (e.clientY - drag.y) * 0.01));
-    schedule();
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinch && pointers.size >= 2) {
+      zoom = Math.max(0.3, Math.min(5, pinch.zoom * (spread() / pinch.d)));
+      schedule();
+    } else if (drag) {
+      yaw = drag.yaw - (e.clientX - drag.x) * 0.01;
+      pitch = Math.max(-89.9 * DEG, Math.min(89.9 * DEG, drag.pitch + (e.clientY - drag.y) * 0.01));
+      schedule();
+    }
   });
-  const end = () => { drag = null; };
+  const end = (e) => {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinch = null;
+    if (pointers.size === 1) beginDrag(); // 松开一根手指后，从剩下那根手指的位置继续旋转，避免跳动
+    if (pointers.size === 0) drag = null;
+  };
   svg.addEventListener('pointerup', end);
   svg.addEventListener('pointercancel', end);
   svg.addEventListener('wheel', (e) => {
