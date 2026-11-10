@@ -4,7 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>数形 · 数学题可视化</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f6fed'/%3E%3Cpath d='M6 24 Q16 2 26 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='13' r='2.6' fill='%23ffb27a'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#f2f4f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1218" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="数形">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="/vendor/katex/katex.min.css">
   <link rel="stylesheet" href="/vendor/jsxgraph/jsxgraph.css">
   <link rel="stylesheet" href="/styles.css">
@@ -22,6 +31,7 @@
       <span class="dot" id="modelDot" title="本地模型状态"></span>
       <label class="sr-only" for="modelSelect">本地模型</label>
       <select id="modelSelect" title="选择本地模型"><option>正在连接本地模型…</option></select>
+      <button id="settingsBtn" class="icon-btn" title="设置" aria-label="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.5 7.5 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.5 7.5 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.5 7.5 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.5 7.5 0 0 0 2.6-1.5l2.4 1 2-3.4z"/></svg></button>
       <button id="helpBtn" class="icon-btn" title="使用说明" aria-label="使用说明">?</button>
     </div>
   </header>
@@ -80,7 +90,7 @@
         <div class="label">示例题 <span class="muted">（不需要模型，点击即可查看效果）</span></div>
         <div id="exampleList" class="chips"></div>
       </div>
-      <p class="privacy">全部在本机运行：图片和题目只发送给这台电脑上的本地模型，不会上传到云端。</p>
+      <p class="privacy">默认配置下全部在本机运行：图片和题目只发送给运行本项目的电脑上的本地模型，不会上传到云端。</p>
     </section>
 
     <section class="results" id="results" aria-live="polite">
@@ -103,7 +113,7 @@
       <div id="progress" class="progress" hidden>
         <div class="step" data-step="ocr"><span class="ic"></span><span class="name">识别题目</span><span class="meta"></span></div>
         <div class="step" data-step="analyze"><span class="ic"></span><span class="name">分析题意并作图</span><span class="meta"></span></div>
-        <div class="step skip" data-step="repair"><span class="ic"></span><span class="name">自动修正作图命令</span><span class="meta"></span></div>
+        <div class="step skip" data-step="check"><span class="ic"></span><span class="name">核对题目条件</span><span class="meta"></span></div>
       </div>
       <div id="errorBox" class="error-box" hidden></div>
 
@@ -128,7 +138,10 @@
           <div class="fig-tools" id="figTools"></div>
         </header>
         <div id="figure" class="figure"></div>
+        <div id="tables" class="tables" hidden></div>
         <div id="sliders" class="sliders"></div>
+        <div id="formulas" class="formulas" hidden></div>
+        <div id="facts" class="facts" hidden></div>
         <div id="insight" class="insight md" hidden></div>
         <p class="fig-tip" id="figTip"></p>
       </article>
@@ -169,6 +182,28 @@
     <form method="dialog">
       <header><h3 id="helpTitle">使用说明</h3><button class="icon-btn" value="close" aria-label="关闭">×</button></header>
       <div id="helpBody" class="dialog-body md"></div>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog" class="dialog">
+    <form id="settingsForm">
+      <header><h3>设置</h3><button class="icon-btn" type="button" onclick="this.closest('dialog').close()" aria-label="关闭">×</button></header>
+      <div class="dialog-body">
+        <label class="field-label" for="engineSelect">模型运行位置</label>
+        <select id="engineSelect" class="input">
+          <option value="server">连接服务（模型在电脑上运行）</option>
+          <option value="device">本机（模型在这台设备上运行，实验功能）</option>
+        </select>
+        <p class="field-help" id="engineHelp"></p>
+        <label class="field-label" for="serverInput">服务地址</label>
+        <input id="serverInput" class="input" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="留空 = 使用当前网页所在的服务；例如 http://192.168.1.5:3000">
+        <p class="field-help">在电脑上用 <code>npm run lan</code> 启动服务后，把终端里显示的“手机访问”地址填在这里。网页版一般留空。</p>
+        <p id="serverStatus" class="muted"></p>
+        <div class="row">
+          <button id="serverTestBtn" class="btn" type="button">测试连接</button>
+          <button class="btn primary" type="submit">保存</button>
+        </div>
+      </div>
     </form>
   </dialog>
 
