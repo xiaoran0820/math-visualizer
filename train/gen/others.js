@@ -77,17 +77,26 @@ export function probability(r, S) {
     insight = `只看“${c.b[0]}”这一列：其中${c.a[0]}所占的比例就是所求的条件概率。`;
     title = '条件概率';
   } else if (kind === 'draw') {
-    const red = int(r, 2, 5), white = int(r, 1, 4), n = red + white;
+    const [c1, c2] = pick(r, [['红', '白'], ['黑', '白'], ['红', '黄'], ['蓝', '红']]);
+    const red = int(r, 2, 6), white = int(r, 1, 5), n = red + white;
     if (red === 3 && white === 2) return null; // 开发集
-    text = `盒中有 ${red} 个红球和 ${white} 个白球，从中不放回地依次摸出 2 个球，求两次都摸到红球的概率${chance(r, 0.5) ? '，以及已知第一次摸到红球时第二次也摸到红球的概率' : ''}。`;
-    cmds = ['Table(两次摸球的结果)', 'Row(第一次, 第二次, 概率)',
-      `Row(红, 红, ${red}/${n}*${red - 1}/${n - 1})`, `Row(红, 白, ${red}/${n}*${white}/${n - 1})`,
-      `Row(白, 红, ${white}/${n}*${red}/${n - 1})`, `Row(白, 白, ${white}/${n}*${white - 1}/${n - 1})`];
-    knowns = [`红球 ${red} 个，白球 ${white} 个`, '不放回地摸 2 次'];
-    goal = '求两次都摸到红球的概率';
-    layout = `列出四种结果：每种的概率 = 第一次的概率 × 第一次之后第二次的概率（共 ${n} 个球，摸走一个剩 ${n - 1} 个）。`;
-    insight = '第二次的概率要看第一次摸走了什么球。';
-    title = '不放回摸球';
+    const box = pick(r, ['盒中', '袋中', '口袋里', '箱子里']);
+    // 三种问法；第一版只列了四种结果，条件概率那一问没有单独的一行（开发集 prob-cond 因此没通过）
+    const ask = pick(r, ['both', 'cond', 'cond', 'second']);
+    const head = pick(r, [
+      `${box}有 ${red} 个${c1}球和 ${white} 个${c2}球，从中不放回地依次摸出 2 个球，`,
+      `${box}装有 ${red} 个${c1}球、${white} 个${c2}球，每次任取一个，取后不放回，连取两次。`,
+    ]);
+    text = head + (ask === 'both' ? `求两次都摸到${c1}球的概率。` : ask === 'cond' ? `若第一次取到的是${c1}球，求第二次取到的也是${c1}球的概率。` : `求第二次摸到${c1}球的概率。`);
+    const rr = `${red}/${n}*${red - 1}/${n - 1}`, rw = `${red}/${n}*${white}/${n - 1}`, wr = `${white}/${n}*${red}/${n - 1}`, ww = `${white}/${n}*${white - 1}/${n - 1}`;
+    cmds = ['Table(两次摸球的结果)', 'Row(第一次, 第二次, 概率)', `Row(${c1}, ${c1}, ${rr})`, `Row(${c1}, ${c2}, ${rw})`, `Row(${c2}, ${c1}, ${wr})`, `Row(${c2}, ${c2}, ${ww})`];
+    if (ask === 'cond') cmds.push(`Row(P(第二次${c1}|第一次${c1}), (${rr})/(${red}/${n}))`);
+    if (ask === 'second') cmds.push(`Row(P(第二次${c1}), ${rr}+${wr})`);
+    knowns = [`${c1}球 ${red} 个，${c2}球 ${white} 个`, '不放回地摸 2 次'];
+    goal = ask === 'both' ? `求两次都摸到${c1}球的概率` : ask === 'cond' ? `求 $P(第二次${c1}\\mid 第一次${c1})$` : `求第二次摸到${c1}球的概率`;
+    layout = `列出四种结果：每种的概率 = 第一次的概率 × 第一次之后第二次的概率（共 ${n} 个球，摸走一个剩 ${n - 1} 个）。${ask === 'cond' ? `条件概率 = P(两次都是${c1}) ÷ P(第一次${c1})，在表格最后单独列一行。` : ask === 'second' ? `第二次摸到${c1}球有两种情况，把对应的两行加起来。` : ''}`;
+    insight = ask === 'cond' ? `只看“第一次${c1}”的两行：其中第二次也是${c1}的占多少。` : '第二次的概率要看第一次摸走了什么球。';
+    title = ask === 'cond' ? '不放回摸球的条件概率' : '不放回摸球';
   } else if (kind === 'binom') {
     const nn = pick(r, [2, 3, 4, 3]);
     const [pn, pd] = pick(r, [[1, 2], [1, 3], [2, 3], [1, 4]]);
@@ -131,24 +140,41 @@ export function probability(r, S) {
 
 // ---------- 动点问题 ----------
 export function movingPoint(r, S) {
-  const w = pick(r, [4, 6, 8]), h = pick(r, [3, 4, 6]);
+  const w = int(r, 3, 10), h = int(r, 2, 8);
   const sq = w === h;
   if (sq && w === 4) return null; // 开发集
   const shape = sq ? `正方形 ABCD 的边长为 ${w}` : `矩形 ABCD 中，AB = ${h}，BC = ${w}`;
-  const text = `${shape}，点 P 从点 A 出发，沿 A→B→C 以每秒 1 个单位的速度运动，设运动时间为 t 秒，△APD 的面积为 S，求 S 关于 t 的函数关系式。`;
-  // A 左上，B 左下，C 右下，D 右上
-  const cmds = ['ShowAxes(false)', `A = (0, ${h}) #fixed`, 'B = (0, 0) #fixed', `C = (${w}, 0) #fixed`, `D = (${w}, ${h}) #fixed`, 'Polygon(A, B, C, D)',
-    `t = Slider(0, ${w + h}, ${num(h / 2)}) "时间 t"`, `P = (If(t <= ${h}, 0, t - ${h}), If(t <= ${h}, ${h} - t, 0)) #hl`,
-    'Polygon(A, P, D) #hl', `Text("t = {t}，S = {Area(Polygon(A, P, D))}", (0, ${h + 1}))`];
+  const base = ['ShowAxes(false)', `A = (0, ${h}) #fixed`, 'B = (0, 0) #fixed', `C = (${w}, 0) #fixed`, `D = (${w}, ${h}) #fixed`, 'Polygon(A, B, C, D)']; // A 左上，B 左下，C 右下，D 右上
+  const tri = S.L ? '$\\triangle APD$' : '△APD';
+  if (pick(r, [true, false])) {
+    // 用时间表示：速度 v
+    const v = pick(r, [1, 1, 2]);
+    const t1 = h / v, t2 = (w + h) / v;
+    return {
+      text: `${shape}，点 P 从点 A 出发，沿 A→B→C 以每秒 ${v} 个单位的速度运动，设运动时间为 t 秒，${tri} 的面积为 S，求 S 关于 t 的函数关系式。`,
+      out: out({
+        title: '动点与面积', category: '函数',
+        knowns: [sq ? `正方形边长 $${w}$` : `$AB=${h}$，$BC=${w}$`, `$P$ 沿 $A\\to B\\to C$ 运动，速度 $${v}$`],
+        goal: '求 $S$ 关于 $t$ 的函数关系式',
+        layout: `A(0,${h})、B(0,0)、C(${w},0)、D(${w},${h})；0≤t≤${num(t1)} 时 P 在 AB 上，P(0,${h}-${v === 1 ? '' : v}t)；${num(t1)}<t≤${num(t2)} 时 P 在 BC 上，P(${v === 1 ? '' : v}t-${h},0)。`,
+        commands: [...base, `t = Slider(0, ${num(t2)}, ${num(t1 / 2)}) "时间 t"`,
+          `P = (If(t <= ${num(t1)}, 0, ${v === 1 ? '' : v}t - ${h}), If(t <= ${num(t1)}, ${h} - ${v === 1 ? '' : v}t, 0)) #hl`,
+          'Polygon(A, P, D) #hl', `Text("t = {t}，S = {Area(Polygon(A, P, D))}", (0, ${h + 1}))`],
+        insight: `拖动滑块 $t$：$P$ 在 $AB$ 上时面积随 $t$ 增大，到 $BC$ 上后面积保持 $${num((w * h) / 2)}$ 不变。`,
+      }),
+    };
+  }
+  // 用路程表示
   return {
-    text: S.L ? text.replace(/△APD/, '$\\triangle APD$') : text,
+    text: `${shape}，动点 P 从 A 点出发，沿折线 A→B→C 运动到 C 点停止。设 P 走过的路程为 x，${tri} 的面积为 y，写出 y 与 x 之间的函数关系式，并画出图形。`,
     out: out({
       title: '动点与面积', category: '函数',
-      knowns: [sq ? `正方形边长 $${w}$` : `$AB=${h}$，$BC=${w}$`, '$P$ 沿 $A\\to B\\to C$ 运动，速度 $1$'],
-      goal: '求 $S$ 关于 $t$ 的函数关系式',
-      layout: `A(0,${h})、B(0,0)、C(${w},0)、D(${w},${h})；0≤t≤${h} 时 P 在 AB 上，P(0,${h}-t)；${h}<t≤${w + h} 时 P 在 BC 上，P(t-${h},0)。`,
-      commands: cmds,
-      insight: `拖动滑块 $t$：$P$ 在 $AB$ 上时面积随 $t$ 增大，到 $BC$ 上后面积保持 $${num((w * h) / 2)}$ 不变。`,
+      knowns: [sq ? `正方形边长 $${w}$` : `$AB=${h}$，$BC=${w}$`, '$P$ 沿 $A\\to B\\to C$ 运动，路程为 $x$'],
+      goal: '求 $y$ 关于 $x$ 的函数关系式',
+      layout: `A(0,${h})、B(0,0)、C(${w},0)、D(${w},${h})；用滑块 s 表示路程 x：0≤s≤${h} 时 P 在 AB 上，P(0,${h}-s)；${h}<s≤${w + h} 时 P 在 BC 上，P(s-${h},0)。`,
+      commands: [...base, `s = Slider(0, ${w + h}, ${num(h / 2)}) "路程 x"`, `P = (If(s <= ${h}, 0, s - ${h}), If(s <= ${h}, ${h} - s, 0)) #hl`,
+        'Polygon(A, P, D) #hl', `Text("x = {s}，y = {Area(Polygon(A, P, D))}", (0, ${h + 1}))`],
+      insight: `拖动滑块：$P$ 在 $AB$ 上时面积随路程增大，到 $BC$ 上后面积保持 $${num((w * h) / 2)}$ 不变。`,
     }),
   };
 }

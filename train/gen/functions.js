@@ -13,7 +13,7 @@ export function quadratic(r, S) {
   const e = poly([a, b, c]);
   const nm = fname(r, S);
   const lhs = nm === 'y' ? 'y' : 'f(x)';
-  const ask = pick(r, ['roots', 'extreme', 'interval']);
+  const ask = pick(r, ['roots', 'extreme', 'interval', 'tri']);
   const cmds = [`f(x) = ${e}`];
   let text, goal, layout, insight, title;
   const fx = S.m(`${lhs} = ${e}`);
@@ -22,9 +22,19 @@ export function quadratic(r, S) {
     text = S.ja ? `2 次関数 ${fx} のグラフと $x$ 軸の交点の座標、および頂点の座標を求めよ。`
       : pick(r, [`已知二次函数 ${fx}，求它的图像与 x 轴的交点坐标和顶点坐标。`, `求抛物线 ${fx} 与 x 轴的交点和顶点坐标。`, `二次函数 ${fx} 的图像与 x 轴交于 A、B 两点（A 在 B 的左边），顶点为 C，求 A、B、C 的坐标。`]);
     cmds.push('A = Intersect(f, xAxis, 1)', 'B = Intersect(f, xAxis, 2)', `${text.includes('顶点为 C') ? 'C' : 'V'} = Vertex(f) "顶点" #result`, `l: x = ${num(h)} #aux`);
+    // 有时指定显示范围，把交点和顶点都框进来
+    if (chance(r, 0.4)) cmds.push(`ZoomIn(${p - 2}, ${num(Math.min(k, 0) - 2)}, ${q + 2}, ${num(Math.max(k, 0) + 3)})`);
     goal = '求图像与 $x$ 轴的交点和顶点坐标';
     layout = `令 y=0，${e.replace(/ /g, '')}=0 的两根是 ${p} 和 ${q}；对称轴 x=${num(h)}，顶点 (${num(h)}, ${num(k)})。`;
     insight = '两个交点关于对称轴对称，顶点在对称轴上。';
+  } else if (ask === 'tri') {
+    if (!c) return null;
+    title = '抛物线与坐标轴围成的三角形';
+    text = `抛物线 ${fx} 与 x 轴交于 A、B 两点，与 y 轴交于点 C，求 ${S.tri('ABC')} 的面积。`;
+    cmds.push('A = Intersect(f, xAxis, 1)', 'B = Intersect(f, xAxis, 2)', 'C = Intersect(f, yAxis)', 'Polygon(A, B, C) #hl', `Text("面积 {Area(Polygon(A, B, C))}", (${p}, ${num(Math.max(k, c, 0) + 2)}))`);
+    goal = '求 $\\triangle ABC$ 的面积';
+    layout = `与 x 轴的交点：${e.replace(/ /g, '')}=0 的两根 ${p} 和 ${q}；与 y 轴的交点：x=0 时 y=${num(c)}。交点都用 Intersect 由程序求出。`;
+    insight = '以 $AB$ 为底，$C$ 到 $x$ 轴的距离为高。';
   } else if (ask === 'extreme') {
     title = a > 0 ? '二次函数的最小值' : '二次函数的最大值';
     const w = a > 0 ? '最小值' : '最大值';
@@ -61,7 +71,13 @@ export function quadraticParam(r, S) {
   const w = up ? '最小值' : '最大值';
   if (up && lo === 0 && hi === 2 && c0 === 3) return null; // 和开发集的题目一样，跳过
   const text = S.ja ? `$a$ を定数とする。関数 ${S.m(`f(x) = ${eText}`)} $(${lo}\\le x\\le ${hi})$ の${up ? '最小値' : '最大値'}を求めよ。`
-    : pick(r, [`已知函数 ${S.m(`f(x) = ${eText}`)}，求 f(x) 在区间 [${lo}, ${hi}] 上的${w}。`, `设函数 ${S.m(`f(x) = ${eText}`)}，a 为常数，讨论 f(x) 在 [${lo}, ${hi}] 上的${w}。`]);
+    : pick(r, [
+      `已知函数 ${S.m(`f(x) = ${eText}`)}，求 f(x) 在区间 [${lo}, ${hi}] 上的${w}。`,
+      `设函数 ${S.m(`f(x) = ${eText}`)}，a 为常数，讨论 f(x) 在 [${lo}, ${hi}] 上的${w}。`,
+      // 开发集里是「最小值 g(a)」这种问法：第一版遇到它，自己编了 Min、Interval 两个不存在的命令
+      `已知函数 ${S.m(`f(x) = ${eText}`)}，记 f(x) 在 [${lo}, ${hi}] 上的${w}为 ${up ? 'h(a)' : 'M(a)'}，求它的表达式。`,
+      `函数 ${S.m(`f(x) = ${eText}`)} 在 ${lo} ≤ x ≤ ${hi} 时的${w}记作 ${up ? 'm(a)' : 'M(a)'}，求 ${up ? 'm(a)' : 'M(a)'}。`,
+    ]);
   const cmds = [
     `a = Slider(${lo - 2}, ${hi + 2}, ${num((lo + hi) / 2)})`,
     `f(x) = ${e}`,
@@ -195,14 +211,17 @@ export function trig(r, S) {
   };
   const text = S.ja ? `関数 ${S.m(`y = ${e}`)} の周期と最大値を求め、グラフをかけ。`
     : pick(r, [`画出函数 ${S.m(`y = ${e}`)} 的图像，并求它的最小正周期和最大值。`, `已知函数 ${S.m(`f(x) = ${e}`)}，求 f(x) 的最小正周期、最大值以及取得最大值时 x 的值。`]);
-  const cmds = [`f(x) = ${e}`, `M = (${num(x0)}, ${A + B}) "最高点" #result`, `N = (${num(x0 + T0)}, ${A + B}) #aux`, `Segment(M, N) #hl`, `Text("一个周期 T = ${pText(T0)}", (${num(x0)}, ${A + B + 1}))`];
+  // 最高点的横坐标写成含 pi 的算式（5pi/6），不写小数，由程序计算
+  const pExpr = (x) => pText(x).replace('π', 'pi');
+  const xM = pExpr(x0), xN = xM === '0' ? pExpr(T0) : `${xM} + ${pExpr(T0)}`;
+  const cmds = [`f(x) = ${e}`, `M = (${xM}, ${A + B}) "最高点" #result`, `N = (${xN}, ${A + B}) #aux`, `Segment(M, N) #hl`, `Text("一个周期 T = ${pText(T0)}", (${xM}, ${A + B + 1}))`];
   if (B) cmds.push(`l: y = ${B} #aux`);
   return {
     text,
     out: out({
       title: '三角函数的周期与最值', category: '三角函数',
       knowns: [T(`y=${e}`)], goal: '求最小正周期和最大值',
-      layout: `T=2π/${w === 1 / 2 ? '(1/2)' : w}=${pText(T0)}；最大值 ${B ? `${A}${B > 0 ? '+' : ''}${B}=${A + B}` : A}，在 x=${pText(x0)} 处${pText(x0) === '0' ? '' : `（约 ${num(x0)}）`}取到。`,
+      layout: `T=2π/${w === 1 / 2 ? '(1/2)' : w}=${pText(T0)}；最大值 ${B ? `${A}${B > 0 ? '+' : ''}${B}=${A + B}` : A}，在 x=${pText(x0)} 处取到；下一个最高点在一个周期之后。`,
       commands: cmds, insight: '相邻两个最高点之间的距离就是一个周期。',
     }),
   };
