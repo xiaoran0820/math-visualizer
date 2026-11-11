@@ -23,6 +23,7 @@ var req = GenerateRequest(
 )
 req.presencePenalty = Float(obj["presencePenalty"] as? Double ?? 0)
 req.thinkBudget = obj["thinkBudget"] as? Int ?? 0
+req.lora = (obj["lora"] as? String).flatMap(LoraKind.init(rawValue:)) ?? ((obj["lora"] as? Bool ?? false) ? .analysis : .none)
 let out = FileHandle.standardOutput
 var thinkingChars = 0, contentChars = 0
 let done = DispatchSemaphore(value: 0)
