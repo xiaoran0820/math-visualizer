@@ -26,9 +26,12 @@ MODULES = {
     'mlp.gate_proj': 'ffn_gate',
     'mlp.up_proj': 'ffn_up',
     'mlp.down_proj': 'ffn_down',
+    'self_attn.q_proj': 'attn_q',
     'self_attn.k_proj': 'attn_k',
     'self_attn.v_proj': 'attn_v',
     'self_attn.o_proj': 'attn_output',
+    'linear_attn.in_proj_qkv': 'attn_qkv',
+    'linear_attn.in_proj_z': 'attn_gate',
     'linear_attn.out_proj': 'ssm_out',
 }
 
@@ -36,9 +39,12 @@ MODULES = {
 def main(adapter_dir, base_gguf, out_path):
     adapter_dir = Path(adapter_dir)
     cfg = json.loads((adapter_dir / 'adapter_config.json').read_text())
-    lp = cfg['lora_parameters']
-    rank, scale = int(lp['rank']), float(lp['scale'])
-    weights = mx.load(str(adapter_dir / 'adapters.safetensors'))
+    # mlx-lm：lora_parameters 里有 rank、scale；mlx-vlm：rank、alpha（scale = alpha / rank）
+    lp = cfg.get('lora_parameters', cfg)
+    rank = int(lp['rank'])
+    scale = float(lp['scale']) if 'scale' in lp else float(lp['alpha']) / rank
+    files = sorted(adapter_dir.glob('adapters.safetensors')) or sorted(adapter_dir.glob('*.safetensors'))
+    weights = mx.load(str(files[0]))
 
     reader = gguf.GGUFReader(base_gguf)
     arch = reader.fields['general.architecture'].contents()
@@ -51,10 +57,11 @@ def main(adapter_dir, base_gguf, out_path):
 
     count = 0
     for key in sorted(weights):
-        m = re.match(r'(?:language_model\.)?model\.layers\.(\d+)\.(.+)\.lora_([ab])$', key)
+        # mlx-lm 的名字是 ….lora_a / ….lora_b，mlx-vlm 是 ….A / ….B；两者的形状都是 A: (输入, r)、B: (r, 输出)
+        m = re.match(r'(?:language_model\.)?model\.layers\.(\d+)\.(.+)\.(?:lora_([ab])|([AB]))$', key)
         if not m:
             raise SystemExit(f'看不懂的 LoRA 权重名：{key}')
-        layer, module, ab = m.groups()
+        layer, module, ab = m.group(1), m.group(2), (m.group(3) or m.group(4).lower())
         if module not in MODULES:
             raise SystemExit(f'{module} 没有对应的 GGUF 张量（训练时只能用 MODULES 里的层）')
         name = f'blk.{layer}.{MODULES[module]}.weight'
