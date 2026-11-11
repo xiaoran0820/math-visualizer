@@ -21,6 +21,13 @@
 //   cells     表格里出现了这些数（单元格可以写成小数或分数，如 0.5、1/2、9/13）：{ type: 'cells', values: [...] }
 //   kind      至少 min 个某类对象：{ type: 'kind', kind: 'slider' | 'function' | 'implicit' | 'region' | 'brace' | ..., min }
 //   mode      2d / 3d：{ type: 'mode', value }
+// 过去问集（eval/exam.js）另外用到的，点叫什么名字都可以：
+//   point     图里有一个点在这个坐标：{ type: 'point', at: [x, y, z?] }
+//   onCurve   点 p 在这条方程的曲线上：{ type: 'onCurve', p, src }
+//   shape     有一个正 n 边形（各边相等、各角相等），可以指定边长：{ type: 'shape', n, side? }
+//   plain     没有画无关的图形：只有点、文字、表格、滑块（整数、组合这类不需要图的题）：{ type: 'plain' }
+//   any       满足其中任意一条即可：{ type: 'any', of: [检验, …] }
+//   curve 可以加 domain: [lo, hi]：只在这一段上取点核对（题目只在这一段上定义函数时用）
 import * as G from './geom.js';
 import { buildScene } from './scene.js';
 
@@ -97,6 +104,32 @@ export function samplePoints(v, max = 7) {
   return Array.from({ length: max }, (_, i) => pts[Math.round((i * (pts.length - 1)) / (max - 1))]);
 }
 
+// 在区间 [lo, hi] 内均匀取点（避开两端）
+function sampleOn(v, [lo, hi], n = 6) {
+  const pts = [];
+  for (let i = 1; i <= n; i++) {
+    const x = lo + ((hi - lo) * i) / (n + 1);
+    const y = v.f(x);
+    if (Number.isFinite(y) && Math.abs(y) < 1e4) pts.push(G.pt(x, y));
+  }
+  return pts;
+}
+
+// 不需要图的题里，这些算“画了图形”
+const FIGURES = ['function', 'line', 'circle', 'implicit', 'curve', 'arc', 'polygon', 'polyline', 'region', 'sector', 'sphere', 'cylinder', 'cone', 'integral'];
+
+// 正 n 边形：各边相等、各内角相等
+function isRegular(pts, n, side) {
+  if (pts.length !== n) return false;
+  const P = pts.map(P3);
+  const sides = P.map((p, i) => G.dist(p, P[(i + 1) % n]));
+  const m = sides.reduce((s, l) => s + l, 0) / n;
+  if (!(m > 1e-9) || sides.some((l) => Math.abs(l - m) > REL * m)) return false;
+  const want = 180 - 360 / n;
+  if (P.some((p, i) => Math.abs(G.angleDeg(P[(i + n - 1) % n], p, P[(i + 1) % n]) - want) > DEG)) return false;
+  return side === undefined || Math.abs(m - side) <= REL * side;
+}
+
 // 把一条命令单独画出来，取它的值（方程、区域）
 function referenceValue(lines) {
   const s = buildScene(lines, {});
@@ -116,7 +149,7 @@ function checkCurve(scene, c) {
     else return { ok: false, detail: `图中没有参数 ${name}` };
   }
   const ref = referenceValue([...defs, c.src]);
-  const pts = samplePoints(ref);
+  const pts = c.domain && ref?.T === 'function' ? sampleOn(ref, c.domain) : samplePoints(ref);
   if (pts.length < 2) return { ok: false, detail: '这条方程画不出图像' };
   const curves = scene.objects.map((o) => o.value).filter((v) => v && CURVE_TYPES.includes(v.T));
   const ok = curves.some((v) => pts.every((P) => onCurve(v, P)));
@@ -272,6 +305,39 @@ export function runCheck(scene, c) {
         detail = !nums.length ? '没有表格' : missing.length ? `表格里没有 ${missing.join('、')}` : '表格里的数对';
         break;
       }
+      case 'point': {
+        const target = G.pt(c.at[0], c.at[1], c.at[2] || 0);
+        const tol = 0.02 * (1 + G.vlen(target));
+        ok = scene.objects.some((o) => o.value?.T === 'point' && G.dist(P3(o.value), target) <= tol);
+        detail = ok ? '有这个点' : '图中没有这个点';
+        break;
+      }
+      case 'onCurve': {
+        const p = findPoint(scene, c.p);
+        if (!p) { detail = `缺少点 ${c.p}`; break; }
+        const ref = referenceValue([c.src]);
+        if (!ref) { detail = '方程无法解析'; break; }
+        ok = onCurve(ref, G.pt(p.x, p.y));
+        detail = ok ? `${c.p} 在曲线上` : `${c.p} 不在曲线上`;
+        break;
+      }
+      case 'shape': {
+        const polys = scene.objects.map((o) => o.value).filter((v) => v && v.T === 'polygon');
+        ok = polys.some((v) => isRegular(v.pts, c.n, c.side));
+        detail = ok ? '有这个正多边形' : `${polys.length} 个多边形，没有符合的`;
+        break;
+      }
+      case 'plain': {
+        const figs = scene.objects.filter((o) => o.value && FIGURES.includes(o.value.T)).length;
+        ok = figs === 0; detail = ok ? '没有画无关的图形' : `画了 ${figs} 个图形`;
+        break;
+      }
+      case 'any': {
+        const rs = c.of.map((x) => runCheck(scene, x));
+        const hit = rs.find((r) => r.ok);
+        ok = !!hit; detail = hit ? hit.detail : rs.map((r) => r.detail).join('；');
+        break;
+      }
       case 'curve': ({ ok, detail } = checkCurve(scene, c)); break;
       case 'region': ({ ok, detail } = checkRegion(scene, c)); break;
       case 'fn': {
@@ -324,6 +390,11 @@ export function describeCheck(c) {
     case 'cells': return `表格里有 ${c.values.join('、')}`;
     case 'fn': return `函数图像经过 ${c.at.map(([x, y]) => `(${fmt(x)}, ${fmt(y)})`).join('、')}`;
     case 'through': return `曲线经过 ${c.pts.map(([x, y]) => `(${fmt(x)}, ${fmt(y)})`).join('、')}`;
+    case 'point': return `有点 (${c.at.map((v) => fmt(v)).join(', ')})`;
+    case 'onCurve': return `点 ${c.p} 在 ${c.src} 上`;
+    case 'shape': return `正${c.n}边形${c.side !== undefined ? `（边长 ${fmt(c.side)}）` : ''}`;
+    case 'plain': return '不画无关的图形';
+    case 'any': return c.of.map(describeCheck).join(' 或 ');
     default: return c.type;
   }
 }

@@ -9,7 +9,7 @@
 // iOS 上由 Swift 插件实现（llama.cpp + Metal，用 grammar 约束输出格式）；
 // 在电脑浏览器里调试时，可以用下面的 createOllamaDevicePlugin 代替（用 schema 约束）。
 import {
-  OCR_SYSTEM, ocrUserText, analyzeSystemFor, ANALYSIS_SCHEMA, analyzeUserText,
+  OCR_SYSTEM, ocrUserText, analyzeSystemFor, ANALYZE_SYSTEM_TUNED, ANALYSIS_SCHEMA, analyzeUserText,
   REPAIR_SCHEMA, repairUserText, SOLVE_SYSTEM, solveUserText,
 } from './prompts.js';
 import { schemaToGbnf } from './gbnf.js';
@@ -43,6 +43,23 @@ export function createDeviceApi({ plugin, model }) {
     }
   }
 
+  // 模型文件夹里有数形自己训练的 LoRA 时（插件的 status 里 tuned、ocrTuned 为 true）：
+  // adapter.gguf：分析题意、修正命令启用它（lora: true），并改用短系统提示；
+  // adapter-ocr.gguf：识别题目时启用它（lora: 'ocr'），提示词不变。解题仍用原模型。
+  const tunedByModel = new Map();
+  async function status(m) {
+    if (!tunedByModel.has(m)) {
+      let st = {};
+      try { st = (await plugin.status({ model: m })) || {}; } catch { /* 查不到就当作没有 */ }
+      tunedByModel.set(m, { tuned: !!st.tuned, ocrTuned: !!st.ocrTuned });
+    }
+    return tunedByModel.get(m);
+  }
+  async function tuning(m) {
+    const lora = (await status(m)).tuned;
+    return { system: lora ? ANALYZE_SYSTEM_TUNED : analyzeSystemFor(m), lora };
+  }
+
   return {
     baseUrl: '',
     kind: 'device',
@@ -56,18 +73,27 @@ export function createDeviceApi({ plugin, model }) {
         local: true, endpointHost: '本机', error: st.ready ? undefined : st.error || '本机模型还没有准备好',
       };
     },
-    recognize: ({ image, hint, model: m }, signal, onEvent) => run({
-      messages: [{ role: 'system', content: OCR_SYSTEM }, { role: 'user', content: ocrUserText(hint), image: stripDataUrl(image) }],
-      maxTokens: 2048, temperature: 0.1,
-    }, signal, onEvent, m || model),
-    analyze: ({ text, image, hint, model: m, temperature }, signal, onEvent) => run({
-      messages: [{ role: 'system', content: analyzeSystemFor(m || model) }, { role: 'user', content: analyzeUserText(text, hint, !!image), image: stripDataUrl(image) }],
-      schema: ANALYSIS_SCHEMA, grammar: GRAMMARS.analysis, maxTokens: 4096, temperature: Number.isFinite(temperature) ? temperature : 0.2,
-    }, signal, onEvent, m || model),
-    repair: ({ text, commands, errors, issues, model: m }, signal, onEvent) => run({
-      messages: [{ role: 'system', content: analyzeSystemFor(m || model) }, { role: 'user', content: repairUserText(text, commands, errors, issues || []) }],
-      schema: REPAIR_SCHEMA, grammar: GRAMMARS.repair, maxTokens: 3072, temperature: 0.1,
-    }, signal, onEvent, m || model),
+    recognize: async ({ image, hint, model: m }, signal, onEvent) => {
+      const ocr = (await status(m || model)).ocrTuned;
+      return run({
+        messages: [{ role: 'system', content: OCR_SYSTEM }, { role: 'user', content: ocrUserText(hint), image: stripDataUrl(image) }],
+        maxTokens: 2048, temperature: 0.1, ...(ocr ? { lora: 'ocr' } : {}),
+      }, signal, onEvent, m || model);
+    },
+    analyze: async ({ text, image, hint, model: m, temperature }, signal, onEvent) => {
+      const t = await tuning(m || model);
+      return run({
+        messages: [{ role: 'system', content: t.system }, { role: 'user', content: analyzeUserText(text, hint, !!image), image: stripDataUrl(image) }],
+        schema: ANALYSIS_SCHEMA, grammar: GRAMMARS.analysis, maxTokens: 4096, temperature: Number.isFinite(temperature) ? temperature : 0.2, lora: t.lora,
+      }, signal, onEvent, m || model);
+    },
+    repair: async ({ text, commands, errors, issues, model: m }, signal, onEvent) => {
+      const t = await tuning(m || model);
+      return run({
+        messages: [{ role: 'system', content: t.system }, { role: 'user', content: repairUserText(text, commands, errors, issues || []) }],
+        schema: REPAIR_SCHEMA, grammar: GRAMMARS.repair, maxTokens: 3072, temperature: 0.1, lora: t.lora,
+      }, signal, onEvent, m || model);
+    },
     // 手机上默认不“思考”：小模型思考时容易反复说同一句话、迟迟不给解答，而且慢很多（实测 2B 直接作答也能答对）。
     // 打开思考时（think: true）用 Qwen 建议的思考参数，并限制思考长度，超过或原地打转就让模型直接作答。
     solve: ({ text, commands, model: m, think = false }, signal, onEvent) => run({

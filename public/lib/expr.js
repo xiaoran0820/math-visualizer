@@ -117,7 +117,9 @@ const NUM_RE = /^(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/;
 const TWO_CHAR = ['<=', '>=', '==', '!=', '&&', '||'];
 const ONE_CHAR = '+-*/^(),=<>!:;°[]|';
 
-export function tokenize(src) {
+// splitIdent(name, beforeParen)：把省略了乘号的名字拆成几个名字（ax → a、x；xlnx → x、ln、x），不需要拆时返回 null。
+// 必须在分词时拆开：这样 ax^2 才是 a·x²（乘方只作用在最后一个因子上），而不是 (ax)²。
+export function tokenize(src, splitIdent = null) {
   const toks = [];
   let i = 0;
   while (i < src.length) {
@@ -139,7 +141,13 @@ export function tokenize(src) {
     const num = NUM_RE.exec(rest);
     if (num) { toks.push({ t: 'num', v: parseFloat(num[0]), pos: i }); i += num[0].length; continue; }
     const id = IDENT_RE.exec(rest);
-    if (id) { toks.push({ t: 'id', v: id[0], pos: i }); i += id[0].length; continue; }
+    if (id) {
+      const parts = splitIdent ? splitIdent(id[0], /^\s*\(/.test(rest.slice(id[0].length))) : null;
+      if (parts) { let at = i; for (const part of parts) { toks.push({ t: 'id', v: part, pos: at }); at += part.length; } }
+      else toks.push({ t: 'id', v: id[0], pos: i });
+      i += id[0].length;
+      continue;
+    }
     const two = rest.slice(0, 2);
     if (TWO_CHAR.includes(two)) { toks.push({ t: 'op', v: two, pos: i }); i += 2; continue; }
     if (ONE_CHAR.includes(c)) {
@@ -163,11 +171,11 @@ const CMP_OPS = ['<', '<=', '>', '>=', '==', '!='];
 /**
  * 解析一个表达式。
  * @param {string} src
- * @param {{isCallable?: (name: string) => boolean, isPrefixFunc?: (name: string) => boolean}} opts
+ * @param {{isCallable?: (name: string) => boolean, isPrefixFunc?: (name: string) => boolean, splitIdent?: (name: string, beforeParen: boolean) => string[]|null}} opts
  * @returns {{ast: object, label: string|null}} label 为表达式后面紧跟的字符串（作为标签）
  */
 export function parseExpression(src, opts = {}) {
-  const toks = tokenize(normalizeSource(src));
+  const toks = tokenize(normalizeSource(src), opts.splitIdent || null);
   const isCallable = opts.isCallable || (() => false);
   const isPrefixFunc = opts.isPrefixFunc || (() => false);
   let p = 0;

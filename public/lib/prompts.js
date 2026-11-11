@@ -16,10 +16,11 @@ export function ocrUserText(hint) {
 }
 
 // ---------------- 微调过的模型（数形自己训练的，模型名里带 shuxing） ----------------
-// 作图语言已经通过训练学会，系统提示只说明输出格式：约 150 token（通用的 ANALYZE_SYSTEM 约 2700 token）。
+// 作图语言已经通过训练学会，系统提示只说明输出格式、列出命令的名字：约 250 token（通用的 ANALYZE_SYSTEM 约 2700 token）。
 // 手机上第一次计算快得多，上下文也省内存。训练数据和方法见 train/。分析、修正都用这一份。
 export const ANALYZE_SYSTEM_TUNED = `你是“数形结合”可视化助手。读懂数学题，只输出一个 JSON：title（10 字以内的题目名称）、category（题型）、knowns（已知条件，数学式写在 $...$ 中）、goal（所求）、layout（作图推演：坐标怎么取，关键点的坐标怎么算）、commands（作图命令）、insight（看图要点，一句话）。
-作图命令用数形的作图语言；长度、面积等数值写成实时表达式，由程序计算；概率、统计题用 Table、Row 列表格。`;
+作图命令用数形的作图语言；长度、面积等数值写成实时表达式，由程序计算；概率、统计题用 Table、Row 列表格。可用的命令：
+Midpoint Foot Intersect Point Center Circumcenter Incenter Centroid Orthocenter Rotate Reflect Translate Segment Line Ray Vector Perpendicular Parallel PerpendicularBisector AngleBisector Tangent Circle Incircle Arc Sector Semicircle Polygon Polyline Function If Curve Derivative Root Extremum Vertex Angle Text Brace Integral IntegralBetween Region Table Row Slider ShowAxes ZoomIn Sphere Cylinder Cone Distance Length Area Slope xAxis yAxis，标记 #aux #hl #result #eq1 #open #fixed。`;
 export const isTunedModel = (name) => /shuxing/i.test(String(name || ''));
 export const analyzeSystemFor = (model) => (isTunedModel(model) ? ANALYZE_SYSTEM_TUNED : ANALYZE_SYSTEM);
 
@@ -50,6 +51,9 @@ export function dedupeOcr(text) {
 
 // 重新识别时的补充说明：用户自己写的（例如「只识别第 2 题」）放在最后，优先听用户的
 export const ocrRetryHint = (hint) => [OCR_RETRY_HINT, hint].filter(Boolean).join('\n');
+
+// 去掉模型输出外面的代码块标记和思考标签（App 显示识别结果、解题思路前都先这样处理；评测脚本用同一份）
+export const cleanModelText = (t) => String(t).replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/i, '').replace(/<\/?think>/g, '').trim();
 
 // ---------------- 2. 分析题意并生成作图命令 ----------------
 // 长度上限远高于正常输出，作用是防止小模型陷入重复输出的循环（Ollama 和手机端的 GBNF 都会强制执行）

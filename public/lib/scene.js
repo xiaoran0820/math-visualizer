@@ -691,6 +691,37 @@ export class Scene {
     throw new ParseError(`未定义的名称「${name}」`);
   }
 
+  // 解析时拆开省略乘号的名字：ax → a·x，xe → x·e，xlnx → x·ln x，sinxcosx → sin x·cos x。
+  // 2026-11-11 发现：原来整个名字先当成一个量再拆，ax^2 被算成 (ax)²（a = 2 时差一倍），xe^x 被算成 (xe)^x。
+  // 只在每一段都认识时才拆（变量、已定义的数、pi、e、函数名）；否则保持原样，由后面报“未定义的名称”。
+  splitIdent(name, vars, beforeParen) {
+    if (!/^[A-Za-z]{2,12}$/.test(name)) return null;
+    if (vars.has(name) || this.byName.has(name) || name in CONSTANTS || name === 'xAxis' || name === 'yAxis' || this.isCallable(name) || PREFIX_FUNCS.has(name)) return null;
+    const isFunc = (s) => PREFIX_FUNCS.has(s) && !this.byName.has(s);
+    const isValue = (s) => vars.has(s) || s === 'pi' || s === 'e' || this.byName.get(s)?.kind === 'number';
+    const memo = new Map();
+    const go = (i) => {
+      if (i === name.length) return [];
+      if (memo.has(i)) return memo.get(i);
+      let res = null;
+      for (let j = name.length; j > i && !res; j--) {
+        const s = name.slice(i, j);
+        // 函数名后面必须还有自变量（xlnx），或者紧跟括号（xln(x)）
+        if (isValue(s) || (isFunc(s) && (j < name.length || beforeParen))) {
+          const rest = go(j);
+          if (rest) res = [s, ...rest];
+        }
+      }
+      memo.set(i, res);
+      return res;
+    };
+    const parts = go(0);
+    if (!parts || parts.length < 2) return null;
+    // ax(x+1)：最后一段是变量又紧跟括号时不拆（x(…) 是取坐标的写法），仍按原来的方式当成 (a·x)·(…)
+    if (beforeParen && !isFunc(parts[parts.length - 1])) return null;
+    return parts;
+  }
+
   splitName(name, locals) {
     if (!/^[A-Za-z]+$/.test(name) || name.length > 6) return null;
     const known = (s) => (locals && locals.has(s)) || this.byName.has(s) || s === 'pi' || s === 'e';
@@ -1004,7 +1035,9 @@ export class Scene {
     const tm = /^(Row|Table)\s*\(([\s\S]*)\)\s*$/.exec(rhs.trim());
     if (tm) return this.addTableCommand(tm[1], tm[2], { name, raw, lineNo, tags });
 
-    let { ast, label } = parseExpression(rhs, this.parseOpts);
+    // 省略乘号的写法（ax^2、xe^x、xlnx）在解析时拆开；变量是函数的自变量，方程、区域里是 x、y
+    const vars = new Set(fvar ? fvar.split(',') : ['x', 'y']);
+    let { ast, label } = parseExpression(rhs, { ...this.parseOpts, splitIdent: (id, beforeParen) => this.splitIdent(id, vars, beforeParen) });
     let role = 'derived';
     let compute;
     let kindHint = null;
