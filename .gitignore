@@ -12,3 +12,25 @@ ios/iphone-install/
 
 # 第 0 轮拍的题目照片（课本内容，不提交）
 eval/round0/photos/
+
+# 训练（train/）：模型权重、训练结果、做好的模型、Python 环境、生成的数据和图片、日志，都在本机重新生成，不提交
+train/.venv/
+train/base/
+train/adapters/
+train/out/
+train/data/
+train/logs/
+train/smoke/
+train/ocr/build/
+train/llama.cpp/
+train/*.log
+__pycache__/
+
+# 过去问集：试题的著作权属于各大学，原始 PDF、裁好的题目图片、识别出的文字都不对外发布（见 eval/exam/README.md）
+eval/exam/pdf/
+eval/exam/images/
+eval/exam/ocr/
+eval/exam/tools/build/
+
+# 编译出的工具
+native/local-model/tools/build/
