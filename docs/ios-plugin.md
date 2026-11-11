@@ -4,11 +4,13 @@
 
 ## 方法
 
-### `status() → { ready, model, models, error? }`
+### `status({ model? }) → { ready, model, models, tuned?, ocrTuned?, error? }`
 
 - `ready`：模型文件已就绪、可以推理时为 `true`
 - `model`：当前（或默认）模型名
 - `models`：手机上已有的模型
+- `tuned`：这个模型的文件夹里有数形自己训练的 LoRA（`adapter.gguf`，见 `train/`）时为 `true`。这时网页在分析题意、修正命令时带上 `lora: true`，并改用短系统提示（`ANALYZE_SYSTEM_TUNED`）
+- `ocrTuned`：文件夹里有识别用的 LoRA（`adapter-ocr.gguf`，见 `train/ocr/`）时为 `true`。这时网页识别题目时带上 `lora: "ocr"`，提示词不变
 - `error`：未就绪时给用户看的中文原因（例如“模型还没有下载”“内存不足”）
 
 ### `generate(options) → { stats }`
@@ -25,6 +27,7 @@
 | `think` | 是否允许模型先“思考”；思考内容通过 `token` 事件的 `thinking: true` 回传。手机上解题默认不思考（见下） |
 | `presencePenalty` | 可选，出现过的 token 再出现时的惩罚（Qwen 建议思考时用 1.5）；有 `grammar` 时不使用 |
 | `thinkBudget` | 可选，最多思考多少个 token。超过、或发现模型在重复同一段话时，程序写入结束思考的提示，让模型直接作答 |
+| `lora` | 可选，这次请求启用模型文件夹里的哪个 LoRA（`llama_set_adapters_lora`，切换不需要重新加载模型）：`true` 或 `"analysis"` 用 `adapter.gguf`（分析题意、修正命令）；`"ocr"` 用 `adapter-ocr.gguf`（识别题目）；不传或 `false` 用原模型（解题）。文件夹里没有对应文件时也用原模型 |
 
 生成结束（或被取消、出错）后才返回。返回值 `stats` 建议包含 `outputTokens`、`tokensPerSecond`、`promptTokens`；思考被提前结束时 `forcedAnswer: true`。出错时 reject，`message` 用中文说明原因，可以带 `code`（例如 `oom`、`model_missing`）。
 
