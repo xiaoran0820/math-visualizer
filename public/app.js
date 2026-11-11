@@ -9,7 +9,7 @@ import { createApi, normalizeBaseUrl } from './lib/api.js';
 import { createDeviceApi, createOllamaDevicePlugin } from './lib/api-device.js';
 import { runPipeline, isPerfect } from './lib/pipeline.js';
 import { extractFacts, verifyFacts } from './lib/constraints.js';
-import { tooLittleText, ocrBody, ocrRetryHint, dedupeOcr } from './lib/prompts.js';
+import { tooLittleText, ocrBody, ocrRetryHint, dedupeOcr, cleanModelText } from './lib/prompts.js';
 import { EXAMPLES } from './examples.js';
 
 const $ = (id) => document.getElementById(id);
@@ -428,9 +428,7 @@ async function recognizeOnce(run, image, hint, tk, label = '') {
   return dedupeOcr(cleanText(text));
 }
 
-function cleanText(t) {
-  return String(t).replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/i, '').replace(/<\/?think>/g, '').trim();
-}
+const cleanText = cleanModelText;
 
 // 分析 → 核对题目条件 → 必要时修正或重新生成（流程在 lib/pipeline.js，评测脚本用的是同一份）
 async function runAnalysis(run, problem, image, hint, setFailed) {
