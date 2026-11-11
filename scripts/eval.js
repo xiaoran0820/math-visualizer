@@ -5,7 +5,9 @@
 //   node scripts/eval.js --models qwen3.5:4b-q4_K_M,qwen3.5:2b-q4_K_M --pipelines baseline,best3 --set all
 //   node scripts/eval.js --only isosceles,cube --no-ocr --runs 3
 //
-// --set        dev（eval/problems.js，默认）| holdout（eval/holdout.js）| all
+// --set        dev（eval/problems.js，默认）| holdout（eval/holdout.js）| fresh（eval/fresh.js，训练数据里没有的题型）| exam（eval/exam.js，旧帝大过去问）| all（dev + holdout）
+// --ocr-model  过去问集没有题目原文：先用这个模型从题目图片识别文字（默认 qwen3.5:2b-q4_K_M，手机上识别用的就是它），
+//              结果存在 eval/exam/ocr/<模型>/，之后直接复用，所有模型用同一份识别结果作图；--refresh-ocr 重新识别
 // --pipelines  baseline（改进前：生成一次，出错时修正一次）| verified（核对 + 补全 + 针对性修正）| best3（再加最多两次重新生成）
 // 需要 Ollama 正在运行。结果写入 eval/results/。
 import fs from 'node:fs';
@@ -19,6 +21,9 @@ import { runPipeline, PIPELINE_PRESETS } from '../public/lib/pipeline.js';
 import { describeViolations } from '../public/lib/constraints.js';
 import { PROBLEMS } from '../eval/problems.js';
 import { HOLDOUT } from '../eval/holdout.js';
+import { FRESH } from '../eval/fresh.js';
+import { EXAM } from '../eval/exam.js';
+import { tooLittleText, ocrBody, ocrRetryHint, dedupeOcr, cleanModelText } from '../public/lib/prompts.js';
 import { runChecks } from '../eval/checks.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -30,7 +35,7 @@ const only = arg('only', '') ? arg('only', '').split(',') : null;
 const withOcr = !process.argv.includes('--no-ocr');
 const runsN = Math.max(1, Number(arg('runs', 1)) || 1);
 const setName = arg('set', 'dev');
-const SETS = { dev: PROBLEMS.map((p) => ({ ...p, set: 'dev' })), holdout: HOLDOUT.map((p) => ({ ...p, set: 'holdout' })) };
+const SETS = { dev: PROBLEMS.map((p) => ({ ...p, set: 'dev' })), holdout: HOLDOUT.map((p) => ({ ...p, set: 'holdout' })), fresh: FRESH.map((p) => ({ ...p, set: 'fresh' })), exam: EXAM.map((p) => ({ ...p, set: 'exam' })) };
 const problems = (setName === 'all' ? [...SETS.dev, ...SETS.holdout] : SETS[setName] || []).filter((p) => !only || only.includes(p.id));
 if (!problems.length) { console.error('没有要评测的题目'); process.exit(1); }
 
@@ -39,11 +44,42 @@ const server = await new Promise((r) => { const s = createApp({ maxConcurrent: 4
 const base = `http://127.0.0.1:${server.address().port}`;
 const api = createApi({ baseUrl: base });
 
-async function recognizeText(image, model) {
+async function recognizeText(image, model, hint) {
   const t0 = Date.now();
   let text = '';
-  await api.recognize({ image, model }, undefined, (ev) => { if (ev.t === 'delta') text += ev.v; });
+  await api.recognize({ image, model, hint }, undefined, (ev) => { if (ev.t === 'delta') text += ev.v; });
   return { text, seconds: (Date.now() - t0) / 1000 };
+}
+
+// 没有题目原文的题（过去问集）：和 App 一样识别——去掉代码块标记、去掉整段重复；文字太少时换个说法再识别一次，用文字多的那次
+const ocrModel = arg('ocr-model', 'qwen3.5:2b-q4_K_M');
+const ocrTexts = new Map();
+async function prepareOcr(list) {
+  const need = list.filter((p) => !p.text && p.image);
+  if (!need.length) return;
+  const dir = path.join(root, 'eval', 'exam', 'ocr', ocrModel.replace(/[^\w.-]+/g, '_'));
+  fs.mkdirSync(dir, { recursive: true });
+  const refresh = process.argv.includes('--refresh-ocr');
+  let done = 0, made = 0;
+  for (const p of need) {
+    const file = path.join(dir, `${p.id}.json`);
+    if (!refresh && fs.existsSync(file)) { ocrTexts.set(p.id, JSON.parse(fs.readFileSync(file, 'utf8'))); continue; }
+    if (!made++) process.stdout.write(`识别题目图片（${ocrModel}）…\n`);
+    const img = `data:image/png;base64,${fs.readFileSync(path.join(root, 'eval', p.image)).toString('base64')}`;
+    const once = async (hint) => { const o = await recognizeText(img, ocrModel, hint); return { text: dedupeOcr(cleanModelText(o.text)), seconds: o.seconds }; };
+    let r = await once('');
+    let seconds = r.seconds, retried = false;
+    if (tooLittleText(r.text)) {
+      retried = true;
+      try { const again = await once(ocrRetryHint('')); seconds += again.seconds; if (ocrBody(again.text).length > ocrBody(r.text).length) r = again; } catch { /* 用第一次的结果 */ }
+    }
+    const rec = { text: r.text, seconds, retried };
+    fs.writeFileSync(file, JSON.stringify(rec, null, 1));
+    ocrTexts.set(p.id, rec);
+    console.log(`  ${p.id.padEnd(18)} ${ocrBody(r.text).length} 字 · ${seconds.toFixed(1)} 秒${retried ? ' · 重新识别过' : ''}`);
+    done++;
+  }
+  if (made) console.log(`识别完成 ${done} 题，结果存在 ${path.relative(root, dir)}/`);
 }
 
 // ---------- OCR 准确率：把 LaTeX 记号还原成符号后，比较“有内容的字符”的编辑距离 ----------
@@ -68,7 +104,7 @@ const drawable = (s) => s.objects.some((o) => !['number', 'boolean', 'string'].i
 // ---------- 单题评测 ----------
 async function evalProblem(model, pipeline, p, doOcr) {
   const r = { id: p.id, category: p.category, set: p.set, pipeline };
-  if (withOcr && doOcr && p.image) {
+  if (withOcr && doOcr && p.image && p.text) {
     try {
       const img = fs.readFileSync(path.join(root, 'eval', 'images', `${p.id}.png`)).toString('base64');
       const o = await recognizeText(`data:image/png;base64,${img}`, model);
@@ -81,7 +117,7 @@ async function evalProblem(model, pipeline, p, doOcr) {
   let out;
   try {
     out = await runPipeline({
-      text: p.text, model, api, options: PIPELINE_PRESETS[pipeline],
+      text: p.text ?? ocrTexts.get(p.id)?.text ?? '', model, api, options: PIPELINE_PRESETS[pipeline],
       onEvent: (ev) => { if (ev.type === 'analyze-done' && ev.attempt === 1 && ev.candidate) firstCommands = ev.candidate.modelCommands; },
     });
   } catch (e) {
@@ -147,6 +183,7 @@ function summarize(rows) {
   };
 }
 
+await prepareOcr(problems);
 const results = [];
 for (const model of models) {
   process.stdout.write(`\n== ${model}\n  预热（加载模型）…`);
@@ -191,7 +228,8 @@ const outDir = path.join(root, 'eval', 'results');
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, `${stamp}.json`), JSON.stringify({ date: new Date().toISOString(), set: setName, problems: problems.map((p) => p.id), pipelines, withOcr, runs: runsN, results }, null, 2));
 const gb = (b) => (b ? `${(b / 1e9).toFixed(1)} GB` : '—');
-const SET_NAME = { dev: '开发集', holdout: '保留集' };
+function cols0() { return results.flatMap((res) => pipelines.map((pl) => ({ model: res.model, pipeline: pl, rows: res.rows.filter((r) => r.pipeline === pl) }))); }
+const SET_NAME = { dev: '开发集', holdout: '保留集', fresh: '新题型集', exam: '过去问集' };
 let md = `# 模型评测 ${new Date().toLocaleString('zh-CN')}\n\n题集：${setName === 'all' ? '开发集 + 保留集' : SET_NAME[setName]}，共 ${problems.length} 道${runsN > 1 ? `，每题重复 ${runsN} 次` : ''}；流程：${pipelines.join('、')}\n\n`;
 md += '| 模型 | 流程 | 题集 | 完全符合题意 | 几何条件满足 | 最终无错误 | 首次作图成功 | 修正采用 | 题目条件满足 | 程序补全 | 平均调用次数 | 平均耗时 |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n';
 for (const res of results) for (const bp of res.byPipeline) {
@@ -199,9 +237,17 @@ for (const res of results) for (const bp of res.byPipeline) {
     md += `| ${res.model} | ${bp.pipeline} | ${SET_NAME[set]} | ${pct(s.fullyCorrectRate)} | ${pct(s.checkPassRate)} | ${pct(s.finalRunnableRate)} | ${pct(s.firstPassRate)} | ${s.repairAccepted}/${s.repairTried} | ${pct(s.factsSatRate)} | ${s.completed} 题 | ${Number.isFinite(s.calls) ? s.calls.toFixed(1) : '—'} | ${Number.isFinite(s.seconds) ? `${s.seconds.toFixed(1)} 秒` : '—'} |\n`;
   }
 }
+if (ocrTexts.size) {
+  const recs = [...ocrTexts.values()];
+  md += `\n题目文字由 ${ocrModel} 从图片识别（${recs.length} 题，平均 ${avg(recs.map((r) => r.seconds)).toFixed(1)} 秒，重新识别过 ${recs.filter((r) => r.retried).length} 题），所有模型用同一份识别结果作图。\n`;
+  if (setName === 'exam') {
+    md += '\n| 模型 · 流程 | ' + [...new Set(problems.map((p) => p.category))].join(' | ') + ' |\n|---|' + [...new Set(problems.map((p) => p.category))].map(() => '---').join('|') + '|\n';
+    for (const c of cols0()) md += `| ${c.model} · ${c.pipeline} | ` + [...new Set(problems.map((p) => p.category))].map((cat) => { const rs = c.rows.filter((r) => r.category === cat); return `${rs.filter((r) => r.correct).length}/${rs.length}`; }).join(' | ') + ' |\n';
+  }
+}
 md += '\n| 模型 | OCR 准确率 | 生成速度 | 内存 |\n|---|---|---|---|\n';
 for (const res of results) md += `| ${res.model} | ${pct(res.ocrAccuracy)} | ${Number.isFinite(res.tokensPerSecond) ? `${Math.round(res.tokensPerSecond)} 字元/秒` : '—'} | ${gb(res.memoryBytes)} |\n`;
-const cols = results.flatMap((res) => pipelines.map((pl) => ({ model: res.model, pipeline: pl, rows: res.rows.filter((r) => r.pipeline === pl) })));
+const cols = cols0();
 md += `\n## 每道题\n\n| 题目 | ${cols.map((c) => `${c.model} · ${c.pipeline}`).join(' | ')} |\n|---|${cols.map(() => '---').join('|')}|\n`;
 for (const p of problems) {
   md += `| ${p.id}（${p.category}${setName === 'all' ? `，${SET_NAME[p.set]}` : ''}） | ` + cols.map(({ rows }) => {
