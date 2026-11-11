@@ -210,3 +210,42 @@ test('review 修正：「样本空间」不算立体图；几何概型不要求�
   assert.deepEqual(kinds('在半径为 1 的圆内任取一点，求该点到圆心的距离小于 1/2 的概率。'), []);
   assert.ok(kinds('如图，在空间直角坐标系中，正方体 ABCD-A1B1C1D1 的棱长为 2。').includes('mode:3d'));
 });
+
+test('题目里的 xe^x、ax² 按数学习惯理解；模型写对的命令不会被程序换成错的', () => {
+  const ex = extractFacts('已知函数 f(x) = xe^x，求 f(x) 的最小值。');
+  assert.deepEqual(completeFigure(['f(x) = x*e^x'], ex).added, []); // 原来会被换成 (xe)^x
+  const v = verifyFacts(buildScene(['f(x) = x*e^x'], {}), ex.facts);
+  assert.equal(v.sat, v.total);
+  // 含参数的抛物线：a = 2 时参考曲线是 2x²，不是 (2x)²
+  const ex2 = extractFacts('当 a = 2 时，求抛物线 y = ax² 与直线 y = x + 1 的交点。');
+  const good = verifyFacts(buildScene(['a = 2', 'f(x) = 2x^2', 'l: y = x + 1'], {}), ex2.facts);
+  assert.equal(good.sat, good.total, JSON.stringify(good.results.map((r) => [r.fact.desc, r.ok, r.detail])));
+});
+
+test('过去问集用到的检验：任意名字的点、点在曲线上、正多边形、不画无关图形、任选其一、限定区间的曲线', () => {
+  const s = buildScene(['P = (2, 1)', 'Q = (1, 1)', 'R = (3, 1/3)', 'f(x) = 1/x', 'S = Polygon((0, 0), (1, 0), (1, 1), (0, 1))', 'T = Polygon((0, 0), (2, 0), (1, sqrt(3)))'], {});
+  assert.equal(runCheck(s, { type: 'point', at: [2, 1] }).ok, true);
+  assert.equal(runCheck(s, { type: 'point', at: [-2, -1] }).ok, false);
+  assert.equal(runCheck(s, { type: 'onCurve', p: 'R', src: 'y = 1/x' }).ok, true);
+  assert.equal(runCheck(s, { type: 'onCurve', p: 'P', src: 'y = 1/x' }).ok, false);
+  assert.equal(runCheck(s, { type: 'shape', n: 4, side: 1 }).ok, true);
+  assert.equal(runCheck(s, { type: 'shape', n: 4, side: 2 }).ok, false);
+  assert.equal(runCheck(s, { type: 'shape', n: 3 }).ok, true);
+  assert.equal(runCheck(s, { type: 'plain' }).ok, false);
+  const t = buildScene(['Table(Row("n", 1, 2, 3), Row("f(n)", 31, -8, 3))', 'P = (2, 1)'], {});
+  assert.equal(runCheck(t, { type: 'plain' }).ok, true);
+  assert.equal(runCheck(t, { type: 'any', of: [{ type: 'cells', values: [99] }, { type: 'plain' }] }).ok, true);
+  assert.equal(runCheck(s, { type: 'any', of: [{ type: 'cells', values: [99] }, { type: 'plain' }] }).ok, false);
+  // 函数只在 (0, 1) 上定义：限定区间后才能核对
+  const d = buildScene(['a = 2', 'f(x) = Function(1/(x^2 (ln(a/x))^2), 0, 1)'], {});
+  assert.equal(runCheck(d, { type: 'curve', src: 'y = 1/(x^2 (ln(a/x))^2)', vars: ['a'], domain: [0.05, 0.95] }).ok, true);
+  assert.equal(runCheck(d, { type: 'curve', src: 'y = 1/(x^2 (ln(a/x))^2)', vars: ['a'] }).ok, false);
+});
+
+test('立体图：日文的“座標空間”等写法、给出三维坐标的点，都按立体图核对', () => {
+  has('座標空間に 3 点 $A(1, 0, 2)$，$B(0, 1, 3)$，$C(2, 2, 1)$ がある。$\\angle BAC$ の大きさを求めよ。', '画成立体图');
+  has('直方体 ABCD-EFGH において，AB = 3，AD = 4，AE = 5 とする。', '画成立体图');
+  has('已知 A(1, 0, 2)，B(0, 1, 3)，求 AB 的长。', '画成立体图'); // 没有“空间”二字，但点有三个坐标
+  lacks('標本空間を考える。2 個のさいころを投げるとき，目の和が 7 になる確率を求めよ。', '画成立体图');
+  lacks('在 △ABC 中，AB = AC = 5，BC = 6，求 BC 边上的高。', '画成立体图');
+});

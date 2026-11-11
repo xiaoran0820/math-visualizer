@@ -282,3 +282,29 @@ test("导函数 f'(x) 写错时改由程序求导；写对时保留模型的式�
   close(ok.values["f'"].f(2), 9);
   assert.doesNotMatch(ok.objects[1].tex, /Derivative/);
 });
+
+test('省略乘号时乘方只作用在最后一个因子上：ax^2 是 a·x²，xe^x 是 x·eˣ（2026-11-11 修正）', () => {
+  const f = (cmds, x) => { const s = buildScene(cmds, {}); assert.deepEqual(s.errors, [], cmds.join('；')); return s.values.f.f(x); };
+  close(f(['a = 2', 'f(x) = ax^2'], 3), 18); // 原来算成 (ax)² = 36
+  close(f(['a = 2', 'b = 1', 'c = 1', 'f(x) = ax^2 + bx + c'], 3), 22);
+  close(f(['a = 2', 'f(x) = x^2 - 2ax + 3'], 3), 0);
+  close(f(['f(x) = xe^x'], 2), 2 * Math.E ** 2); // 原来算成 (xe)^x
+  close(f(['f(x) = 2xe^(-x)'], 2), 4 / Math.E ** 2);
+  close(f(['a = 2', 'f(x) = axe^x'], 1), 2 * Math.E);
+  close(f(['a = 2', 'f(x) = xa^2'], 3), 12);
+  // 函数名夹在中间：原来报“未定义的名称”
+  close(f(['f(x) = xlnx'], 2), 2 * Math.log(2));
+  close(f(['f(x) = xln(x)'], 2), 2 * Math.log(2));
+  close(f(['f(x) = xsinx'], 2), 2 * Math.sin(2));
+  close(f(['f(x) = e^xsinx'], 2), Math.E ** 2 * Math.sin(2));
+  close(f(['f(x) = sinxcosx'], 2), Math.sin(2) * Math.cos(2));
+  // 不受影响的写法
+  close(f(['a = 2', 'f(x) = ax(x+1)'], 3), 24);
+  close(f(['a = 2', 'f(x) = a(x-1)^2 + 3'], 3), 11);
+  close(f(['f(x) = exp(x)'], 1), Math.E);
+  close(f(['g(t) = te^t', 'f(x) = g(x)'], 2), 2 * Math.E ** 2);
+  // 公式显示也跟着对了
+  assert.match(buildScene(['a = 2', 'f(x) = ax^2'], {}).objects[1].tex, /a \\cdot \{x\}\^\{2\}/);
+  // 参数没定义时仍然报整个名字（题目条件提取靠这个报错找出参数）
+  assert.match(buildScene(['f(x) = ax^2'], {}).errors[0].message, /未定义的名称「ax」/);
+});

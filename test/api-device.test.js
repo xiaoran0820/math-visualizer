@@ -65,3 +65,39 @@ test('插件出错时给出可读的错误', async () => {
   assert.equal(h.connected, true);
   assert.equal(h.local, true);
 });
+
+test('模型文件夹里有训练出的 LoRA 时：分析、修正启用它并用短系统提示；识别、解题不启用', async () => {
+  const plugin = fakePlugin();
+  plugin.status = async () => ({ ready: true, model: 'qwen3.5-2b-q4_K_M', models: ['qwen3.5-2b-q4_K_M'], tuned: true });
+  const api = createDeviceApi({ plugin, model: 'qwen3.5:2b-q4_K_M' });
+  await api.analyze({ text: '题目' }, undefined, () => {});
+  await api.repair({ text: '题目', commands: ['A = Foo()'], errors: [] }, undefined, () => {});
+  await api.recognize({ image: 'data:image/jpeg;base64,QUJD', hint: '' }, undefined, () => {});
+  await api.solve({ text: '题目' }, undefined, () => {});
+  const [analyze, repair, ocr, solve] = plugin.calls;
+  assert.equal(analyze.lora, true);
+  assert.equal(repair.lora, true);
+  assert.ok(!ocr.lora && !solve.lora);
+  assert.ok(analyze.messages[0].content.length < 1000, '应该用短系统提示');
+  assert.equal(analyze.messages[0].content, repair.messages[0].content);
+  // 没有 LoRA 的模型：照旧用完整的系统提示，不带 lora
+  const plain = fakePlugin();
+  const api2 = createDeviceApi({ plugin: plain, model: 'm' });
+  await api2.analyze({ text: '题目' }, undefined, () => {});
+  assert.ok(!plain.calls[0].lora);
+  assert.ok(plain.calls[0].messages[0].content.length > 3000);
+});
+
+test('模型文件夹里有识别用的 LoRA（adapter-ocr.gguf）时：识别启用它（lora: "ocr"），提示词不变；解题不启用', async () => {
+  const plugin = fakePlugin();
+  plugin.status = async () => ({ ready: true, model: 'qwen3.5-2b-q4_K_M', models: ['qwen3.5-2b-q4_K_M'], tuned: true, ocrTuned: true });
+  const api = createDeviceApi({ plugin, model: 'qwen3.5:2b-q4_K_M' });
+  await api.recognize({ image: 'data:image/jpeg;base64,QUJD', hint: '' }, undefined, () => {});
+  await api.analyze({ text: '题目' }, undefined, () => {});
+  await api.solve({ text: '题目' }, undefined, () => {});
+  const [ocr, analyze, solve] = plugin.calls;
+  assert.equal(ocr.lora, 'ocr');
+  assert.match(ocr.messages[0].content, /数学题目识别助手/);
+  assert.equal(analyze.lora, true);
+  assert.ok(!solve.lora);
+});

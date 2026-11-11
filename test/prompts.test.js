@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ocrBody, tooLittleText, ocrUserText, OCR_RETRY_HINT, ocrRetryHint, dedupeOcr } from '../public/lib/prompts.js';
+import { ocrBody, tooLittleText, ocrUserText, OCR_RETRY_HINT, ocrRetryHint, dedupeOcr, cleanModelText } from '../public/lib/prompts.js';
 
 test('识别结果几乎没有题目文字时要重新识别（R7-1 只识别出「【图形】没有图形。」）', () => {
   assert.equal(ocrBody('【图形】没有图形。'), '');
@@ -29,4 +29,9 @@ test('识别结果整段抄了两遍时只留一遍；正常题目不变', () =>
   const normal = '(1) 求 $f(x)$ 的单调区间。\n(2) 求 $f(x)$ 的最小值。\n(3) 求 $f(x)$ 的最小值。';
   assert.equal(dedupeOcr(normal), normal);
   assert.equal(dedupeOcr('求 $x$\n求 $x$'), '求 $x$\n求 $x$'); // 太短，不当作重复
+});
+
+test('去掉模型输出外面的代码块标记和思考标签', () => {
+  assert.equal(cleanModelText('```markdown\n求 $x$ 的值。\n```'), '求 $x$ 的值。');
+  assert.equal(cleanModelText('<think></think>\n题目'), '题目');
 });
