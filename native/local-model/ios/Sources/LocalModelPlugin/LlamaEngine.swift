@@ -25,7 +25,12 @@ struct GenerateRequest {
     var presencePenalty: Float = 0
     /// 思考最多多少个 token；超过、或者发现在原地打转时，结束思考，让模型直接给出解答（0 = 不限制）
     var thinkBudget: Int = 0
+    /// 这次请求启用模型文件夹里的哪个 LoRA：分析题意、修正命令用 adapter.gguf，识别题目用 adapter-ocr.gguf；
+    /// 解题、以及文件夹里没有对应文件时用原模型
+    var lora: LoraKind = .none
 }
+
+enum LoraKind: String { case none, analysis, ocr }
 
 struct GenerateStats {
     var promptTokens = 0
@@ -83,13 +88,15 @@ enum EngineError: Error {
 /// 模型放在 App 的“文稿”目录（可以通过 Finder 或“文件”App 拷进去）或安装包里：
 ///   models/<模型名>/model.gguf    文字模型
 ///   models/<模型名>/mmproj.gguf   看图用的视觉投影（可选，没有就不能拍照识别）
-///   models/<模型名>/adapter.gguf  数形自己训练的 LoRA（可选，加在 model.gguf 上；见 train/）
+///   models/<模型名>/adapter.gguf  数形自己训练的作图 LoRA（可选，加在 model.gguf 上；见 train/）
+///   models/<模型名>/adapter-ocr.gguf  数形自己训练的识别 LoRA（可选）
 enum ModelStore {
     struct Entry {
         let name: String
         let model: URL
         let mmproj: URL?
         var adapter: URL? = nil
+        var ocrAdapter: URL? = nil
     }
 
     static var documentsDir: URL {
@@ -120,9 +127,10 @@ enum ModelStore {
                 let model = dir.appendingPathComponent("model.gguf")
                 guard fm.fileExists(atPath: model.path) else { continue }
                 let mm = dir.appendingPathComponent("mmproj.gguf")
-                let lora = dir.appendingPathComponent("adapter.gguf")
+                let lora = dir.appendingPathComponent("adapter.gguf"), ocr = dir.appendingPathComponent("adapter-ocr.gguf")
                 out.append(Entry(name: name, model: model, mmproj: fm.fileExists(atPath: mm.path) ? mm : nil,
-                                 adapter: fm.fileExists(atPath: lora.path) ? lora : nil))
+                                 adapter: fm.fileExists(atPath: lora.path) ? lora : nil,
+                                 ocrAdapter: fm.fileExists(atPath: ocr.path) ? ocr : nil))
             }
         }
         return out
@@ -152,7 +160,9 @@ final class LlamaEngine {
     private var model: OpaquePointer?
     private var ctx: OpaquePointer?
     private var vision: OpaquePointer?
-    private var lora: OpaquePointer?
+    private var loraAnalysis: OpaquePointer?
+    private var loraOcr: OpaquePointer?
+    private var loraOn: LoraKind = .none
     private var loaded: ModelStore.Entry?
     private var nCtx: Int32 = 0
     // 线程数：SHUXING_THREADS 只在 Mac 上的测试工具里用，模拟低配设备
@@ -199,7 +209,7 @@ final class LlamaEngine {
     // MARK: 加载
 
     private func load(_ entry: ModelStore.Entry) throws -> Double {
-        if let l = loaded, l.model == entry.model, l.adapter == entry.adapter, model != nil, ctx != nil { return 0 }
+        if let l = loaded, l.model == entry.model, l.adapter == entry.adapter, l.ocrAdapter == entry.ocrAdapter, model != nil, ctx != nil { return 0 }
         unload()
         let t0 = Date()
         if !Self.backendReady {
@@ -226,17 +236,18 @@ final class LlamaEngine {
             llama_model_free(m)
             throw EngineError.loadFailed("模型上下文创建失败，可能内存不足")
         }
-        // 训练出的 LoRA：加在原来的量化模型上（文件很小，加载不到 1 秒）
-        if let path = entry.adapter?.path {
+        // 训练出的 LoRA：先加载好（文件很小，不到 1 秒），每次请求再决定用哪个（见 run 里的 useLora）
+        for (url, file) in [(entry.adapter, "adapter.gguf"), (entry.ocrAdapter, "adapter-ocr.gguf")] {
+            guard let path = url?.path else { continue }
             guard let a = llama_adapter_lora_init(m, path) else {
+                if let x = loraAnalysis { llama_adapter_lora_free(x) }
+                loraAnalysis = nil
                 llama_free(c); llama_model_free(m)
-                throw EngineError.loadFailed("LoRA 文件 adapter.gguf 无法加载（可能和模型不匹配）")
+                throw EngineError.loadFailed("LoRA 文件 \(file) 无法加载（可能和模型不匹配）")
             }
-            var adapters: [OpaquePointer?] = [a]
-            var scales: [Float] = [1]
-            _ = adapters.withUnsafeMutableBufferPointer { ab in scales.withUnsafeMutableBufferPointer { llama_set_adapters_lora(c, ab.baseAddress, 1, $0.baseAddress) } }
-            lora = a
+            if file == "adapter.gguf" { loraAnalysis = a } else { loraOcr = a }
         }
+        loraOn = .none
         model = m
         ctx = c
         loaded = entry
@@ -247,9 +258,25 @@ final class LlamaEngine {
     private func unload() {
         if let v = vision { mtmd_free(v) }
         if let c = ctx { llama_free(c) }
-        if let a = lora { llama_adapter_lora_free(a) }
+        if let a = loraAnalysis { llama_adapter_lora_free(a) }
+        if let a = loraOcr { llama_adapter_lora_free(a) }
         if let m = model { llama_model_free(m) }
-        vision = nil; ctx = nil; lora = nil; model = nil; loaded = nil
+        vision = nil; ctx = nil; loraAnalysis = nil; loraOcr = nil; model = nil; loaded = nil; loraOn = .none
+    }
+
+    /// 换成这次要用的 LoRA，或者关掉（切换不需要重新加载模型）；文件夹里没有对应文件时用原模型
+    private func useLora(_ kind: LoraKind, ctx: OpaquePointer) {
+        let adapter: OpaquePointer? = kind == .analysis ? loraAnalysis : kind == .ocr ? loraOcr : nil
+        let want: LoraKind = adapter == nil ? .none : kind
+        guard want != loraOn else { return }
+        if let a = adapter {
+            var adapters: [OpaquePointer?] = [a]
+            var scales: [Float] = [1]
+            _ = adapters.withUnsafeMutableBufferPointer { ab in scales.withUnsafeMutableBufferPointer { llama_set_adapters_lora(ctx, ab.baseAddress, 1, $0.baseAddress) } }
+        } else {
+            _ = llama_set_adapters_lora(ctx, nil, 0, nil)
+        }
+        loraOn = want
     }
 
     // 看图模块按需加载：只输入文字时不占这部分内存
@@ -286,6 +313,7 @@ final class LlamaEngine {
             mtmd_free(v)
             vision = nil
         }
+        useLora(req.lora, ctx: ctx)
         llama_memory_clear(llama_get_memory(ctx), true)
 
         // 提示：Qwen3.5 的 ChatML；图片放在用户消息的文字之前。
@@ -445,7 +473,8 @@ final class LlamaEngine {
             guard let url, let a = try? FileManager.default.attributesOfItem(atPath: url.path) else { return "-" }
             return "\((a[.size] as? NSNumber)?.int64Value ?? 0)@\(Int64((a[.modificationDate] as? Date)?.timeIntervalSince1970 ?? 0))"
         }
-        let key = Self.fnv1a("\(entry.name)|\(stamp(entry.model))|\(stamp(entry.adapter))|\(Self.stateVersion)|\(prefix)")
+        let loraStamp = loraOn == .analysis ? stamp(entry.adapter) : loraOn == .ocr ? "ocr:" + stamp(entry.ocrAdapter) : "-"
+        let key = Self.fnv1a("\(entry.name)|\(stamp(entry.model))|\(loraStamp)|\(Self.stateVersion)|\(prefix)")
         let file = Self.prefixDir.appendingPathComponent(String(format: "%016llx.bin", key))
         var cached = prefixCache[key]
         if cached == nil, let data = try? Data(contentsOf: file), data.count > 4 {

@@ -29,7 +29,11 @@ public class LocalModelPlugin: CAPPlugin, CAPBridgedPlugin {
             "gpu": LlamaEngine.useGPU,
             "dir": ModelStore.documentsDir.path,
         ]
-        if let first = ModelStore.resolve(call.getString("model")) { result["model"] = first.name }
+        if let first = ModelStore.resolve(call.getString("model")) {
+            result["model"] = first.name
+            result["tuned"] = first.adapter != nil // 文件夹里有 adapter.gguf：分析题意时启用它，并改用短系统提示
+            result["ocrTuned"] = first.ocrAdapter != nil // 文件夹里有 adapter-ocr.gguf：识别题目时启用它
+        }
         if models.isEmpty { result["error"] = "手机上还没有模型文件，请按说明把模型放进 App 的文稿目录（models 文件夹）" }
         call.resolve(result)
     }
@@ -64,6 +68,8 @@ public class LocalModelPlugin: CAPPlugin, CAPBridgedPlugin {
         )
         req.presencePenalty = call.getFloat("presencePenalty") ?? 0
         req.thinkBudget = call.getInt("thinkBudget") ?? 0
+        // lora："ocr"（识别）、"analysis" 或 true（分析、修正）；不传或 false 用原模型
+        req.lora = call.getString("lora").flatMap(LoraKind.init(rawValue:)) ?? ((call.getBool("lora") ?? false) ? .analysis : .none)
         engine.generate(req, onText: { [weak self] text, thinking in
             var data: [String: Any] = ["requestId": requestId, "text": text]
             if thinking { data["thinking"] = true }
