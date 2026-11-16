@@ -57,7 +57,7 @@ export function createDeviceApi({ plugin, model }) {
   }
   async function tuning(m) {
     const lora = (await status(m)).tuned;
-    return { system: lora ? ANALYZE_SYSTEM_TUNED : analyzeSystemFor(m), lora };
+    return { system: lora ? ANALYZE_SYSTEM_TUNED : analyzeSystemFor(m), lora, tuned: lora };
   }
 
   return {
@@ -77,21 +77,23 @@ export function createDeviceApi({ plugin, model }) {
       const ocr = (await status(m || model)).ocrTuned;
       return run({
         messages: [{ role: 'system', content: OCR_SYSTEM }, { role: 'user', content: ocrUserText(hint), image: stripDataUrl(image) }],
-        maxTokens: 2048, temperature: 0.1, ...(ocr ? { lora: 'ocr' } : {}),
+        // 2048 对长题不够（3355 字的过去问会断在公式中间）；典型输出只有 187 token，遇到结束符就停，不会额外耗时。
+        maxTokens: 3584, temperature: 0.1, ...(ocr ? { lora: 'ocr' } : {}),
       }, signal, onEvent, m || model);
     },
     analyze: async ({ text, image, hint, model: m, temperature }, signal, onEvent) => {
       const t = await tuning(m || model);
       return run({
         messages: [{ role: 'system', content: t.system }, { role: 'user', content: analyzeUserText(text, hint, !!image), image: stripDataUrl(image) }],
-        schema: ANALYSIS_SCHEMA, grammar: GRAMMARS.analysis, maxTokens: 4096, temperature: Number.isFinite(temperature) ? temperature : 0.2, lora: t.lora,
+        // 微调后的输出 p95 约 380 token、最长 512；4096 只会在跑飞时把最坏耗时拖长。
+        schema: ANALYSIS_SCHEMA, grammar: GRAMMARS.analysis, maxTokens: t.tuned ? 1536 : 4096, temperature: Number.isFinite(temperature) ? temperature : 0.2, lora: t.lora,
       }, signal, onEvent, m || model);
     },
     repair: async ({ text, commands, errors, issues, model: m }, signal, onEvent) => {
       const t = await tuning(m || model);
       return run({
         messages: [{ role: 'system', content: t.system }, { role: 'user', content: repairUserText(text, commands, errors, issues || []) }],
-        schema: REPAIR_SCHEMA, grammar: GRAMMARS.repair, maxTokens: 3072, temperature: 0.1, lora: t.lora,
+        schema: REPAIR_SCHEMA, grammar: GRAMMARS.repair, maxTokens: t.tuned ? 1536 : 3072, temperature: 0.1, lora: t.lora,
       }, signal, onEvent, m || model);
     },
     // 手机上默认不“思考”：小模型思考时容易反复说同一句话、迟迟不给解答，而且慢很多（实测 2B 直接作答也能答对）。

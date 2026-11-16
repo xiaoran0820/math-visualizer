@@ -187,6 +187,14 @@ export function parseExpression(src, opts = {}) {
     if (!isOp(tok, v)) throw new ParseError(`缺少「${v}」`);
   };
   const startsPrimary = (tok) => tok.t === 'num' || tok.t === 'id' || isOp(tok, '(');
+  // 现在在几层绝对值 |…| 里面（括号、函数参数里从 0 重新算）：在里面时，算式后面的 | 是右边的竖线；
+  // 不在里面时，算式后面的 | 是新的绝对值，前面省略了乘号（2/pi |pi/2 - x|、x|x|）
+  let absDepth = 0, cmpDepth = 0; // cmpDepth：正在解析比较式右边的那一侧（x > 0 || …里的 0）
+  const fresh = (parse) => { const d = [absDepth, cmpDepth]; absDepth = 0; cmpDepth = 0; try { return parse(); } finally { [absDepth, cmpDepth] = d; } };
+  // 两条竖线连写 ||：左边是比较式时是“或”（x < 0 || y > 1，比较式右边那一侧里的 || 也留给外层当“或”）；
+  // 在算式开头（||x| - 1|）、绝对值里面（|x - |y||）、或左边是普通的数和式子时（2||x| - 3|），是两条竖线
+  const isBool = (n) => n.type === 'cmp' || n.type === 'logic' || n.type === 'not' || (n.type === 'group' && isBool(n.arg));
+  const splitBars = (i) => { const pos = toks[i].pos; toks.splice(i, 1, { t: 'op', v: '|', pos }, { t: 'op', v: '|', pos: pos + 1 }); };
 
   function parseArgs() {
     // 已经消费了 '('
@@ -220,6 +228,7 @@ export function parseExpression(src, opts = {}) {
   }
 
   function parsePrefix() {
+    if (isOp(peek(), '||')) splitBars(p);
     const tok = next();
     if (tok.t === 'num') return { type: 'num', value: tok.v };
     if (tok.t === 'str') return { type: 'str', value: tok.v };
@@ -228,7 +237,7 @@ export function parseExpression(src, opts = {}) {
       // 已知命令/函数，或形如 Foo( 的未知命令（交给编译阶段报“未知命令”）
       if (isOp(peek(), '(') && (isCallable(name) || /^[A-Z][a-z]{2,}/.test(name))) {
         next();
-        return { type: 'call', name, args: parseArgs() };
+        return { type: 'call', name, args: fresh(parseArgs) };
       }
       if (isPrefixFunc(name) && startsPrimary(peek())) {
         return { type: 'call', name, args: [parseImplicitArg()] };
@@ -236,15 +245,22 @@ export function parseExpression(src, opts = {}) {
       return { type: 'var', name };
     }
     if (isOp(tok, '(')) {
-      const items = [parseExpr(0)];
-      while (isOp(peek(), ',')) { next(); items.push(parseExpr(0)); }
-      expect(')');
-      return items.length === 1 ? { type: 'group', arg: items[0] } : { type: 'tuple', items };
+      return fresh(() => {
+        const items = [parseExpr(0)];
+        while (isOp(peek(), ',')) { next(); items.push(parseExpr(0)); }
+        expect(')');
+        return items.length === 1 ? { type: 'group', arg: items[0] } : { type: 'tuple', items };
+      });
     }
     if (isOp(tok, '|')) {
-      const arg = parseExpr(0);
-      expect('|');
-      return { type: 'call', name: 'abs', args: [arg] };
+      absDepth++;
+      try {
+        const arg = parseExpr(0);
+        expect('|');
+        return { type: 'call', name: 'abs', args: [arg] };
+      } finally {
+        absDepth--;
+      }
     }
     if (isOp(tok, '-')) return { type: 'neg', arg: parseExpr(7) };
     if (isOp(tok, '+')) return parseExpr(7);
@@ -256,6 +272,7 @@ export function parseExpression(src, opts = {}) {
   function parseExpr(minBp) {
     let left = parsePrefix();
     for (;;) {
+      if (isOp(peek(), '||') && (absDepth > 0 || (cmpDepth === 0 && !isBool(left)))) splitBars(p);
       const tok = peek();
       if (tok.t === 'op') {
         const v = tok.v;
@@ -266,15 +283,19 @@ export function parseExpression(src, opts = {}) {
         if (CMP_OPS.includes(v)) {
           if (4 < minBp) break;
           const ops = [], args = [left];
-          while (peek().t === 'op' && CMP_OPS.includes(peek().v)) { ops.push(next().v); args.push(parseExpr(5)); }
+          while (peek().t === 'op' && CMP_OPS.includes(peek().v)) {
+            ops.push(next().v);
+            cmpDepth++;
+            try { args.push(parseExpr(5)); } finally { cmpDepth--; }
+          }
           left = { type: 'cmp', ops, args };
           continue;
         }
         if (v === '&&') { if (3 < minBp) break; next(); left = { type: 'logic', op: '&&', left, right: parseExpr(4) }; continue; }
         if (v === '||') { if (2 < minBp) break; next(); left = { type: 'logic', op: '||', left, right: parseExpr(3) }; continue; }
         if (v === '=') { if (1 < minBp) break; next(); left = { type: 'eq', left, right: parseExpr(2) }; continue; }
-        if (v === '(' && 6 >= minBp) {
-          // 隐式乘法：(x+1)(x-1)、a(x+1)
+        if ((v === '(' || (v === '|' && absDepth === 0)) && 6 >= minBp) {
+          // 隐式乘法：(x+1)(x-1)、a(x+1)、2/pi |pi/2 - x|
           left = { type: 'bin', op: '*', left, right: parseExpr(7) };
           continue;
         }

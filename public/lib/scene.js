@@ -813,9 +813,33 @@ export class Scene {
     };
   }
 
-  // 收集“自由变量”：f(x)、g(t) 这种整体代表函数本身的写法里的 x、t 不算
+  // 被积函数直接写成式子时的积分变量：式子里没有定义过的那个字母（u、t、θ…）；
+  // 没有这样的字母、但式子里有 x 时就是 x（F(x) = Integral(abs(cos(x)), 0, x) 里被积式的 x 是积分变量）。
+  // 写函数名 f、f(x)、Function(…)、Derivative(…) 时不是式子，返回 null
+  integrandVar(a, locals) {
+    if (a.type === 'var' && this.byName.get(a.name)?.kind === 'function') return null;
+    if (a.type === 'call' && a.args.length === 1 && this.byName.get(a.name)?.kind === 'function' && a.args[0].type === 'var' && /^[xt]$/.test(a.args[0].name)) return null;
+    if (a.type === 'call' && ['Function', 'Derivative'].includes(ALIASES[a.name] || a.name)) return null;
+    const vars = [...collectVars(a)];
+    const loose = vars.filter((v) => !this.byName.has(v) && !(v in CONSTANTS) && !(locals && locals.has(v)));
+    if (loose.length === 1) return loose[0];
+    if (!loose.length && vars.includes('x') && !this.byName.has('x')) return 'x';
+    return null;
+  }
+
+  // 收集“自由变量”：f(x)、g(t) 这种整体代表函数本身的写法里的 x、t 不算；积分式里的积分变量也不算
   freeVars(ast, out = new Set()) {
     if (!ast || typeof ast !== 'object') return out;
+    if (ast.type === 'call' && ['Integral', 'IntegralBetween'].includes(ALIASES[ast.name] || ast.name)) {
+      const nf = (ALIASES[ast.name] || ast.name) === 'Integral' ? 1 : 2;
+      ast.args.forEach((n, i) => {
+        const v = i < nf ? this.integrandVar(n, null) : null;
+        const inner = this.freeVars(n, new Set());
+        if (v) inner.delete(v);
+        inner.forEach((w) => out.add(w));
+      });
+      return out;
+    }
     if (ast.type === 'var') out.add(ast.name);
     if (ast.type === 'call' && ast.args.length === 1 && ast.args[0].type === 'var' && /^[xt]$/.test(ast.args[0].name)
       && this.byName.get(ast.name)?.kind === 'function') return out;
@@ -930,6 +954,16 @@ export class Scene {
     name = ALIASES[name] || name;
     const fn = CMD[name];
     if (!fn) throw new ParseError(`未知命令「${node.name}」`);
+    // 被积函数直接写成式子：Integral(abs(cos(x)), 0, t)、Integral(1/(1 + u^2), -x, x)、IntegralBetween(x^2, x, 0, 1)。
+    // 积分变量见 integrandVar；写函数名 f 或 f(x) 时不变
+    if (name === 'Integral' || name === 'IntegralBetween') {
+      const nf = name === 'Integral' ? 1 : 2;
+      const fs = args.map((a, i) => {
+        const v = i < nf ? this.integrandVar(a, locals) : null;
+        return v ? this.makeFunction(this.compile(a, this.withLocals(locals, [v])), v) : c(a);
+      });
+      return (env) => fn(...fs.map((g) => g(env)));
+    }
     const fs = args.map(c);
     const needCtx = CTX_CMDS.has(name);
     const arity = fn.length;
@@ -1020,7 +1054,8 @@ export class Scene {
 
     // 「A(2, 3)」这种教材写法 → A = (2, 3)
     const short = /^([A-Z][A-Za-z0-9_]*'*)\s*(\(.*\))\s*((["“].*)?)$/.exec(src);
-    if (short && !this.isCallable(short[1]) && short[2].includes(',')) src = `${short[1]} = ${short[2]} ${short[3] || ''}`.trim();
+    // 括号里有等号的不是坐标：F(x) = Integral(f, 0, x) 是函数定义（2026-11-13 第二组开发集，以前被误当成点、画成了方程曲线）
+    if (short && !this.isCallable(short[1]) && short[2].includes(',') && !short[2].includes('=')) src = `${short[1]} = ${short[2]} ${short[3] || ''}`.trim();
 
     let name = null, fvar = null, sep = null, rhs = src;
     const m = LHS_RE.exec(src);

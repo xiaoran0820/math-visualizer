@@ -6,10 +6,11 @@ export const CATEGORIES = ['函数', '平面几何', '解析几何', '立体几�
 export const OCR_SYSTEM = `你是数学题目识别助手。请把图片中的数学题完整、准确地转写出来。
 要求：
 1. 转写题干和所有小问，保留原有编号（如 (1)(2)）和选择题选项（A. B. C. D.），不要解答。
-2. 数学式一律用 LaTeX：行内公式写在 $...$ 中，独立公式写在 $$...$$ 中。例如 $f(x)=x^2-2x$、$\\triangle ABC$、$\\angle A=60^\\circ$、$\\dfrac{1}{2}$。
-3. 如果图片中有几何图形、函数图像或表格，在最后另起一行写「【图形】」，然后描述：有哪些点及其大致位置（上、下、左、右）、哪些点之间连了线、哪些线是虚线、图中标注的数字和角度。没有图形就不要写这一部分。
-4. 看不清的地方写【?】，不要编造。
-5. 只输出题目内容，不要输出任何解释或解答。`;
+2. 数学式一律用 LaTeX：行内公式写在 $...$ 中，独立公式写在 $$...$$ 中。例如 $f(x)=x^2-2x$、$\\triangle ABC$、$\\angle A=60^\\circ$、$\\dfrac{1}{2}$。下标必须带花括号，例如 $a_{n+1}$；分式写成 $\\frac{1}{2}$。
+3. 原文是什么语言就用什么语言：日文保留日文（假名和汉字照原文），英文保留英文，不要翻译成中文。
+4. 如果图片中有几何图形、函数图像或表格，在最后另起一行写「【图形】」，然后描述：有哪些点及其大致位置（上、下、左、右）、哪些点之间连了线、哪些线是虚线、图中标注的数字和角度。这一部分最多 8 行、300 字；没有图形就不要写。
+5. 看不清的地方写【?】，不要编造。
+6. 只输出题目内容，不要输出任何解释或解答。`;
 
 export function ocrUserText(hint) {
   return `请识别图片中的数学题。${hint ? `\n补充说明：${hint}` : ''}`;
@@ -34,6 +35,42 @@ export function ocrBody(text) {
 export const tooLittleText = (text) => ocrBody(text).length < 15;
 
 export const OCR_RETRY_HINT = '上一次几乎没有识别出题目文字。请逐行转写题目的文字（原文是日文、英文就照原文写，不要翻译），包括题号、题干和每个小问，数学式用 LaTeX。图中没有几何图形、函数图像或表格时，不要写【图形】。';
+
+// 2026-11-15：不同的问题给不同的重试提示，比笼统地再说一遍“文字太少”有效。
+// 过去问里 4 道影响题意的识别错误：2 道整题译成中文（假名比例 0%）、1 道编造图形描述、1 道漏了方格图。
+export const OCR_RETRY_TRUNCATED = '上一次的输出在公式中间断了，题目没有写完。请完整转写题干和每个小问；如果内容太长，先保证题干和已知条件完整，图形描述放在最后，最多 6 行。';
+export const OCR_RETRY_TRANSLATED = '上一次把题目翻译成了中文。请保留原文的语言和文字（日文就写日文，假名和汉字照原文），不要翻译；只把数学式写成 LaTeX。';
+export const OCR_RETRY_FIGURE = '上一次没有描述图中的图形。如果图中确实有图形或表格，请在最后用【图形】开头，写清各点的位置、哪些点相连、哪些线是虚线、图里的数字和角度；没有图形就不要写。';
+export const OCR_RETRY_REPEAT = '上一次有整行内容重复了很多遍，题目没有写完。请只输出一遍，不要重复同一行。';
+
+/**
+ * 按质量问题的类型拼重试提示；用户自己的补充说明放在最后，优先听用户的。
+ * @param {string|string[]} reasons 'too-little' | 'translated' | 'truncated' | 'repetitive' | 'figure'
+ */
+export function ocrRetryHintFor(reasons, hint = '') {
+  const list = Array.isArray(reasons) ? reasons : [reasons];
+  const parts = [];
+  if (list.includes('too-little')) parts.push(OCR_RETRY_HINT);
+  if (list.includes('translated')) parts.push(OCR_RETRY_TRANSLATED);
+  if (list.includes('truncated')) parts.push(OCR_RETRY_TRUNCATED);
+  if (list.includes('repetitive')) parts.push(OCR_RETRY_REPEAT);
+  if (list.includes('figure')) parts.push(OCR_RETRY_FIGURE);
+  return [...parts, hint].filter(Boolean).join('\n');
+}
+// 模型偶尔在识别结果前面加一句中文开场白（2026-11-15：手机原 2B 的 131 份过去问识别结果里有 4 份，
+// 例如“根据图片内容，以下是识别出的数学题：”），会跟着题目一起送去分析。只去掉开头冒号（或“如下”）之前的这种话：
+// 以“根据 / 以下 / 下面 / 这是 / 好的 / 图片 / 识别结果 / 转写结果”开头，提到图片、照片、识别、转写、原文或题目，
+// 40 字以内，不含公式和假名。题目自己的“根据图中信息，回答下列问题：”“以下是某班学生的成绩：”不算（没有提到这些词）。
+const OCR_PREAMBLE = /^\s*((?:根据|以下|下面|这是|好的|图片|识别结果|转写结果)[^\n$：:]{0,38}?)(?:如下[。：:]?|[：:])[ \t]*\n?/;
+const OCR_PREAMBLE_WORDS = /图片|照片|识别|转写|原文|题目|数学题/;
+export function dropOcrPreamble(text) {
+  const s = String(text || '');
+  const m = s.match(OCR_PREAMBLE);
+  if (!m || !OCR_PREAMBLE_WORDS.test(m[1]) || /[ぁ-ゟ゠-ヿ]/.test(m[1])) return s;
+  const rest = s.slice(m[0].length).replace(/^\s+/, '');
+  return rest ? rest : s; // 去掉后什么都不剩，就保留原样
+}
+
 // 识别结果整段重复（2B 偶尔把整道题抄两遍，2026-11-10 R7-1 实测）：只留一遍。
 // 只处理“全文就是同一段反复出现”（最后一遍可以不完整）的情况，题目里个别相同的行不受影响。
 export function dedupeOcr(text) {
@@ -49,8 +86,167 @@ export function dedupeOcr(text) {
   return String(text).trim();
 }
 
+// 【图形】部分跑偏：原题没有图时，模型偶尔在【图形】下反复写同样几行，或者开始解题、编造别的题，一直写到长度上限
+// （2026-11-12：过去问第二组 2 道原地打转，一道要 17 秒，平均 3 秒；生成的评测图 1 张写了一大段别的题的解答）。
+// 判定：【图形】之后，同一行有内容的文字（去掉开头的列表符号，8 个字以上）出现第 3 次，或者这一部分超过 350 字
+// （正常的图形描述：生成图的标准答案最长 77 字，第二组开发集里真实的图最长 259 字）。
+// App 边识别边检查，发现就停下；这时的图形描述已经不可信，整段去掉，只留题目文字。
+const FIGURE_MARK = '【图形】';
+// 2026-11-15 从 600 收紧到 350：正常图最长 259 字，600 只会让小模型在跑偏时多写 3～5 秒。
+const FIGURE_MAX = 350;
+const loopKey = (line) => line.trim().replace(/^[-*•·]\s*/, '').replace(/\s+/g, ' ');
+export function figureRunsAway(text) {
+  const s = String(text || '');
+  const at = s.indexOf(FIGURE_MARK);
+  if (at < 0) return false;
+  const figure = s.slice(at + FIGURE_MARK.length);
+  if ([...figure.trim()].length > FIGURE_MAX) return true;
+  const seen = new Map();
+  for (const line of figure.split('\n')) {
+    const key = loopKey(line);
+    if ([...key].length < 8) continue;
+    const n = (seen.get(key) || 0) + 1;
+    if (n >= 3) return true;
+    seen.set(key, n);
+  }
+  return false;
+}
+export function dropRunawayFigure(text) {
+  const s = String(text || '');
+  return figureRunsAway(s) ? s.slice(0, s.indexOf(FIGURE_MARK)).trim() : s;
+}
+// 正文整行重复（【图形】之前的题目文字）：边识别边停，避免小模型把同一行写满输出上限。
+// 只认 12 字以上的整行，避免把表格里的短行或正常重复的编号误判成跑偏。
+export function bodyRepeats(text) {
+  const body = String(text || '').replace(/【图形】[\s\S]*$/, '');
+  const seen = new Map();
+  for (const line of body.split('\n')) {
+    const key = line.trim().replace(/^[-*•·]\s*/, '').replace(/\s+/g, ' ');
+    if ([...key].length < 12) continue;
+    const n = (seen.get(key) || 0) + 1;
+    if (n >= 3) return true;
+    seen.set(key, n);
+  }
+  return false;
+}
+// 边识别边检查：传入到目前为止的识别文字，每多 40 个字查一次，跑偏时调用一次 stop()；返回是否已经跑偏
+export function ocrRunawayWatch(stop) {
+  let checked = 0, fired = false;
+  return (text) => {
+    if (fired || text.length - checked < 40) return fired;
+    checked = text.length;
+    if (figureRunsAway(text) || bodyRepeats(text)) { fired = true; stop(); }
+    return fired;
+  };
+}
+
 // 重新识别时的补充说明：用户自己写的（例如「只识别第 2 题」）放在最后，优先听用户的
 export const ocrRetryHint = (hint) => [OCR_RETRY_HINT, hint].filter(Boolean).join('\n');
+
+// ---------------- 识别质量 ----------------
+// 题目文字里“指向一张已有的图或表”的说法。只认这些：单独一个“図”“グラフ”“图”太宽——
+// “図示せよ”“グラフをかけ”“画出函数的图像”是要学生自己画；“曲線で囲まれた図形”是文字定义的区域；
+// 模型自己加的“根据图片内容”说的是照片。这些情况原题都没有图（2026-11-15：131 份真实识别结果里，旧规则 8 份提醒缺图）。
+const FIGURE_REF = new RegExp([
+  '(?:下|次|右|左|上)の(?:図|グラフ|表)', // 下の図、右のグラフ、次の表
+  '(?:下|次|右|左|上)図', // 下図、右図
+  '図\\s*[0-9０-９]', // 図1、図 2
+  '図(?:の|に|で|は|中|を参照|において|より)', // 図のように、図に示す、図中（“図形”“図示”不算）
+  '如(?:下|右|左|上)?图', '(?:下|右|左|上)图', '图\\s*[0-9０-９]', '图(?:中|所示)', '见图', // 如图、下图、图中、见图
+  '(?:如下|下|右|左)表', '表格', '表\\s*[0-9０-９：:]', // 下表、表格、表1、表：
+].join('|'));
+
+// 题目语言：选“自动”时按上一道题判断。被译成中文的结果没有假名，单看这一次判断不出来；上一道是日文题，这道多半也是。
+export function ocrLangFor(setting, lastLang = '') {
+  if (setting === 'ja' || setting === 'zh') return setting;
+  return lastLang === 'ja' ? 'ja' : 'auto';
+}
+// 识别完记下这道题的语言：假名多的是日文；一个假名都没有的算中文（重新识别后仍没有假名也算，
+// 这样从日文题换成中文题时只多识别一次）；字太少或介于两者之间时不改。
+export function ocrLangOf(q, lastLang = '') {
+  if (!q || q.tooLittle) return lastLang;
+  if (q.kanaRatio >= 0.05) return 'ja';
+  if (q.kana === 0 && q.chars >= 30) return 'zh';
+  return lastLang;
+}
+// 不只看字数。过去问里 4 道影响题意的错误：2 道整题译成中文（假名比例 0%）、1 道在公式中间断掉、
+// 1 道编造/漏掉图形描述。字数检查抓不到这些，所以把“公式是否闭合、有没有被翻译、图形是否可信”也算进来。
+// lang: 'ja' 时检查假名比例（日文题正常中位数约 24%，低于 5% 多半是被译成了中文）；
+//       'auto' / 'zh' 不检查翻译（中文题本来就没有假名）。
+export function ocrQuality(text, { lang = 'auto' } = {}) {
+  const raw = String(text || '');
+  const at = raw.indexOf('【图形】');
+  const bodyRaw = (at >= 0 ? raw.slice(0, at) : raw).trim();
+  const body = bodyRaw.replace(/\s+/g, '');
+  const chars = [...body].length;
+  const kana = (body.match(/[\u3041-\u309f\u30a0-\u30ff]/g) || []).length;
+  const kanaRatio = chars ? kana / chars : 0;
+  // $ 和花括号是否配对（跳过 \$、\{ 这类转义）
+  let dollars = 0, braces = 0, escaped = false;
+  for (const ch of bodyRaw) {
+    if (escaped) { escaped = false; continue; }
+    if (ch === '\\') { escaped = true; continue; }
+    if (ch === '$') dollars++;
+    else if (ch === '{') braces++;
+    else if (ch === '}') braces--;
+  }
+  const latexBalanced = dollars % 2 === 0 && braces === 0;
+  const trimmed = bodyRaw.trim();
+  const endsCleanly = !trimmed || /[。．.!?！？）)\]】」』$]\s*$/.test(trimmed);
+  const incomplete = !latexBalanced || /\\$/.test(trimmed) || /[=+\-*/^]\s*$/.test(trimmed);
+  const lines = trimmed ? trimmed.split('\n').filter((l) => l.trim()).length : 0;
+  // 整行重复（小模型偶尔把同一行写几十遍）：整段抄两遍由 dedupeOcr 处理，这里只抓“某一行出现 3 次以上”。
+  // 和边识别边停用同一个判断（12 字以上的行），免得 8～11 字的行重复时中途不停、事后却又重新识别一遍。
+  const repetitive = bodyRepeats(raw);
+  const questions = (bodyRaw.match(/[（(]\s*[1-9１-９]\s*[)）]/g) || []).length;
+  const hasFigure = at >= 0;
+  const figure = hasFigure ? raw.slice(at + 4).trim() : '';
+  const figureChars = [...figure].length;
+  const figureRunaway = hasFigure && figureRunsAway(raw);
+  const bodyMentionsFigure = FIGURE_REF.test(bodyRaw);
+  const tooLittle = chars < 15;
+  // 自动模式只有在已经出现假名时才按日文评分；被译成中文的结果没有假名，必须由用户把语言设成日文才检查。
+  const effectiveLang = lang === 'auto' && kanaRatio >= 0.03 ? 'ja' : lang;
+  const likelyTranslated = effectiveLang === 'ja' && chars >= 120 && kana < 5 && kanaRatio < 0.05;
+  const reasons = [];
+  if (tooLittle) reasons.push('too-little');
+  if (likelyTranslated) reasons.push('translated');
+  if (!tooLittle && incomplete) reasons.push('truncated');
+  if (repetitive) reasons.push('repetitive');
+  return {
+    chars, kana, kanaRatio, lines, questions,
+    latexBalanced, endsCleanly, incomplete, repetitive,
+    tooLittle, likelyTranslated,
+    hasFigure, figureChars, figureRunaway,
+    bodyMentionsFigure,
+    figureMissing: bodyMentionsFigure && !hasFigure,
+    effectiveLang, reasons, needsRetry: reasons.length > 0,
+  };
+}
+
+// 两遍识别结果谁更好：先看质量分，同分再看题目文字长度。
+export function ocrScore(text, { lang = 'auto' } = {}) {
+  const q = ocrQuality(text, { lang });
+  let s = Math.min(10, q.chars / 20);
+  if (q.latexBalanced) s += 6;
+  if (q.incomplete) s -= 8; // 断在公式中间的长结果不能因为“字多”赢过干净的短结果
+  if (q.endsCleanly) s += 2;
+  if (q.lines >= 2) s += 1;
+  if (q.effectiveLang === 'ja') s += q.likelyTranslated ? -12 : q.kanaRatio >= 0.05 ? 5 : 0;
+  s += Math.min(3, q.questions);
+  if (q.figureRunaway) s -= 6;
+  if (q.repetitive) s -= 8; // 同一行写几十遍：字多不代表识别得好
+  if (q.tooLittle) s -= 10;
+  return s;
+}
+
+export function pickBetterOcr(a, b, opts = {}) {
+  if (!a) return false;
+  if (!b) return true;
+  const sa = ocrScore(a, opts), sb = ocrScore(b, opts);
+  if (Math.abs(sa - sb) > 0.01) return sa > sb;
+  return ocrBody(a).length > ocrBody(b).length;
+}
 
 // 去掉模型输出外面的代码块标记和思考标签（App 显示识别结果、解题思路前都先这样处理；评测脚本用同一份）
 export const cleanModelText = (t) => String(t).replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/i, '').replace(/<\/?think>/g, '').trim();

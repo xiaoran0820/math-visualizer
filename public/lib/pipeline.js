@@ -186,7 +186,7 @@ export async function runPipeline({ text, image = null, hint = '', model, api, s
     emit('repair-start', { issues, errors });
     const t0 = Date.now();
     calls++;
-    const { text: buf } = await generateWatched(
+    const { text: buf, stats } = await generateWatched(
       (sig, onEvent) => api.repair({ text, model, commands: cand.commands, errors, issues }, sig, onEvent), signal);
     const seconds = (Date.now() - t0) / 1000;
     const fixed = parseRepair(buf);
@@ -205,7 +205,7 @@ export async function runPipeline({ text, image = null, hint = '', model, api, s
       }
     }
     attempts.push({ kind: 'repair', seconds, accepted, reason, ...(next ? summarize(next) : {}) });
-    emit('repair-done', { accepted, reason, candidate: next, seconds });
+    emit('repair-done', { accepted, reason, candidate: next, seconds, stats });
     return accepted ? next : null;
   };
 
