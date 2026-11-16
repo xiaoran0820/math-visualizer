@@ -80,12 +80,17 @@ test('模型文件夹里有训练出的 LoRA 时：分析、修正启用它并�
   assert.ok(!ocr.lora && !solve.lora);
   assert.ok(analyze.messages[0].content.length < 1000, '应该用短系统提示');
   assert.equal(analyze.messages[0].content, repair.messages[0].content);
+  // 微调后的输出很短：分析/修正的上限收紧，防止跑飞时白等几十秒；OCR 反而要够长，避免长题被截断
+  assert.equal(analyze.maxTokens, 1536);
+  assert.equal(repair.maxTokens, 1536);
+  assert.equal(ocr.maxTokens, 3584);
   // 没有 LoRA 的模型：照旧用完整的系统提示，不带 lora
   const plain = fakePlugin();
   const api2 = createDeviceApi({ plugin: plain, model: 'm' });
   await api2.analyze({ text: '题目' }, undefined, () => {});
   assert.ok(!plain.calls[0].lora);
   assert.ok(plain.calls[0].messages[0].content.length > 3000);
+  assert.equal(plain.calls[0].maxTokens, 4096);
 });
 
 test('模型文件夹里有识别用的 LoRA（adapter-ocr.gguf）时：识别启用它（lora: "ocr"），提示词不变；解题不启用', async () => {

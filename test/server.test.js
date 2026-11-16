@@ -145,3 +145,29 @@ test('重新生成用的温度、修正时附带的“不符合题目的条件�
     assert.doesNotMatch(user, /其中这些命令有错误/);
   });
 });
+
+test('token 预算：微调模型分析/修正收紧到 1536，OCR 3584；未微调模型仍 4096', async () => {
+  const seen = [];
+  async function* chatStream(params) {
+    seen.push(params);
+    yield { type: 'content', text: '{}' };
+    yield { type: 'done', stats: {} };
+  }
+  const tuned = { ...fakeConfig, visionModel: 'shuxing-2b-v3', textModel: '' };
+  await withServer({ chatStream, config: tuned }, async (url) => {
+    await events(await post(`${url}/api/analyze`, { text: '题' }));
+    await events(await post(`${url}/api/repair`, { text: '题', commands: [], errors: [] }));
+    await events(await post(`${url}/api/recognize`, { image: 'data:image/png;base64,QUJD' }));
+    assert.deepEqual(seen.map((p) => p.options.num_predict), [1536, 1536, 3584]);
+  });
+  const plain = [];
+  async function* plainStream(params) {
+    plain.push(params);
+    yield { type: 'content', text: '{}' };
+    yield { type: 'done', stats: {} };
+  }
+  await withServer({ chatStream: plainStream }, async (url) => {
+    await events(await post(`${url}/api/analyze`, { text: '题' }));
+    assert.equal(plain[0].options.num_predict, 4096, '没有 shuxing 名字的模型保持原上限');
+  });
+});
