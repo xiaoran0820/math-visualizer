@@ -1,0 +1,213 @@
+{
+  "date": "2026-11-10T05:30:42.175Z",
+  "problems": [
+    "quad-roots",
+    "isosceles"
+  ],
+  "withOcr": true,
+  "results": [
+    {
+      "summary": {
+        "model": "qwen3.5:4b-q4_K_M",
+        "problems": 2,
+        "jsonValid": 1,
+        "firstPassRate": 0.5,
+        "repairTried": 1,
+        "repairAccepted": 1,
+        "finalRunnableRate": 1,
+        "checkPassRate": 1,
+        "fullyCorrectRate": 1,
+        "firstChecksPassRate": 1,
+        "ocrAccuracy": 0.9675925925925926,
+        "ocrSeconds": 4.0565,
+        "analyzeSeconds": 5.7615,
+        "tokensPerSecond": 63.997791469936864,
+        "memoryBytes": 3689215425
+      },
+      "rows": [
+        {
+          "id": "quad-roots",
+          "category": "函数",
+          "ocr": {
+            "accuracy": 0.962962962962963,
+            "seconds": 3.159,
+            "text": "1. 已知二次函数 $y = x^2 - 2x - 3$，求它与 $x$ 轴的交点坐标和顶点坐标。\n\n【图形】无"
+          },
+          "analyzeSeconds": 5.863,
+          "tokensPerSecond": 63.91312198024765,
+          "json": "ok",
+          "commands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, x-axis, 1)",
+            "B = Intersect(f, x-axis, 2)",
+            "C = Vertex(f)",
+            "Segment(A, B)",
+            "Point(C)",
+            "Text(\"交点 A(-1,0)\", (-1.5, -0.5)) #hl",
+            "Text(\"交点 B(3,0)\", (3.5, -0.5)) #hl",
+            "Text(\"顶点 C(1,-4)\", (1.2, -4.5)) #result"
+          ],
+          "firstErrors": 5,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "1 个函数/直线"
+            }
+          ],
+          "repair": {
+            "seconds": 4.023,
+            "accepted": true,
+            "reason": "已修正"
+          },
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "1 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, Line(-1, 0, 1, 0), 1)",
+            "B = Intersect(f, Line(-1, 0, 1, 0), 2)",
+            "C = (1, -4)",
+            "Segment(A, B)",
+            "Point(C) \"顶点\" #result",
+            "Text(\"交点 A(-1,0)\", (-1.5, -0.5)) #hl",
+            "Text(\"交点 B(3,0)\", (3.5, -0.5)) #hl"
+          ]
+        },
+        {
+          "id": "isosceles",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9722222222222222,
+            "seconds": 4.954,
+            "text": "5. 如图，在 $\\triangle ABC$ 中，$AB = AC = 5$，$BC = 6$，$D$ 为 $BC$ 的中点，$DE \\perp AC$ 于点 $E$，求 $DE$ 的长。\n\n【图形】\n- 有一个三角形 $\\triangle ABC$，其中 $A$ 在上方，$B$ 和 $C$ 在下方。\n- 线段 $AD$ 从顶点 $A$ 垂直向下连接到边 $BC$ 的中点 $D$。\n- 线段 $DE$ 从点 $D$ 出发，垂直连接到边 $AC$ 上的点 $E$。\n- 所有线条都是实线。"
+          },
+          "analyzeSeconds": 5.66,
+          "tokensPerSecond": 64.08246095962608,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "D = Midpoint(B, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "Segment(B, C)",
+            "Polygon(A, B, C)",
+            "Segment(A, D)",
+            "Line(A, C)",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"DE = {Distance(D, E)}\", (0.5, 1.2))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "D = Midpoint(B, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "Segment(B, C)",
+            "Polygon(A, B, C)",
+            "Segment(A, D)",
+            "Line(A, C)",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"DE = {Distance(D, E)}\", (0.5, 1.2))"
+          ]
+        }
+      ]
+    }
+  ]
+}

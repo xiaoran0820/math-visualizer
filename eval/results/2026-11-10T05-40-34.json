@@ -1,0 +1,1931 @@
+{
+  "date": "2026-11-10T05:40:34.212Z",
+  "problems": [
+    "quad-roots",
+    "quad-param",
+    "line-parabola",
+    "trig",
+    "isosceles",
+    "right-median",
+    "rectangle",
+    "tangent",
+    "parallelogram",
+    "ellipse",
+    "circle-line",
+    "lp",
+    "cube",
+    "pyramid-sphere",
+    "cylinder",
+    "moving-point",
+    "meeting"
+  ],
+  "withOcr": true,
+  "results": [
+    {
+      "summary": {
+        "model": "qwen3.5:2b-q4_K_M",
+        "problems": 17,
+        "jsonValid": 0.9411764705882353,
+        "firstPassRate": 0.23529411764705882,
+        "repairTried": 12,
+        "repairAccepted": 1,
+        "finalRunnableRate": 0.29411764705882354,
+        "checkPassRate": 0.7037037037037037,
+        "fullyCorrectRate": 0.4117647058823529,
+        "firstChecksPassRate": 0.7037037037037037,
+        "ocrAccuracy": 0.9501703367432268,
+        "ocrSeconds": 2.784857142857143,
+        "analyzeSeconds": 8.965176470588235,
+        "tokensPerSecond": 105.79329501795465,
+        "memoryBytes": 1870156266
+      },
+      "rows": [
+        {
+          "id": "quad-roots",
+          "category": "函数",
+          "ocr": {
+            "accuracy": 0.962962962962963,
+            "seconds": 2.355,
+            "text": "1. 已知二次函数 $y = x^2 - 2x - 3$，求它与 $x$ 轴的交点坐标和顶点坐标。\n\n【图形】无"
+          },
+          "analyzeSeconds": 5.491,
+          "tokensPerSecond": 107.32345860826337,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "f(x) = x^2 - 2x - 3",
+            "P = Vertex(f, 1) \"顶点\" #result",
+            "g(x) = Function(x^2 - 2x - 3, 0, 5) #hl",
+            "h(x) = If(x < -1, 0, If(x > 3, 0, x^2 - 2x - 3)) #eq1 #eq2",
+            "l: y = 0 #aux",
+            "Text(\"交点 A(-1, 0), B(3, 0)\", (0.5, 1.5))",
+            "Text(\"顶点 V(1, -4)\", (0.5, -5))",
+            "Angle(B, P, h(x)) \"α\" #eq1",
+            "Angle(A, P, l) \"β\" #eq2",
+            "Integral(f, 0, 5) \"面积\" #result"
+          ],
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "4 个函数/直线"
+            }
+          ],
+          "repair": {
+            "seconds": 2.39,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "4 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "f(x) = x^2 - 2x - 3",
+            "P = Vertex(f, 1) \"顶点\" #result",
+            "g(x) = Function(x^2 - 2x - 3, 0, 5) #hl",
+            "h(x) = If(x < -1, 0, If(x > 3, 0, x^2 - 2x - 3)) #eq1 #eq2",
+            "l: y = 0 #aux",
+            "Text(\"交点 A(-1, 0), B(3, 0)\", (0.5, 1.5))",
+            "Text(\"顶点 V(1, -4)\", (0.5, -5))",
+            "Angle(B, P, h(x)) \"α\" #eq1",
+            "Angle(A, P, l) \"β\" #eq2",
+            "Integral(f, 0, 5) \"面积\" #result"
+          ]
+        },
+        {
+          "id": "quad-param",
+          "category": "函数",
+          "analyzeSeconds": 5.694,
+          "tokensPerSecond": 103.45987706151888,
+          "json": "ok",
+          "commands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(a) = If(a < 0, f(2), If(a > 2, f(0), f(a))) #hl",
+            "l: x = a #aux",
+            "P = (m, g(a)) \"最小值点\" #result",
+            "Text(\"g(a) = {g(a)}\", (1, 3))",
+            "Region(x >= 0, y <= f(x), x <= 2, y >= 0) #eq1",
+            "Text(\"f(0) = {f(0)}\", (1, 7))",
+            "Text(\"f(2) = {f(2)}\", (1, 8))",
+            "Text(\"f(a) = {f(a)}\", (1, 9))"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "repair": {
+            "seconds": 2.442,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(a) = If(a < 0, f(2), If(a > 2, f(0), f(a))) #hl",
+            "l: x = a #aux",
+            "P = (m, g(a)) \"最小值点\" #result",
+            "Text(\"g(a) = {g(a)}\", (1, 3))",
+            "Region(x >= 0, y <= f(x), x <= 2, y >= 0) #eq1",
+            "Text(\"f(0) = {f(0)}\", (1, 7))",
+            "Text(\"f(2) = {f(2)}\", (1, 8))",
+            "Text(\"f(a) = {f(a)}\", (1, 9))"
+          ]
+        },
+        {
+          "id": "line-parabola",
+          "category": "函数",
+          "analyzeSeconds": 3.184,
+          "tokensPerSecond": 105.42927836953622,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "l: y = x + 1 #aux",
+            "f(x) = x^2 - 1 #hl",
+            "Intersect(l, f(x), 1) #eq1",
+            "Intersect(l, f(x), 2) #eq2",
+            "Text(\"交点1：(-1, 0)\", (-1.5, 0.5))",
+            "Text(\"交点2：(2, 3)\", (2.5, 2.5))"
+          ],
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "repair": {
+            "seconds": 1.606,
+            "accepted": true,
+            "reason": "已修正"
+          },
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/4"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "l: y = x + 1",
+            "f(x) = x^2 - 1",
+            "P = Intersect(l, f(x), 1)",
+            "Q = Intersect(l, f(x), 2)",
+            "Text(\"交点 1：(-1, 0)\", (-1.5, 0.5))",
+            "Text(\"交点 2：(2, 3)\", (2.5, 2.5))"
+          ]
+        },
+        {
+          "id": "trig",
+          "category": "三角函数",
+          "ocr": {
+            "accuracy": 0.8666666666666667,
+            "seconds": 1.99,
+            "text": "4.画出函数 $y = 2\\sin(2x + \\pi/3)$ 的图像，并指出它的最小正周期和最大值。"
+          },
+          "analyzeSeconds": 7.483,
+          "tokensPerSecond": 101.85101034777776,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "f(x) = 2 * sin(2*x + pi/3)",
+            "g(x) = Function(2*sin(2*x + pi/3), 0, pi) #hl",
+            "l: x = 0 #aux",
+            "P = (0, 2*sqrt(3)/2) \"起点\" #result",
+            "Text(\"周期 T=\\pi\", (1, 3))",
+            "Text(\"最大值 M=2\", (1, 5))",
+            "Circle((0,0), 2) \"振幅\" #eq1",
+            "Polygon(P, P, P, P) \"正弦曲线\" #hl",
+            "Text(\"最小正周期 T = \\frac{2\\pi}{2} = \\pi\", (1, 7))",
+            "Text(\"最大值 M = 2\", (1, 9))",
+            "Angle(0, P, P) \"π/3\" #eq1",
+            "Text(\"初相 φ=π/3\", (1, 11))",
+            "Integral(f(x), 0, pi) \"面积\" #result",
+            "Region(x >= 0, y <= 2*sqrt(3)/2, x >= 0, y >= 0) \"第一象限部分\" #eq1",
+            "Text(\"图像最高点\", (1, 13))",
+            "Text(\"图像最低点\", (1, 15))",
+            "Text(\"周期 T = π\", (1, 17))",
+            "Text(\"最大值 M = 2\", (1, 19))",
+            "ShowAxes(true)",
+            "ZoomIn(0, -sqrt(3)/2, pi/2, pi + sqrt(3)/2)"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "repair": {
+            "seconds": 3.099,
+            "accepted": false,
+            "reason": "修正后图形对象变少了"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "f(x) = 2 * sin(2*x + pi/3)",
+            "g(x) = Function(2*sin(2*x + pi/3), 0, pi) #hl",
+            "l: x = 0 #aux",
+            "P = (0, 2*sqrt(3)/2) \"起点\" #result",
+            "Text(\"周期 T=\\pi\", (1, 3))",
+            "Text(\"最大值 M=2\", (1, 5))",
+            "Circle((0,0), 2) \"振幅\" #eq1",
+            "Polygon(P, P, P, P) \"正弦曲线\" #hl",
+            "Text(\"最小正周期 T = \\frac{2\\pi}{2} = \\pi\", (1, 7))",
+            "Text(\"最大值 M = 2\", (1, 9))",
+            "Angle(0, P, P) \"π/3\" #eq1",
+            "Text(\"初相 φ=π/3\", (1, 11))",
+            "Integral(f(x), 0, pi) \"面积\" #result",
+            "Region(x >= 0, y <= 2*sqrt(3)/2, x >= 0, y >= 0) \"第一象限部分\" #eq1",
+            "Text(\"图像最高点\", (1, 13))",
+            "Text(\"图像最低点\", (1, 15))",
+            "Text(\"周期 T = π\", (1, 17))",
+            "Text(\"最大值 M = 2\", (1, 19))",
+            "ShowAxes(true)",
+            "ZoomIn(0, -sqrt(3)/2, pi/2, pi + sqrt(3)/2)"
+          ]
+        },
+        {
+          "id": "isosceles",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9722222222222222,
+            "seconds": 4.336,
+            "text": "5.如图，在△ABC中，AB = AC = 5，BC = 6，D为BC的中点，DE⊥AC于点E，求DE的长。\n\n【图形】\n- △ABC是等腰三角形，AB = AC = 5，BC = 6。\n- D是BC的中点，所以BD = DC = 3。\n- AD是从A到BC的高（因为△ABC是等腰三角形，底边上的中线也是高）。\n- DE是从D向AC作垂线，垂足为E。\n\n【图形】中各点位置：\n- A在上方顶点。\n- B、C在底部左右两侧。\n- D在BC中间，即BC中点。\n- E在AC边上，且DE垂直于AC。\n\n【图形】连线情况：\n- AB、AC、BC构成三角形。\n- AD连接A和D（实线）。\n- DE连接D和E（实线）。\n- 所有边都是实线，无虚线。\n\n【图形】标注：\n- 点A、B、C、D、E均有字母标注。\n- 数字5表示AB = AC = 5，BC = 6。\n- 没有角度或长度直接标在图上，需通过计算得出。"
+          },
+          "analyzeSeconds": 4.223,
+          "tokensPerSecond": 103.73441279676057,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "Text(\"DE = {Distance(D, E)}\", (0.5, 2))",
+            "Text(\"AD = {Distance(A, D)}\", (0.5, 3))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "Text(\"DE = {Distance(D, E)}\", (0.5, 2))",
+            "Text(\"AD = {Distance(A, D)}\", (0.5, 3))"
+          ]
+        },
+        {
+          "id": "right-median",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9705882352941176,
+            "seconds": 3.022,
+            "text": "6.在 Rt△ABC 中，∠C = 90°，AC = 6，BC = 8，点 D 是斜边 AB 的中点，求 CD 的长。\n\n【图形】\n图中是一个直角三角形 ABC，其中 ∠C 为直角（即角 C 处有垂直符号或直角标记）。顶点 A、B、C 分别位于三角形的三个角上。点 D 位于斜边 AB 上，且是 AB 的中点。连接了线段 CD，从图中看，CD 是一条实线，没有虚线标注。整个图形简洁，无额外辅助线或特殊标记。"
+          },
+          "analyzeSeconds": 42.72,
+          "tokensPerSecond": 96.76888092341137,
+          "json": "partial",
+          "commands": [
+            "ShowAxes(false)",
+            "C = (0, 0)",
+            "A = (6, 0)",
+            "B = (0, 8)",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Text(\"CD = {Distance(C, D)}\", (1, 3))",
+            "Angle(C, A, B) \"\\alpha\" #aux",
+            "Text(\"AB = {Distance(A, B)}\")",
+            "Text(\"AC = 6\", (2, 0.5))",
+            "Text(\"BC = 8\", (1.5, 2.5))",
+            "Angle(C, D, A) \"\\beta\" #aux",
+            "Angle(C, D, B) \"\\gamma\" #aux",
+            "Text(\"CD = {Distance(C, D)}\")",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "repair": {
+            "seconds": 2.41,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "C = (0, 0)",
+            "A = (6, 0)",
+            "B = (0, 8)",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Text(\"CD = {Distance(C, D)}\", (1, 3))",
+            "Angle(C, A, B) \"\\alpha\" #aux",
+            "Text(\"AB = {Distance(A, B)}\")",
+            "Text(\"AC = 6\", (2, 0.5))",
+            "Text(\"BC = 8\", (1.5, 2.5))",
+            "Angle(C, D, A) \"\\beta\" #aux",
+            "Angle(C, D, B) \"\\gamma\" #aux",
+            "Text(\"CD = {Distance(C, D)}\")",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{AD^2+BD^2}\")",
+            "Angle(A, C, B) \"\\alpha\" #aux",
+            "Angle(B, C, A) \"\\beta\" #aux",
+            "Angle(C, D, A) \"\\gamma\" #aux",
+            "Text(\"CD = \\frac{1}{2}AB\")",
+            "Text(\"CD = 5\")",
+            "Text(\"CD = \\sqrt{"
+          ]
+        },
+        {
+          "id": "rectangle",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9782608695652174,
+            "seconds": 3.429,
+            "text": "7.在矩形ABCD中，AB=8，BC=6，点E在边BC上，且BE=2，连接AE，过点D作DF⊥AE于点F，求DF的长。\n\n【图形】\n- 矩形ABCD：四个顶点A、B、C、D按顺时针或逆时针排列，其中∠B和∠C为直角。\n- 点E在边BC上，位于B与C之间，且BE=2。由于BC=6，则EC=4。\n- 线段AE连接点A和点E。\n- 点F是垂足，即DF垂直于AE，交AE于F。\n- 图中未标注具体角度或长度数值，仅通过几何关系求解。"
+          },
+          "analyzeSeconds": 3.568,
+          "tokensPerSecond": 107.90406701093501,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "B = (0, 0)",
+            "A = (0, 8)",
+            "C = (6, 0)",
+            "E = (2, 0)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(E, B) #eq1",
+            "Line(A, E) #aux",
+            "F = Foot(D, Line(A, E))",
+            "Segment(D, F) #hl",
+            "Angle(A, E, D) \"β\""
+          ],
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "repair": {
+            "seconds": 3.81,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 3,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "B = (0, 0)",
+            "A = (0, 8)",
+            "C = (6, 0)",
+            "E = (2, 0)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(E, B) #eq1",
+            "Line(A, E) #aux",
+            "F = Foot(D, Line(A, E))",
+            "Segment(D, F) #hl",
+            "Angle(A, E, D) \"β\""
+          ]
+        },
+        {
+          "id": "tangent",
+          "category": "平面几何",
+          "analyzeSeconds": 3.586,
+          "tokensPerSecond": 96.89510204575996,
+          "json": "ok",
+          "commands": [
+            "A = (0, 0)",
+            "O = Center(A, 3)",
+            "P = Point(0, 5)",
+            "Segment(O, P) #hl",
+            "Line(O, A)",
+            "Tangent(P, Line(O, A)) #aux",
+            "Text(\"PA = \\frac{1}{2}OP^2 - r^2\", (1, 3)) #result",
+            "ShowAxes(false)",
+            "Circle(O, 3) #eq1",
+            "Point(P, 5) #fixed"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "A = (0, 0)",
+            "O = Center(A, 3)",
+            "P = Point(0, 5)",
+            "Segment(O, P) #hl",
+            "Line(O, A)",
+            "Tangent(P, Line(O, A)) #aux",
+            "Text(\"PA = \\frac{1}{2}OP^2 - r^2\", (1, 3)) #result",
+            "ShowAxes(false)",
+            "Circle(O, 3) #eq1",
+            "Point(P, 5) #fixed"
+          ]
+        },
+        {
+          "id": "parallelogram",
+          "category": "平面几何",
+          "analyzeSeconds": 4.727,
+          "tokensPerSecond": 103.28077847886777,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (4, 2*sqrt(3))",
+            "P = Midpoint(A, B) #aux",
+            "Q = Midpoint(A, D) #aux",
+            "Triangle(P, Q, D)",
+            "Text(\"AB=6\", (1, 5))",
+            "Text(\"AD=4\", (1, 6))",
+            "Text(\"∠A=60°\", (1, 7))",
+            "Text(\"BD=?\", (2, 3))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "5.292"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "40.9"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "5.292"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "40.9"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (4, 2*sqrt(3))",
+            "P = Midpoint(A, B) #aux",
+            "Q = Midpoint(A, D) #aux",
+            "Triangle(P, Q, D)",
+            "Text(\"AB=6\", (1, 5))",
+            "Text(\"AD=4\", (1, 6))",
+            "Text(\"∠A=60°\", (1, 7))",
+            "Text(\"BD=?\", (2, 3))"
+          ]
+        },
+        {
+          "id": "ellipse",
+          "category": "解析几何",
+          "ocr": {
+            "accuracy": 0.9459459459459459,
+            "seconds": 2.257,
+            "text": "10. 已知椭圆 $C: x^2/4 + y^2/3 = 1$，直线 $l: y = x + m$ 与椭圆 $C$ 交于 A、B 两点。当 $m = 1$ 时，求弦长 $|AB|$。\n\n【图形】无"
+          },
+          "analyzeSeconds": 37.18,
+          "tokensPerSecond": 111.24592557723626,
+          "json": "bad",
+          "commands": [],
+          "firstErrors": 0,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": []
+        },
+        {
+          "id": "circle-line",
+          "category": "解析几何",
+          "analyzeSeconds": 3.713,
+          "tokensPerSecond": 115.40901162469943,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "O = Center((1, -2)) #result",
+            "r = Text(\"√4\", \"(1, -2)\") #eq1",
+            "l: x - y + 1 = 0 #aux",
+            "d = Intersect(l, xAxis, 1) / √2 #eq2",
+            "P = (O.x, O.y) #hl",
+            "Text(\"r=2\", (3, 5))"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/1"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/1"
+            }
+          ],
+          "repair": {
+            "seconds": 0.705,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/1"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/1"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = Center((1, -2)) #result",
+            "r = Text(\"√4\", \"(1, -2)\") #eq1",
+            "l: x - y + 1 = 0 #aux",
+            "d = Intersect(l, xAxis, 1) / √2 #eq2",
+            "P = (O.x, O.y) #hl",
+            "Text(\"r=2\", (3, 5))"
+          ]
+        },
+        {
+          "id": "lp",
+          "category": "不等式",
+          "analyzeSeconds": 5.148,
+          "tokensPerSecond": 111.80533130293188,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = Point(0, 4)",
+            "B = Point(2, 0)",
+            "C = Point(0, 0)",
+            "Line(A, B)",
+            "Polygon(A, B, C)",
+            "Text(\"可行域为三角形 ABC\", (1, 3))",
+            "Text(\"目标函数 $z=2x+y$ 的斜率为 -2\", (1, 5))",
+            "Text(\"当直线过点 A(0,4) 和 B(2,0) 时，截距最大\", (1, 7))",
+            "Text(\"此时 $z_{max} = 2\\times0 + 4 = 4$\", (1, 9))",
+            "Brace(A, B, \"4\")",
+            "Angle(B, A, C) \"α\" #eq1",
+            "Angle(C, A, B) \"β\" #eq2",
+            "Text(\"z_{max} = 4\", (0.5, 3))",
+            "Integral(f, 0, 2) #aux"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 1.042,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = Point(0, 4)",
+            "B = Point(2, 0)",
+            "C = Point(0, 0)",
+            "Line(A, B)",
+            "Polygon(A, B, C)",
+            "Text(\"可行域为三角形 ABC\", (1, 3))",
+            "Text(\"目标函数 $z=2x+y$ 的斜率为 -2\", (1, 5))",
+            "Text(\"当直线过点 A(0,4) 和 B(2,0) 时，截距最大\", (1, 7))",
+            "Text(\"此时 $z_{max} = 2\\times0 + 4 = 4$\", (1, 9))",
+            "Brace(A, B, \"4\")",
+            "Angle(B, A, C) \"α\" #eq1",
+            "Angle(C, A, B) \"β\" #eq2",
+            "Text(\"z_{max} = 4\", (0.5, 3))",
+            "Integral(f, 0, 2) #aux"
+          ]
+        },
+        {
+          "id": "cube",
+          "category": "立体几何",
+          "ocr": {
+            "accuracy": 0.9545454545454546,
+            "seconds": 2.105,
+            "text": "13.在正方体 $ABCD-A_1B_1C_1D_1$ 中，E为棱 $BB_1$ 的中点，求异面直线 $AE$ 与 $B_1C$ 所成角的余弦值。"
+          },
+          "analyzeSeconds": 5.35,
+          "tokensPerSecond": 113.5250961415658,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "D = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "B = (2, 2, 0)",
+            "C = (0, 2, 0)",
+            "A1 = (2, 0, 2)",
+            "B1 = (2, 2, 2)",
+            "E = Midpoint(B, B1) #aux",
+            "Vector(A, E) #aux",
+            "Vector(B1, C) #aux",
+            "Angle(Vector(A, E), Vector(B1, C), \"θ\")"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "D = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "B = (2, 2, 0)",
+            "C = (0, 2, 0)",
+            "A1 = (2, 0, 2)",
+            "B1 = (2, 2, 2)",
+            "E = Midpoint(B, B1) #aux",
+            "Vector(A, E) #aux",
+            "Vector(B1, C) #aux",
+            "Angle(Vector(A, E), Vector(B1, C), \"θ\")"
+          ]
+        },
+        {
+          "id": "pyramid-sphere",
+          "category": "立体几何",
+          "analyzeSeconds": 4.391,
+          "tokensPerSecond": 112.16701967017437,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Sphere(O, r) #result",
+            "O = Center(B, A, C, P)",
+            "r = Distance(O, B)",
+            "Text(\"S = 4\\pi r^2\", (1, 3))",
+            "Angle(B, O, P) \"θ\" #eq1",
+            "Angle(A, O, C) \"α\" #eq2",
+            "Angle(P, O, A) \"β\" #eq3"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            }
+          ],
+          "repair": {
+            "seconds": 1.98,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Sphere(O, r) #result",
+            "O = Center(B, A, C, P)",
+            "r = Distance(O, B)",
+            "Text(\"S = 4\\pi r^2\", (1, 3))",
+            "Angle(B, O, P) \"θ\" #eq1",
+            "Angle(A, O, C) \"α\" #eq2",
+            "Angle(P, O, A) \"β\" #eq3"
+          ]
+        },
+        {
+          "id": "cylinder",
+          "category": "立体几何",
+          "analyzeSeconds": 5.996,
+          "tokensPerSecond": 113.06788744596098,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "A = (2, 0, 0)",
+            "B = (0, 0, 5)",
+            "C = (0, 2, 0)",
+            "D = Midpoint(A, B)",
+            "E = Center(Circle(O, 2))",
+            "F = Cylinder(E, A, 2)",
+            "G = Sphere(O, 2)",
+            "H = Line(A, B)",
+            "I = Line(B, C)",
+            "J = Line(C, D)",
+            "K = Line(D, E)",
+            "L = Line(E, F)",
+            "M = Line(F, G)",
+            "N = Line(G, A)",
+            "P = Line(A, B)",
+            "Q = Line(B, C)",
+            "R = Line(C, D)",
+            "S = Line(D, E)",
+            "T = Line(E, F)",
+            "U = Line(F, G)",
+            "V = Line(G, A)",
+            "SideArea = 2 * \\pi * 2 * 5",
+            "Volume = 3.14159 * 2^2 * 5",
+            "Text(\"侧面积 = {SideArea}\", (0, 3)) #eq1",
+            "Text(\"体积 = {Volume}\", (0, 6)) #eq2",
+            "Angle(O, A, B) \"底面圆心角\"",
+            "Angle(O, C, D) \"底面圆心角\"",
+            "Angle(A, O, B) \"顶面圆心角\" #aux",
+            "Text(\"r=2\", (0.5, 1)) #eq1",
+            "Text(\"h=5\", (0.5, 4)) #eq2",
+            "Text(\"V = \\pi r^2 h\", (0.5, 7)) #eq3",
+            "ShowAxes(false)",
+            "ZoomIn(0, 0, 6, 6)"
+          ],
+          "firstErrors": 14,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 4.523,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 14,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "A = (2, 0, 0)",
+            "B = (0, 0, 5)",
+            "C = (0, 2, 0)",
+            "D = Midpoint(A, B)",
+            "E = Center(Circle(O, 2))",
+            "F = Cylinder(E, A, 2)",
+            "G = Sphere(O, 2)",
+            "H = Line(A, B)",
+            "I = Line(B, C)",
+            "J = Line(C, D)",
+            "K = Line(D, E)",
+            "L = Line(E, F)",
+            "M = Line(F, G)",
+            "N = Line(G, A)",
+            "P = Line(A, B)",
+            "Q = Line(B, C)",
+            "R = Line(C, D)",
+            "S = Line(D, E)",
+            "T = Line(E, F)",
+            "U = Line(F, G)",
+            "V = Line(G, A)",
+            "SideArea = 2 * \\pi * 2 * 5",
+            "Volume = 3.14159 * 2^2 * 5",
+            "Text(\"侧面积 = {SideArea}\", (0, 3)) #eq1",
+            "Text(\"体积 = {Volume}\", (0, 6)) #eq2",
+            "Angle(O, A, B) \"底面圆心角\"",
+            "Angle(O, C, D) \"底面圆心角\"",
+            "Angle(A, O, B) \"顶面圆心角\" #aux",
+            "Text(\"r=2\", (0.5, 1)) #eq1",
+            "Text(\"h=5\", (0.5, 4)) #eq2",
+            "Text(\"V = \\pi r^2 h\", (0.5, 7)) #eq3",
+            "ShowAxes(false)",
+            "ZoomIn(0, 0, 6, 6)"
+          ]
+        },
+        {
+          "id": "moving-point",
+          "category": "函数",
+          "analyzeSeconds": 5.322,
+          "tokensPerSecond": 97.48619869788793,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "D = (0, 0)",
+            "A = (0, 4)",
+            "B = (4, 4)",
+            "C = (4, 0)",
+            "P = Point(x, y)",
+            "y = If(0 <= x <= 4, 2 * x, 8 - x)",
+            "Text(\"y = {y}\", (1, 3)) #result",
+            "Segment(D, A) #eq1",
+            "Segment(A, B) #eq2",
+            "Segment(B, C) #eq3",
+            "Angle(D, P, A) \"\theta\"",
+            "Text(\"P 在 AB 上时，高为 4\", (0.5, 2))",
+            "Text(\"P 在 BC 上时，高为 4-x\", (1.5, 2))"
+          ],
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "repair": {
+            "seconds": 1.145,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "D = (0, 0)",
+            "A = (0, 4)",
+            "B = (4, 4)",
+            "C = (4, 0)",
+            "P = Point(x, y)",
+            "y = If(0 <= x <= 4, 2 * x, 8 - x)",
+            "Text(\"y = {y}\", (1, 3)) #result",
+            "Segment(D, A) #eq1",
+            "Segment(A, B) #eq2",
+            "Segment(B, C) #eq3",
+            "Angle(D, P, A) \"\theta\"",
+            "Text(\"P 在 AB 上时，高为 4\", (0.5, 2))",
+            "Text(\"P 在 BC 上时，高为 4-x\", (1.5, 2))"
+          ]
+        },
+        {
+          "id": "meeting",
+          "category": "应用题",
+          "analyzeSeconds": 4.632,
+          "tokensPerSecond": 97.13267920194176,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(t) = 70 * t + 50 * t",
+            "g(t) = Function(70*t + 50*t, 0, 4) #hl",
+            "P = Intersect(g(t), xAxis, 1) \"相遇时间\" #result",
+            "Text(\"总路程 = {Distance(P, P)}\", (2, 3))",
+            "Brace(P, \"相遇\")",
+            "Angle(70, t, 50) \"甲乙速度差\" #eq1",
+            "Angle(70, t, 50) \"甲乙路程和\" #eq2",
+            "Text(\"t = {Distance(P, P)} / (70 + 50)\")"
+          ],
+          "firstErrors": 4,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 3.434,
+            "accepted": false,
+            "reason": "修正后图形对象变少了"
+          },
+          "finalErrors": 4,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(t) = 70 * t + 50 * t",
+            "g(t) = Function(70*t + 50*t, 0, 4) #hl",
+            "P = Intersect(g(t), xAxis, 1) \"相遇时间\" #result",
+            "Text(\"总路程 = {Distance(P, P)}\", (2, 3))",
+            "Brace(P, \"相遇\")",
+            "Angle(70, t, 50) \"甲乙速度差\" #eq1",
+            "Angle(70, t, 50) \"甲乙路程和\" #eq2",
+            "Text(\"t = {Distance(P, P)} / (70 + 50)\")"
+          ]
+        }
+      ]
+    }
+  ]
+}

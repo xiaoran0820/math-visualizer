@@ -1,0 +1,714 @@
+{
+  "date": "2026-11-10T11:25:08.480Z",
+  "set": "dev",
+  "problems": [
+    "prob-cond",
+    "prob-dist"
+  ],
+  "pipelines": [
+    "best3"
+  ],
+  "withOcr": false,
+  "runs": 3,
+  "results": [
+    {
+      "model": "qwen3.5:2b-q4_K_M",
+      "ocrAccuracy": null,
+      "tokensPerSecond": 109.43521207509961,
+      "memoryBytes": 1870156266,
+      "byPipeline": [
+        {
+          "pipeline": "best3",
+          "all": {
+            "problems": 6,
+            "errors": 0,
+            "jsonValid": 1,
+            "firstPassRate": 0.6666666666666666,
+            "repairTried": 2,
+            "repairAccepted": 2,
+            "finalRunnableRate": 0.8333333333333334,
+            "checkPassRate": 0.8333333333333334,
+            "fullyCorrectRate": 0.6666666666666666,
+            "calls": 1.6666666666666667,
+            "seconds": 8.6625,
+            "factsSatRate": 1,
+            "completed": 0
+          },
+          "bySet": {
+            "dev": {
+              "problems": 6,
+              "errors": 0,
+              "jsonValid": 1,
+              "firstPassRate": 0.6666666666666666,
+              "repairTried": 2,
+              "repairAccepted": 2,
+              "finalRunnableRate": 0.8333333333333334,
+              "checkPassRate": 0.8333333333333334,
+              "fullyCorrectRate": 0.6666666666666666,
+              "calls": 1.6666666666666667,
+              "seconds": 8.6625,
+              "factsSatRate": 1,
+              "completed": 0
+            }
+          }
+        }
+      ],
+      "rows": [
+        {
+          "id": "prob-cond",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 4.216,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.209,
+              "tokensPerSecond": 111.37818123930164,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.209,
+          "tokensPerSecond": 111.37818123930164,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 6 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(第一次与第二次的颜色)",
+            "Row(第一次，红，不红，合计，5)",
+            "Row(第二次，红，红，红，3)",
+            "Row(第一红且第二红，红，红，红，6)",
+            "Row(P(第二红|第一红)，0.5, 0.5, 1.0)",
+            "Row(计算结果，6/5, 2/5, 1.0, 0.4)",
+            "Row(最终答案，0.4)"
+          ],
+          "finalCommands": [
+            "Table(第一次与第二次的颜色)",
+            "Row(第一次，红，不红，合计，5)",
+            "Row(第二次，红，红，红，3)",
+            "Row(第一红且第二红，红，红，红，6)",
+            "Row(P(第二红|第一红)，0.5, 0.5, 1.0)",
+            "Row(计算结果，6/5, 2/5, 1.0, 0.4)",
+            "Row(最终答案，0.4)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 6 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "prob-cond",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 19.166,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.788,
+              "tokensPerSecond": 111.81123641010905,
+              "errors": 2,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 7.277,
+              "accepted": true,
+              "reason": "题目条件 0/1，还有 17 处错误",
+              "errors": 17,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 4.265,
+              "tokensPerSecond": 103.44192448422854,
+              "errors": 0,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.828,
+              "tokensPerSecond": 108.0273967507783,
+              "errors": 8,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.788,
+          "tokensPerSecond": 111.81123641010905,
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "图中没有表格"
+            },
+            {
+              "type": "cells",
+              "ok": false,
+              "detail": "没有表格"
+            }
+          ],
+          "repair": {
+            "accepted": true,
+            "reason": "题目条件 0/1，还有 17 处错误",
+            "seconds": 7.277
+          },
+          "source": "retry2",
+          "commands": [
+            "#aux 定义样本空间总数",
+            "Total = 5C2 #eq1",
+            "#aux 定义满足条件的情况数",
+            "Condition = 3*4 / (5*4) #eq2",
+            "P(第二红|第一红) = Condition/Total"
+          ],
+          "finalCommands": [
+            "#aux 辅助线表示全排列或分步思考",
+            "ShowAxes(false) #open",
+            "A1 = (0.6, 0.4) #fixed A1",
+            "B1 = (0.3, 0.7) #fixed B1",
+            "C1 = (0.5, 0.5)",
+            "l: y = x #aux",
+            "Text('总球数', (1,2))",
+            "Text('第一次：红', (1,3))",
+            "Text('第二次：红', (1,4))",
+            "P(第一次=红) = 3/5",
+            "P(第二次=红|第一次=红) = 2/4",
+            "P(AB) = P(第一次=红) * P(第二次=红 | 第一次=红)",
+            "Ratio = 0.6 * (2/4) / (3/5)",
+            "Table(两次都抽到红球的概率计算)",
+            "Row(总球数，5)",
+            "Row(未抽出次数，0, 1, 2)",
+            "Row(抽中红球次，0, 1, 2)",
+            "Row(全红情况，0.4*0.6=0.24)",
+            "Row(P(两次均红), 0.6 * 0.5 = 0.3",
+            "Row(P(第二次红|第一次红), 0.3 / 0.6 = 0.5"
+          ],
+          "finalErrors": 8,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 4 行"
+            },
+            {
+              "type": "cells",
+              "ok": false,
+              "detail": "表格里没有 0.5"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "prob-cond",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 5.241,
+          "calls": 2,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 3.207,
+              "tokensPerSecond": 109.63658158825808,
+              "errors": 3,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.03,
+              "accepted": true,
+              "reason": "题目条件 1/1",
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 3.207,
+          "tokensPerSecond": 109.63658158825808,
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 2 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "repair": {
+            "accepted": true,
+            "reason": "题目条件 1/1",
+            "seconds": 2.03
+          },
+          "source": "repair",
+          "commands": [
+            "Table(两次摸球的结果)",
+            "Row(第一次, 红1, 红2, 白1, 白2, 合计),",
+            "Row(第二次, 红1, 红2, 白1, 白2, 合计),",
+            "Row(条件概率 P(第二红|第一红), 0.5, 0.5, 0.5, 0.5, 1)",
+            "Row(计算过程, 2/4, 2/4, 2/4, 2/4, 1)",
+            "#aux 辅助线",
+            "Text("
+          ],
+          "finalCommands": [
+            "Table(两次摸球的结果)",
+            "Row(第一次, 红1, 红2, 白1, 白2, 合计)",
+            "Row(第二次, 红1, 红2, 白1, 白2, 合计)",
+            "Row(条件概率 P(第二红|第一红), 0.5, 0.5, 0.5, 0.5, 1)",
+            "Row(计算过程, 2/4, 2/4, 2/4, 2/4, 1)",
+            "#aux 辅助线",
+            "Text(\"P(第二红|第一红) = 0.5\")",
+            "ShowAxes(false)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 4 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 3
+        },
+        {
+          "id": "prob-dist",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 4.392,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.389,
+              "tokensPerSecond": 109.25903110815021,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.389,
+          "tokensPerSecond": 109.25903110815021,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 10 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "Table(正面次数与概率)",
+            "Row(0, 0.125, 0.875, 1)",
+            "Row(1, 0.375, 0.625, 1)",
+            "Row(2, 0.5, 0.5, 1)",
+            "Row(3, 0.125, 0.875, 1)",
+            "Row(合计, 1, 1, 1)",
+            "Row(P(X=0), 0.125, 0.875, 1)",
+            "Row(P(X=1), 0.375, 0.625, 1)",
+            "Row(P(X=2), 0.5, 0.5, 1)",
+            "Row(P(X=3), 0.125, 0.875, 1)",
+            "Row(总概率, 1, 1, 1, 1)"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "Table(正面次数与概率)",
+            "Row(0, 0.125, 0.875, 1)",
+            "Row(1, 0.375, 0.625, 1)",
+            "Row(2, 0.5, 0.5, 1)",
+            "Row(3, 0.125, 0.875, 1)",
+            "Row(合计, 1, 1, 1)",
+            "Row(P(X=0), 0.125, 0.875, 1)",
+            "Row(P(X=1), 0.375, 0.625, 1)",
+            "Row(P(X=2), 0.5, 0.5, 1)",
+            "Row(P(X=3), 0.125, 0.875, 1)",
+            "Row(总概率, 1, 1, 1, 1)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 10 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "prob-dist",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 15.845,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 15.844,
+              "tokensPerSecond": 108.29368208582619,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 15.844,
+          "tokensPerSecond": 108.29368208582619,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 9 行"
+            },
+            {
+              "type": "cells",
+              "ok": false,
+              "detail": "表格里没有 0.375"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(硬币抛掷 3 次)",
+            "Row(正面次数, 0, 1, 2, 3, 合计)",
+            "Row(TTT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTT, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)"
+          ],
+          "finalCommands": [
+            "Table(硬币抛掷 3 次)",
+            "Row(正面次数, 0, 1, 2, 3, 合计)",
+            "Row(TTT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTT, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(THH, 1/8, 0, 0, 0, 1/8)",
+            "Row(TTH, 1/8, 0, 0, 0, 1/8)",
+            "Row(HHT, 1/8, 0, 0, 0, 1/8)",
+            "Row(HTH, 1/8, 0, 0, 0, 1/8)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 9 行"
+            },
+            {
+              "type": "cells",
+              "ok": false,
+              "detail": "表格里没有 0.375"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "prob-dist",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 3.115,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 3.115,
+              "tokensPerSecond": 106.23256001895241,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 3.115,
+          "tokensPerSecond": 106.23256001895241,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 5 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "Table(正面次数与概率)",
+            "Row(0, 1/8, 0.125, 0.125)",
+            "Row(1, 3/8, 0.375, 0.375)",
+            "Row(2, 3/8, 0.375, 0.375)",
+            "Row(3, 1/8, 0.125, 0.125)",
+            "Row(合计, 1, 1, 1)"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "Table(正面次数与概率)",
+            "Row(0, 1/8, 0.125, 0.125)",
+            "Row(1, 3/8, 0.375, 0.375)",
+            "Row(2, 3/8, 0.375, 0.375)",
+            "Row(3, 1/8, 0.125, 0.125)",
+            "Row(合计, 1, 1, 1)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 5 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 3
+        }
+      ]
+    }
+  ]
+}

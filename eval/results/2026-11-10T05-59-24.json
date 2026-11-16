@@ -1,0 +1,4675 @@
+{
+  "date": "2026-11-10T05:59:24.317Z",
+  "problems": [
+    "quad-roots",
+    "quad-param",
+    "line-parabola",
+    "trig",
+    "isosceles",
+    "right-median",
+    "rectangle",
+    "tangent",
+    "parallelogram",
+    "ellipse",
+    "circle-line",
+    "lp",
+    "cube",
+    "pyramid-sphere",
+    "cylinder",
+    "moving-point",
+    "meeting"
+  ],
+  "withOcr": true,
+  "results": [
+    {
+      "summary": {
+        "model": "qwen3.5:4b-q4_K_M",
+        "problems": 17,
+        "jsonValid": 1,
+        "firstPassRate": 0.8823529411764706,
+        "repairTried": 2,
+        "repairAccepted": 2,
+        "finalRunnableRate": 1,
+        "checkPassRate": 0.9629629629629629,
+        "fullyCorrectRate": 0.8823529411764706,
+        "firstChecksPassRate": 0.9629629629629629,
+        "ocrAccuracy": 0.9501703367432268,
+        "ocrSeconds": 2.6215714285714284,
+        "analyzeSeconds": 7.023294117647058,
+        "tokensPerSecond": 58.6500621033899,
+        "memoryBytes": 3689215425
+      },
+      "rows": [
+        {
+          "id": "quad-roots",
+          "category": "函数",
+          "ocr": {
+            "accuracy": 0.962962962962963,
+            "seconds": 0.732,
+            "text": "1. 已知二次函数 $y = x^2 - 2x - 3$，求它与 $x$ 轴的交点坐标和顶点坐标。"
+          },
+          "analyzeSeconds": 5.832,
+          "tokensPerSecond": 56.85821752175913,
+          "json": "ok",
+          "commands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, xAxis, 1)",
+            "B = Intersect(f, xAxis, 2)",
+            "C = Vertex(f)",
+            "Segment(A, B)",
+            "Text(\"交点 A(-1,0)\", (-1.5, -0.5)) #hl",
+            "Text(\"交点 B(3,0)\", (3.5, -0.5)) #hl",
+            "Text(\"顶点 C(1,-4)\", (1.2, -4.5)) #result"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, xAxis, 1)",
+            "B = Intersect(f, xAxis, 2)",
+            "C = Vertex(f)",
+            "Segment(A, B)",
+            "Text(\"交点 A(-1,0)\", (-1.5, -0.5)) #hl",
+            "Text(\"交点 B(3,0)\", (3.5, -0.5)) #hl",
+            "Text(\"顶点 C(1,-4)\", (1.2, -4.5)) #result"
+          ]
+        },
+        {
+          "id": "quad-param",
+          "category": "函数",
+          "analyzeSeconds": 6.472,
+          "tokensPerSecond": 56.36017277483675,
+          "json": "ok",
+          "commands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(x) = Function(f(x), 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P_min = (m, f(m)) \"最小值点\" #result",
+            "Text(\"$g(a)=f(\\{m\\})={f(m)}$\", (3, 1))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(x) = Function(f(x), 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P_min = (m, f(m)) \"最小值点\" #result",
+            "Text(\"$g(a)=f(\\{m\\})={f(m)}$\", (3, 1))"
+          ]
+        },
+        {
+          "id": "line-parabola",
+          "category": "函数",
+          "analyzeSeconds": 5.686,
+          "tokensPerSecond": 56.417872333566216,
+          "json": "ok",
+          "commands": [
+            "f(x) = x + 1 #hl",
+            "g(x) = x^2 - 1 #hl",
+            "P1 = Intersect(f, g, 1)",
+            "P2 = Intersect(f, g, 2)",
+            "Text(\"$(-1, 0)$\", P1)",
+            "Text(\"$(2, 3)$\", P2)",
+            "ShowAxes(true)",
+            "ZoomIn(-5, -5, 5, 5)"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "f(x) = x + 1 #hl",
+            "g(x) = x^2 - 1 #hl",
+            "P1 = Intersect(f, g, 1)",
+            "P2 = Intersect(f, g, 2)",
+            "Text(\"$(-1, 0)$\", P1)",
+            "Text(\"$(2, 3)$\", P2)",
+            "ShowAxes(true)",
+            "ZoomIn(-5, -5, 5, 5)"
+          ]
+        },
+        {
+          "id": "trig",
+          "category": "三角函数",
+          "ocr": {
+            "accuracy": 0.8666666666666667,
+            "seconds": 0.753,
+            "text": "4. 画出函数 $y=2\\sin(2x+\\pi/3)$ 的图像，并指出它的最小正周期和最大值。\n\n【图形】"
+          },
+          "analyzeSeconds": 7.022,
+          "tokensPerSecond": 56.05111728837668,
+          "json": "ok",
+          "commands": [
+            "a = Slider(-1, 1, 0)",
+            "f(x) = a*2*sin(a*x + a*(-pi/3))",
+            "g(x) = f(x)",
+            "ShowAxes(true)",
+            "Text(\"最大值：\" + {Distance((0,0), (0,a*2))}, (4, 6)) #hl",
+            "Text(\"最小正周期：\" + \"{2*pi/a}\", (4, 5)) #hl"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": false,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": false,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "a = Slider(-1, 1, 0)",
+            "f(x) = a*2*sin(a*x + a*(-pi/3))",
+            "g(x) = f(x)",
+            "ShowAxes(true)",
+            "Text(\"最大值：\" + {Distance((0,0), (0,a*2))}, (4, 6)) #hl",
+            "Text(\"最小正周期：\" + \"{2*pi/a}\", (4, 5)) #hl"
+          ]
+        },
+        {
+          "id": "isosceles",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9722222222222222,
+            "seconds": 3.813,
+            "text": "5. 如图，在 $\\triangle ABC$ 中，$AB = AC = 5$，$BC = 6$，$D$ 为 $BC$ 的中点，$DE \\perp AC$ 于点 $E$，求 $DE$ 的长。\n\n【图形】\n- 有一个三角形 $\\triangle ABC$，其中 $AB$ 和 $AC$ 是相等的边（等腰三角形），$BC$ 是底边。\n- 点 $D$ 位于底边 $BC$ 的中点。\n- 从顶点 $A$ 到点 $D$ 有一条垂直线段 $AD$，这条线将 $\\triangle ABC$ 分成了两个全等的直角三角形。\n- 从点 $D$ 到边 $AC$ 上的一点 $E$ 有一条线段 $DE$，并且 $DE$ 与 $AC$ 垂直。\n- 所有的线条都是实线。"
+          },
+          "analyzeSeconds": 6.037,
+          "tokensPerSecond": 55.37457028722708,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1"
+          ]
+        },
+        {
+          "id": "right-median",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9705882352941176,
+            "seconds": 3.593,
+            "text": "6. 在 Rt$\\triangle ABC$ 中，$\\angle C = 90^\\circ$，$AC = 6$，$BC = 8$，点 $D$ 是斜边 $AB$ 的中点，求 $CD$ 的长。\n\n【图形】\n- 一个直角三角形 $ABC$，其中 $\\angle C$ 为直角（位于左下角）。\n- 顶点 $A$ 在左上角，顶点 $B$ 在右下角，顶点 $C$ 在左下角。\n- 斜边 $AB$ 连接左上角的 $A$ 和右下角的 $B$。\n- 点 $D$ 位于斜边 $AB$ 上，大致在 $AB$ 的中点位置。\n- 一条实线线段从顶点 $C$ 连接到点 $D$。\n- 所有线条均为黑色实线，无虚线。"
+          },
+          "analyzeSeconds": 5.768,
+          "tokensPerSecond": 54.7897790102096,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "C = (0, 0)",
+            "A = (0, 6)",
+            "B = (8, 0)",
+            "Segment(A, B) #hl",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #result",
+            "Angle(C, A, B) \"\\alpha\"",
+            "Angle(C, B, A) \"\\beta\""
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "C = (0, 0)",
+            "A = (0, 6)",
+            "B = (8, 0)",
+            "Segment(A, B) #hl",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #result",
+            "Angle(C, A, B) \"\\alpha\"",
+            "Angle(C, B, A) \"\\beta\""
+          ]
+        },
+        {
+          "id": "rectangle",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9782608695652174,
+            "seconds": 3.995,
+            "text": "7. 在矩形 $ABCD$ 中，$AB = 8$，$BC = 6$，点 $E$ 在边 $BC$ 上，且 $BE = 2$，连接 $AE$，过点 $D$ 作 $DF \\perp AE$ 于点 $F$，求 $DF$ 的长。\n\n【图形】\n- 矩形 $ABCD$，其中 $A$ 在左上角，$B$ 在左下角，$C$ 在右下角，$D$ 在右上角。\n- 点 $E$ 位于边 $BC$ 上，靠近 $B$ 点。\n- 线段 $AE$ 连接顶点 $A$ 和点 $E$。\n- 线段 $DF$ 从顶点 $D$ 出发，垂直于 $AE$，交 $AE$ 于点 $F$。\n- 所有线条均为实线。"
+          },
+          "analyzeSeconds": 9.411,
+          "tokensPerSecond": 56.219841293731946,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "D = (6, 8)",
+            "E = (2, 0)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(C, D) #eq1",
+            "Segment(D, A) #eq1",
+            "Polygon(A, B, C, D)",
+            "Line(A, E) #hl",
+            "l_DF: y - 8 = (x - 6)/4 #aux",
+            "F = Intersect(Line(A, E), l_DF)",
+            "Segment(D, F) #result",
+            "Angle(F, D, A)",
+            "Angle(F, E, A)",
+            "Text(\"DF = {Distance(D, F)}\", (5, 7))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "D = (6, 8)",
+            "E = (2, 0)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(C, D) #eq1",
+            "Segment(D, A) #eq1",
+            "Polygon(A, B, C, D)",
+            "Line(A, E) #hl",
+            "l_DF: y - 8 = (x - 6)/4 #aux",
+            "F = Intersect(Line(A, E), l_DF)",
+            "Segment(D, F) #result",
+            "Angle(F, D, A)",
+            "Angle(F, E, A)",
+            "Text(\"DF = {Distance(D, F)}\", (5, 7))"
+          ]
+        },
+        {
+          "id": "tangent",
+          "category": "平面几何",
+          "analyzeSeconds": 6.29,
+          "tokensPerSecond": 55.4798134549878,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "O = (0, 0) #fixed",
+            "A = (3, 0) #fixed",
+            "P = (5, 0) #fixed",
+            "Segment(O, A) #hl",
+            "Segment(O, P) #hl",
+            "Angle(A, O, P) \"\\u03b1\" #aux",
+            "Segment(A, P) #result",
+            "Text(\"PA = {Distance(A, P)}\", (4, -1.5))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "3.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "180.0"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "3.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "180.0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = (0, 0) #fixed",
+            "A = (3, 0) #fixed",
+            "P = (5, 0) #fixed",
+            "Segment(O, A) #hl",
+            "Segment(O, P) #hl",
+            "Angle(A, O, P) \"\\u03b1\" #aux",
+            "Segment(A, P) #result",
+            "Text(\"PA = {Distance(A, P)}\", (4, -1.5))"
+          ]
+        },
+        {
+          "id": "parallelogram",
+          "category": "平面几何",
+          "analyzeSeconds": 6.783,
+          "tokensPerSecond": 55.880555928680195,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0) #fixed",
+            "B = (6, 0)",
+            "D = (2, 2*sqrt(3))",
+            "C = (8, 2*sqrt(3))",
+            "Polygon(A, B, C, D)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, D)",
+            "Segment(D, A)",
+            "Segment(A, C) #aux",
+            "Segment(B, D) #hl",
+            "Angle(B, A, D) \"60°\""
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "60.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "60.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0) #fixed",
+            "B = (6, 0)",
+            "D = (2, 2*sqrt(3))",
+            "C = (8, 2*sqrt(3))",
+            "Polygon(A, B, C, D)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, D)",
+            "Segment(D, A)",
+            "Segment(A, C) #aux",
+            "Segment(B, D) #hl",
+            "Angle(B, A, D) \"60°\""
+          ]
+        },
+        {
+          "id": "ellipse",
+          "category": "解析几何",
+          "ocr": {
+            "accuracy": 0.9459459459459459,
+            "seconds": 1.379,
+            "text": "10. 已知椭圆 $C: \\dfrac{x^2}{4} + \\dfrac{y^2}{3} = 1$，直线 $l: y = x + m$ 与椭圆 $C$ 交于 $A, B$ 两点。当 $m = 1$ 时，求弦长 $|AB|$。"
+          },
+          "analyzeSeconds": 5.934,
+          "tokensPerSecond": 59.9834420706784,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "a = Slider(-5, 5, 1)",
+            "C: x^2/4 + y^2/3 = 1 #hl",
+            "l: y = x + a #aux",
+            "A = Intersect(C, l, 1)",
+            "B = Intersect(C, l, 2)",
+            "Segment(A, B) #result",
+            "Text(\"|AB| = {Distance(A, B)}\", (0, 4))",
+            "m_val = 1",
+            "l_fixed: y = x + m_val"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/4"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/4"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "a = Slider(-5, 5, 1)",
+            "C: x^2/4 + y^2/3 = 1 #hl",
+            "l: y = x + a #aux",
+            "A = Intersect(C, l, 1)",
+            "B = Intersect(C, l, 2)",
+            "Segment(A, B) #result",
+            "Text(\"|AB| = {Distance(A, B)}\", (0, 4))",
+            "m_val = 1",
+            "l_fixed: y = x + m_val"
+          ]
+        },
+        {
+          "id": "circle-line",
+          "category": "解析几何",
+          "analyzeSeconds": 6.755,
+          "tokensPerSecond": 62.353536869017574,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "O = (1, -2) #fixed",
+            "r = 2",
+            "c = Circle(O, r)",
+            "l: x - y + 1 = 0 #hl",
+            "P = Intersect(l, c, 1)",
+            "Q = Intersect(l, c, 2)",
+            "Text(\"d = {Distance(O, l)}\", (3, -4))",
+            "Text(\"r = 2\",\"(3, -5)\")",
+            "AngleBisector(O, P, Q) #aux"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/2"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/2"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/2"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/2"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "O = (1, -2) #fixed",
+            "r = 2",
+            "c = Circle(O, r)",
+            "l: x - y + 1 = 0 #hl",
+            "P = Intersect(l, c, 1)",
+            "Q = Intersect(l, c, 2)",
+            "Text(\"d = {Distance(O, l)}\", (3, -4))",
+            "Text(\"r = 2\",\"(3, -5)\")",
+            "AngleBisector(O, P, Q) #aux"
+          ]
+        },
+        {
+          "id": "lp",
+          "category": "不等式",
+          "analyzeSeconds": 7.601,
+          "tokensPerSecond": 62.569297381467365,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "l1: x + y = 4 #aux",
+            "l2: x = 0 #aux",
+            "l3: y = 0 #aux",
+            "A = Intersect(l1, l2) \"(0, 4)\" #fixed",
+            "B = Intersect(l1, l3) \"(4, 0)\" #fixed",
+            "C = Intersect(l2, l3) \"(0, 0)\" #fixed",
+            "Region(x + y <= 4, x >= 0, y >= 0) #hl",
+            "f(x, y) = 2x + y",
+            "z_A = f(A.x, A.y)",
+            "z_B = f(B.x, B.y)",
+            "z_C = f(C.x, C.y)",
+            "Text(\"z at A: \" + z_A, (1, 5))",
+            "Text(\"z at B: \" + z_B, (6, -0.5))",
+            "Text(\"z at C: \" + z_C, (1, -0.5))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "l1: x + y = 4 #aux",
+            "l2: x = 0 #aux",
+            "l3: y = 0 #aux",
+            "A = Intersect(l1, l2) \"(0, 4)\" #fixed",
+            "B = Intersect(l1, l3) \"(4, 0)\" #fixed",
+            "C = Intersect(l2, l3) \"(0, 0)\" #fixed",
+            "Region(x + y <= 4, x >= 0, y >= 0) #hl",
+            "f(x, y) = 2x + y",
+            "z_A = f(A.x, A.y)",
+            "z_B = f(B.x, B.y)",
+            "z_C = f(C.x, C.y)",
+            "Text(\"z at A: \" + z_A, (1, 5))",
+            "Text(\"z at B: \" + z_B, (6, -0.5))",
+            "Text(\"z at C: \" + z_C, (1, -0.5))"
+          ]
+        },
+        {
+          "id": "cube",
+          "category": "立体几何",
+          "ocr": {
+            "accuracy": 0.9545454545454546,
+            "seconds": 4.086,
+            "text": "13. 在正方体 $ABCD-A_1B_1C_1D_1$ 中，E 为棱 $BB_1$ 的中点，求异面直线 AE 与 $B_1C$ 所成角的余弦值。\n【图形】\n这是一个正方体的立体图。\n- 顶点标注：底面四个顶点从左前、左后、右后、右前顺时针方向大致为 A, D, C, B（根据透视关系，A在左下，B在右下，C在右侧中间，D在内部后方）。顶面对应点为 $A_1, B_1, C_1, D_1$。\n- 棱的虚实：可见的实线包括前表面、右表面的部分棱以及底面的前边和右边。不可见的虚线包括内部的棱（如 $DD_1$, $AD$, $DC$）。\n- 点 E：位于棱 $BB_1$ 上，位置在 $B$ 和 $B_1$ 的中间。\n- 连线：图中画出了线段 AE 和线段 $B_1C$。"
+          },
+          "analyzeSeconds": 8.467,
+          "tokensPerSecond": 60.73773043975733,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "a = Slider(2, 3, 2) #棱长",
+            "A = (a, 0, 0)",
+            "B = (a, a, 0)",
+            "C = (0, a, 0)",
+            "D = (0, 0, 0)",
+            "A1 = (a, 0, a)",
+            "B1 = (a, a, a)",
+            "C1 = (0, a, a)",
+            "D1 = (0, 0, a)",
+            "E = Midpoint(B, B1)",
+            "Segment(A, E) #hl",
+            "Segment(B1, C) #hl",
+            "Vector(A, E) #aux",
+            "Vector(B1, C) #aux",
+            "Angle(A, E, B1, C) \"θ\""
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "2.00/2.00/2.00/2.00"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "2.00/2.00/2.00/2.00"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "a = Slider(2, 3, 2) #棱长",
+            "A = (a, 0, 0)",
+            "B = (a, a, 0)",
+            "C = (0, a, 0)",
+            "D = (0, 0, 0)",
+            "A1 = (a, 0, a)",
+            "B1 = (a, a, a)",
+            "C1 = (0, a, a)",
+            "D1 = (0, 0, a)",
+            "E = Midpoint(B, B1)",
+            "Segment(A, E) #hl",
+            "Segment(B1, C) #hl",
+            "Vector(A, E) #aux",
+            "Vector(B1, C) #aux",
+            "Angle(A, E, B1, C) \"θ\""
+          ]
+        },
+        {
+          "id": "pyramid-sphere",
+          "category": "立体几何",
+          "analyzeSeconds": 10.514,
+          "tokensPerSecond": 61.718276779449894,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "B = (0, 0, 0) #fixed",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Sphere(O, R)",
+            "O = Center(A, B, C, P)",
+            "R = Radius(Sphere(O, R))",
+            "Text(\"$R=\\{Distance(B,O)\\}\", (3, 1.5))",
+            "Text(\"$S_{球}=4\\pi R^2\\approx\\{4*\\pi*R^2\\}\", (3, -0.5))",
+            "#eq1",
+            "#eq2"
+          ],
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            }
+          ],
+          "repair": {
+            "seconds": 3.597,
+            "accepted": true,
+            "reason": "已修正"
+          },
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "B = (0, 0, 0) #fixed",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "O = Center(A, B, C, P)",
+            "R = Radius(O)",
+            "Text(\"$R=\\{Distance(B,O)\\}\", (3, 1.5))",
+            "Text(\"$S_{球}=4\\pi R^2\\approx\\{4*\\pi*R^2\\}\", (3, -0.5))"
+          ]
+        },
+        {
+          "id": "cylinder",
+          "category": "立体几何",
+          "analyzeSeconds": 5.276,
+          "tokensPerSecond": 61.93845166813192,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "O = (0, 0, 0) #fixed",
+            "A = (2, 0, 0)",
+            "B = (-2, 0, 0)",
+            "C = (0, 2, 0)",
+            "D = (0, -2, 0)",
+            "E = (0, 0, 5)",
+            "Sphere(O, 2) #hl",
+            "Cylinder(A, E, 2) #result",
+            "Text(\"侧面积 $S=4\\pi$\", (3, 6)) #aux",
+            "Text(\"体积 $V=20\\pi$\", (3, 8)) #aux"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "O = (0, 0, 0) #fixed",
+            "A = (2, 0, 0)",
+            "B = (-2, 0, 0)",
+            "C = (0, 2, 0)",
+            "D = (0, -2, 0)",
+            "E = (0, 0, 5)",
+            "Sphere(O, 2) #hl",
+            "Cylinder(A, E, 2) #result",
+            "Text(\"侧面积 $S=4\\pi$\", (3, 6)) #aux",
+            "Text(\"体积 $V=20\\pi$\", (3, 8)) #aux"
+          ]
+        },
+        {
+          "id": "moving-point",
+          "category": "函数",
+          "analyzeSeconds": 9.112,
+          "tokensPerSecond": 61.740899974039074,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "D = (0, 0)",
+            "C = (4, 0)",
+            "B = (4, 4)",
+            "A = (0, 4)",
+            "Segment(A, B) #hl",
+            "Segment(B, C) #hl",
+            "Segment(C, D) #hl",
+            "Segment(D, A) #hl",
+            "P = Point(0, 4, 1) \"动点 P\" #fixed",
+            "x_slider = Slider(0, 8, 2)",
+            "f(x) = If(x <= 4, 2*x, 8-x) #hl",
+            "g(x) = Function(f(x), 0, 8)",
+            "h(x) = If(x <= 4, 2*x, 8-x) \"解析式\" #result",
+            "Text(\"当 0<=x<=4 时，y=2x\", (1, 7))",
+            "Text(\"当 4<x<=8 时，y=8-x\", (3, 7))",
+            "Brace(A, D, \"底边 AD=4\")",
+            "Brace(P, A, \"高 h=x\")",
+            "Brace(P, C, \"高 h=8-x\"), #aux"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "repair": {
+            "seconds": 5.558,
+            "accepted": true,
+            "reason": "已修正"
+          },
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "D = (0, 0)",
+            "C = (4, 0)",
+            "B = (4, 4)",
+            "A = (0, 4)",
+            "Segment(A, B) #hl",
+            "Segment(B, C) #hl",
+            "Segment(C, D) #hl",
+            "Segment(D, A) #hl",
+            "P = Point(0, 4, 1) \"动点 P\" #fixed",
+            "x_slider = Slider(0, 8, 2)",
+            "f(x) = If(x <= 4, 2*x, 8-x) #hl",
+            "g(x) = Function(f(x), 0, 8)",
+            "h(x) = If(x <= 4, 2*x, 8-x) \"解析式\" #result",
+            "Text(\"当 0<=x<=4 时，y=2x\", (1, 7))",
+            "Text(\"当 4<x<=8 时，y=8-x\", (3, 7))",
+            "Brace(A, D, \"底边 AD=4\")",
+            "Brace(P, A, \"高 h=x\")"
+          ]
+        },
+        {
+          "id": "meeting",
+          "category": "应用题",
+          "analyzeSeconds": 6.436,
+          "tokensPerSecond": 62.577480681711414,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "S = Brace((0, 0), (360, 0), \"360 千米\") #hl",
+            "A = (0, 0) \"甲出发地\" #fixed",
+            "B = (360, 0) \"乙出发地\" #fixed",
+            "v_sum = 70 + 50 #aux",
+            "t = 360 / v_sum #aux",
+            "P = Point(Segment(A, B), t * 70) \"相遇点\" #result",
+            "Text(\"甲行：{70*t}\", (1, 2))",
+            "Text(\"乙行：{50*t}\", (1, 4))",
+            "Angle(A, P, B) \"\\alpha\""
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "S = Brace((0, 0), (360, 0), \"360 千米\") #hl",
+            "A = (0, 0) \"甲出发地\" #fixed",
+            "B = (360, 0) \"乙出发地\" #fixed",
+            "v_sum = 70 + 50 #aux",
+            "t = 360 / v_sum #aux",
+            "P = Point(Segment(A, B), t * 70) \"相遇点\" #result",
+            "Text(\"甲行：{70*t}\", (1, 2))",
+            "Text(\"乙行：{50*t}\", (1, 4))",
+            "Angle(A, P, B) \"\\alpha\""
+          ]
+        }
+      ]
+    },
+    {
+      "summary": {
+        "model": "qwen3.5:2b-q4_K_M",
+        "problems": 17,
+        "jsonValid": 1,
+        "firstPassRate": 0.35294117647058826,
+        "repairTried": 11,
+        "repairAccepted": 1,
+        "finalRunnableRate": 0.35294117647058826,
+        "checkPassRate": 0.7407407407407407,
+        "fullyCorrectRate": 0.5294117647058824,
+        "firstChecksPassRate": 0.7407407407407407,
+        "ocrAccuracy": 0.9501703367432268,
+        "ocrSeconds": 1.1027142857142855,
+        "analyzeSeconds": 5.529176470588234,
+        "tokensPerSecond": 111.95877819723746,
+        "memoryBytes": 1870156266
+      },
+      "rows": [
+        {
+          "id": "quad-roots",
+          "category": "函数",
+          "ocr": {
+            "accuracy": 0.962962962962963,
+            "seconds": 0.395,
+            "text": "1. 已知二次函数 $y = x^2 - 2x - 3$，求它与 $x$ 轴的交点坐标和顶点坐标。"
+          },
+          "analyzeSeconds": 5.66,
+          "tokensPerSecond": 105.31742327950062,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "f(x) = x^2 - 2x - 3",
+            "l: y = 0 #aux",
+            "P1 = Intersect(f(x), l, 1)",
+            "P2 = Intersect(f(x), l, 2)",
+            "V = Vertex(f(x)) \"顶点\" #result",
+            "Text(\"与 x 轴交点：(-1, 0) 和 (3, 0)\", (0.5, -0.5))",
+            "Text(\"顶点坐标：(1, -4)\", (0.5, -2.5))",
+            "Angle(P1, l, P1) \"交点\" #eq1",
+            "Angle(V, f(x), V) \"顶点\" #eq2",
+            "Text(\"x 轴交点 x=-1, x=3\", (0.5, -0.5))",
+            "Text(\"顶点 x=1, y=-4\", (0.5, -2.5))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "f(x) = x^2 - 2x - 3",
+            "l: y = 0 #aux",
+            "P1 = Intersect(f(x), l, 1)",
+            "P2 = Intersect(f(x), l, 2)",
+            "V = Vertex(f(x)) \"顶点\" #result",
+            "Text(\"与 x 轴交点：(-1, 0) 和 (3, 0)\", (0.5, -0.5))",
+            "Text(\"顶点坐标：(1, -4)\", (0.5, -2.5))",
+            "Angle(P1, l, P1) \"交点\" #eq1",
+            "Angle(V, f(x), V) \"顶点\" #eq2",
+            "Text(\"x 轴交点 x=-1, x=3\", (0.5, -0.5))",
+            "Text(\"顶点 x=1, y=-4\", (0.5, -2.5))"
+          ]
+        },
+        {
+          "id": "quad-param",
+          "category": "函数",
+          "analyzeSeconds": 4.26,
+          "tokensPerSecond": 104.26220262311284,
+          "json": "ok",
+          "commands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(x) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "P = (m, f(m)) \"最小值点\" #result",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "Text(\"g(a) = {f(m)}\", (1, 7))",
+            "ShowAxes(false)",
+            "ZoomIn(-1, -3, 3, 3)"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "repair": {
+            "seconds": 6.113,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(x) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "P = (m, f(m)) \"最小值点\" #result",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "Text(\"g(a) = {f(m)}\", (1, 7))",
+            "ShowAxes(false)",
+            "ZoomIn(-1, -3, 3, 3)"
+          ]
+        },
+        {
+          "id": "line-parabola",
+          "category": "函数",
+          "analyzeSeconds": 4.648,
+          "tokensPerSecond": 117.12515948155999,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "f(x) = x^2 - 1",
+            "g(x) = x + 1",
+            "Intersect(f, g, 1) #result",
+            "P1 = Intersect(f, g, 1), \"交点 1\" #result",
+            "P2 = Intersect(f, g, 2), \"交点 2\" #result",
+            "Text(\"P1(2, 3)\", (0.5, 0.5))",
+            "Text(\"P2(-1, 0)\", (-0.5, -0.5))",
+            "Line(P1, P2) #aux",
+            "Circle(O, 1.5)",
+            "Polygon(P1, P2, O) #eq1",
+            "Text(\"x^2 - x - 2 = 0\", (0, 0))",
+            "Text(\"y = x + 1\", (0, 0))",
+            "Text(\"y = x^2 - 1\", (0, 0))",
+            "Integral(f, P1.x, P2.x) #eq1",
+            "Integral(g, P1.x, P2.x) #eq2",
+            "ShowAxes(true)",
+            "Sphere(O, 1.5)"
+          ],
+          "firstErrors": 8,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "repair": {
+            "seconds": 1.237,
+            "accepted": false,
+            "reason": "修正后图形对象变少了"
+          },
+          "finalErrors": 8,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "f(x) = x^2 - 1",
+            "g(x) = x + 1",
+            "Intersect(f, g, 1) #result",
+            "P1 = Intersect(f, g, 1), \"交点 1\" #result",
+            "P2 = Intersect(f, g, 2), \"交点 2\" #result",
+            "Text(\"P1(2, 3)\", (0.5, 0.5))",
+            "Text(\"P2(-1, 0)\", (-0.5, -0.5))",
+            "Line(P1, P2) #aux",
+            "Circle(O, 1.5)",
+            "Polygon(P1, P2, O) #eq1",
+            "Text(\"x^2 - x - 2 = 0\", (0, 0))",
+            "Text(\"y = x + 1\", (0, 0))",
+            "Text(\"y = x^2 - 1\", (0, 0))",
+            "Integral(f, P1.x, P2.x) #eq1",
+            "Integral(g, P1.x, P2.x) #eq2",
+            "ShowAxes(true)",
+            "Sphere(O, 1.5)"
+          ]
+        },
+        {
+          "id": "trig",
+          "category": "三角函数",
+          "ocr": {
+            "accuracy": 0.8666666666666667,
+            "seconds": 0.338,
+            "text": "4.画出函数 $y = 2\\sin(2x + \\pi/3)$ 的图像，并指出它的最小正周期和最大值。"
+          },
+          "analyzeSeconds": 5.401,
+          "tokensPerSecond": 108.16177673745254,
+          "json": "ok",
+          "commands": [
+            "A = (0, \\sqrt{3})",
+            "B = (\\frac{\\pi}{6}, 4)",
+            "C = (-\\frac{\\pi}{6}, 0)",
+            "f(x) = 2*\\sin(2*x + pi/3)",
+            "g(x) = Function(f(x), -pi, pi)",
+            "l: x = 0 #aux",
+            "P1 = (0, \\sqrt{3}) \"初始点\" #result",
+            "P2 = (\\frac{\\pi}{6}, 4) \"最大值点\" #result",
+            "P3 = (-\\frac{\\pi}{6}, 0) \"零点\" #result",
+            "Circle(O, 2)",
+            "Polygon(A, B, C)",
+            "Text(\"周期 T=\\pi\", (1, 5))",
+            "Text(\"最大值 4\", (1, 7))",
+            "Text(\"最小值 -2\", (1, 9))",
+            "ShowAxes(false)"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "repair": {
+            "seconds": 2.486,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "A = (0, \\sqrt{3})",
+            "B = (\\frac{\\pi}{6}, 4)",
+            "C = (-\\frac{\\pi}{6}, 0)",
+            "f(x) = 2*\\sin(2*x + pi/3)",
+            "g(x) = Function(f(x), -pi, pi)",
+            "l: x = 0 #aux",
+            "P1 = (0, \\sqrt{3}) \"初始点\" #result",
+            "P2 = (\\frac{\\pi}{6}, 4) \"最大值点\" #result",
+            "P3 = (-\\frac{\\pi}{6}, 0) \"零点\" #result",
+            "Circle(O, 2)",
+            "Polygon(A, B, C)",
+            "Text(\"周期 T=\\pi\", (1, 5))",
+            "Text(\"最大值 4\", (1, 7))",
+            "Text(\"最小值 -2\", (1, 9))",
+            "ShowAxes(false)"
+          ]
+        },
+        {
+          "id": "isosceles",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9722222222222222,
+            "seconds": 2.117,
+            "text": "5.如图，在△ABC中，AB = AC = 5，BC = 6，D为BC的中点，DE⊥AC于点E，求DE的长。\n\n【图形】\n- 三角形ABC：等腰三角形，顶点A在上，底边BC在下。\n- 点B、C在水平线上，位于左右两侧。\n- 点A在上方中间位置。\n- 点D是BC的中点，位于BC线段上，靠近中心。\n- 点E在AC边上，位于A和C之间。\n- 线段AD：从A到D的连线，垂直于BC（因为△ABC是等腰三角形，D是中点）。\n- 线段DE：从D到E的连线，垂直于AC。\n- 所有线条均为实线，无虚线。\n- 图中未标注任何角度或长度数值，仅标明了AB=AC=5，BC=6，D为BC中点，DE⊥AC。"
+          },
+          "analyzeSeconds": 2.463,
+          "tokensPerSecond": 115.68145359004684,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1"
+          ]
+        },
+        {
+          "id": "right-median",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9705882352941176,
+            "seconds": 1.235,
+            "text": "6.在 Rt△ABC 中，∠C = 90°，AC = 6，BC = 8，点 D 是斜边 AB 的中点，求 CD 的长。\n\n【图形】\n图中是一个直角三角形 ABC，其中 ∠C 为直角（即角 C 处有垂直符号或直角标记）。顶点 A、B、C 分别位于三角形的三个角上。点 D 位于斜边 AB 上，且是 AB 的中点。连接了线段 CD，从图中看，CD 是一条实线，没有虚线标注。整个图形简洁明了，没有其他辅助线或额外标记。"
+          },
+          "analyzeSeconds": 2.711,
+          "tokensPerSecond": 114.1265797055451,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 6)",
+            "B = (8, 0)",
+            "C = (0, 0)",
+            "Line(A, B) #aux",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Text(\"AB = {Distance(A, B)}\", (1, 2))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 6)",
+            "B = (8, 0)",
+            "C = (0, 0)",
+            "Line(A, B) #aux",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Text(\"AB = {Distance(A, B)}\", (1, 2))"
+          ]
+        },
+        {
+          "id": "rectangle",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9782608695652174,
+            "seconds": 2.307,
+            "text": "7.在矩形ABCD中，AB=8，BC=6，点E在边BC上，且BE=2，连接AE，过点D作DF⊥AE于点F，求DF的长。\n\n【图形】\n- 矩形ABCD：四个顶点A、B、C、D按顺时针或逆时针排列，其中∠B和∠C为直角。\n- 点E在边BC上，位于B与C之间，且BE=2。由于BC=6，则EC=4。\n- 连接AE：从A到E的线段。\n- 过点D作DF⊥AE于F：从D向AE作垂线，垂足为F。\n\n【标注】\n- 数字：AB=8, BC=6, BE=2。\n- 角度：∠B=90°, ∠C=90°（矩形性质）。\n- 线段：AB, BC, CD, DA, AE, DF, AF, FE, BF（部分），AC（对角线，未连接但隐含）。\n- 垂直关系：DF ⊥ AE。\n\n【无其他图形】"
+          },
+          "analyzeSeconds": 4.377,
+          "tokensPerSecond": 109.11703933408283,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "E = (2, 0)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(E, C) #eq1",
+            "Line(A, E) #aux",
+            "D = Point(6, 8)",
+            "F = Foot(D, Line(A, E))",
+            "Text(\"DF = {Distance(D, F)}\", (5, 3))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "E = (2, 0)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(E, C) #eq1",
+            "Line(A, E) #aux",
+            "D = Point(6, 8)",
+            "F = Foot(D, Line(A, E))",
+            "Text(\"DF = {Distance(D, F)}\", (5, 3))"
+          ]
+        },
+        {
+          "id": "tangent",
+          "category": "平面几何",
+          "analyzeSeconds": 3.138,
+          "tokensPerSecond": 113.5123055879368,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (3, 0)",
+            "C = (-3, 0)",
+            "D = Circle(O, 3)",
+            "E = Point(0, 4.5)",
+            "F = Intersect(D, Line(E, B))",
+            "G = Text(\"PA = \\frac{5}{2}\", (1, 7))",
+            "H = Angle(A, O, E) \"90°\" #eq1"
+          ],
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O,P"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "repair": {
+            "seconds": 1.468,
+            "accepted": false,
+            "reason": "修正时删掉了原本正确的「G」"
+          },
+          "finalErrors": 3,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O,P"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (3, 0)",
+            "C = (-3, 0)",
+            "D = Circle(O, 3)",
+            "E = Point(0, 4.5)",
+            "F = Intersect(D, Line(E, B))",
+            "G = Text(\"PA = \\frac{5}{2}\", (1, 7))",
+            "H = Angle(A, O, E) \"90°\" #eq1"
+          ]
+        },
+        {
+          "id": "parallelogram",
+          "category": "平面几何",
+          "analyzeSeconds": 3.763,
+          "tokensPerSecond": 106.20919019511203,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (4*cos(60^\bullet), 4*sin(60^\bullet)) #hl",
+            "P = Intersect(Line(A, B), Line(D, A))",
+            "BD = Distance(B, D)"
+          ],
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 D"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C,D"
+            }
+          ],
+          "repair": {
+            "seconds": 1.393,
+            "accepted": true,
+            "reason": "还有 1 处错误"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "4.472"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "26.6"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 C"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = Point(4, 2)",
+            "P = Intersect(Line(A, B), Line(D, A))",
+            "BD = Distance(B, D) #eq1",
+            "Text("
+          ]
+        },
+        {
+          "id": "ellipse",
+          "category": "解析几何",
+          "ocr": {
+            "accuracy": 0.9459459459459459,
+            "seconds": 0.74,
+            "text": "10. 已知椭圆 $C: \\frac{x^2}{4} + \\frac{y^2}{3} = 1$，直线 $l: y = x + m$ 与椭圆 $C$ 交于 $A$、$B$ 两点。当 $m = 1$ 时，求弦长 $|AB|$。\n\n【图形】无"
+          },
+          "analyzeSeconds": 5.419,
+          "tokensPerSecond": 109.29468431295764,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 1)",
+            "B = (-1, 0)",
+            "C = (1, 2) #aux",
+            "l: y = x + 1 #hl",
+            "E = Intersect(l, Circle(0, 1, 2)) #eq1",
+            "F = Midpoint(A, B)",
+            "Segment(A, F) #aux",
+            "Segment(F, E) #aux",
+            "Angle(E, A, F)",
+            "Text(\"|AB| = {Distance(A, B)}\", (1, 3))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/2"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/2"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 1)",
+            "B = (-1, 0)",
+            "C = (1, 2) #aux",
+            "l: y = x + 1 #hl",
+            "E = Intersect(l, Circle(0, 1, 2)) #eq1",
+            "F = Midpoint(A, B)",
+            "Segment(A, F) #aux",
+            "Segment(F, E) #aux",
+            "Angle(E, A, F)",
+            "Text(\"|AB| = {Distance(A, B)}\", (1, 3))"
+          ]
+        },
+        {
+          "id": "circle-line",
+          "category": "解析几何",
+          "analyzeSeconds": 2.738,
+          "tokensPerSecond": 118.70393691638101,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "O = Center((1, -2)) #aux",
+            "Circle(O, 2) #hl",
+            "l: x - y + 1 = 0 #eq1",
+            "Text(\"d = {Distance(O, l)}\", (1, 3))"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/1"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/1"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/1"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/1"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = Center((1, -2)) #aux",
+            "Circle(O, 2) #hl",
+            "l: x - y + 1 = 0 #eq1",
+            "Text(\"d = {Distance(O, l)}\", (1, 3))"
+          ]
+        },
+        {
+          "id": "lp",
+          "category": "不等式",
+          "analyzeSeconds": 4.422,
+          "tokensPerSecond": 110.39948421360975,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "A = (0, 0)",
+            "B = (4, 0)",
+            "C = (0, 4)",
+            "Line(A, B) #aux",
+            "Line(B, C) #aux",
+            "Line(C, A) #aux",
+            "P = Intersect(Line(A, B), xAxis) #eq1",
+            "Q = Intersect(Line(B, C), yAxis) #eq2",
+            "R = Intersect(Line(C, A), xAxis)",
+            "Text("
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 1.349,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "A = (0, 0)",
+            "B = (4, 0)",
+            "C = (0, 4)",
+            "Line(A, B) #aux",
+            "Line(B, C) #aux",
+            "Line(C, A) #aux",
+            "P = Intersect(Line(A, B), xAxis) #eq1",
+            "Q = Intersect(Line(B, C), yAxis) #eq2",
+            "R = Intersect(Line(C, A), xAxis)",
+            "Text("
+          ]
+        },
+        {
+          "id": "cube",
+          "category": "立体几何",
+          "ocr": {
+            "accuracy": 0.9545454545454546,
+            "seconds": 0.587,
+            "text": "13.在正方体 $ABCD-A_1B_1C_1D_1$ 中，E为棱 $BB_1$ 的中点，求异面直线 $AE$ 与 $B_1C$ 所成角的余弦值。"
+          },
+          "analyzeSeconds": 11.406,
+          "tokensPerSecond": 110.40489147937572,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "A = (0, 0, 2)",
+            "B = (2, 0, 2)",
+            "C = (2, 2, 2)",
+            "D = (0, 2, 2)",
+            "A1 = (0, 0, 0)",
+            "B1 = (2, 0, 0)",
+            "C1 = (2, 2, 0)",
+            "D1 = (0, 2, 0)",
+            "E = Midpoint(B, B1)",
+            "l1 = Line(A, E)",
+            "l2 = Line(B1, C)",
+            "F = Intersect(l1, l2)",
+            "P = Point(E, (2, 0, 1))",
+            "G = Vector(A, F)",
+            "H = Vector(F, B1)",
+            "I = Midpoint(G, H)",
+            "J = AngleBisector(B1, A, E)",
+            "K = AngleBisector(B1, C, F)",
+            "M = AngleBisector(E, A, B1)",
+            "N = AngleBisector(A, E, B1)",
+            "O = Center(D, (0, 2, 2))",
+            "T = Sphere(O, 1)",
+            "U = Cube(A, B, C, D, A1, B1, C1, D1)",
+            "V = Vector(B1, C)",
+            "W = Vector(E, A)",
+            "X = Intersect(V, W)",
+            "Y = Midpoint(X, X)",
+            "Z = AngleBisector(Y, V, W)",
+            "Q = AngleBisector(W, Y, V)",
+            "R = AngleBisector(V, Z, W)",
+            "S = AngleBisector(Z, V, W)",
+            "P1 = Point(E, (2, 0, 1))",
+            "P2 = Point(B1, (2, 0, 0))",
+            "P3 = Point(C, (2, 2, 2))",
+            "Q1 = Midpoint(P1, P2)",
+            "Q2 = Midpoint(Q1, P3)",
+            "R1 = AngleBisector(P1, Q1, P2)",
+            "R2 = AngleBisector(Q1, P2, P3)",
+            "R3 = AngleBisector(P2, R1, P3)",
+            "R4 = AngleBisector(R1, P3, P2)",
+            "R5 = AngleBisector(P3, R2, P2)",
+            "R6 = AngleBisector(R2, P2, P3)",
+            "R7 = AngleBisector(P3, R3, P2)",
+            "R8 = AngleBisector(R3, P2, P3)",
+            "R9 = AngleBisector(P2, R4, P3)",
+            "R10 = AngleBisector(R4, P3, P2)",
+            "R11 = AngleBisector(P3, R5, P2)",
+            "R12 = AngleBisector(R5, P2, P3)",
+            "R13 = AngleBisector(P2, R6, P3)",
+            "R14 = AngleBisector(R6, P3, P2)",
+            "R15 = AngleBisector(P3, R7, P2)",
+            "R16 = AngleBisector(R7, P2, P3)",
+            "R17 = AngleBisector(P2, R8, P3)",
+            "R18 = AngleBisector(R8, P3, P2)",
+            "R19 = AngleBisector(P3, R9, P2)",
+            "R20 = AngleBisector(R9, P2, P3)",
+            "R21 = AngleBisector(P2, R10, P3)",
+            "R22 = AngleBisector(R10, P3, P2)",
+            "R23 = AngleBisector(P3, R11, P2) #aux 辅助线  #eq1 #eq2 等长记号  #open 空心点  #fixed 禁止拖动"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "2.00/2.00/2.00/2.00"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "repair": {
+            "seconds": 8.36,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "2.00/2.00/2.00/2.00"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "A = (0, 0, 2)",
+            "B = (2, 0, 2)",
+            "C = (2, 2, 2)",
+            "D = (0, 2, 2)",
+            "A1 = (0, 0, 0)",
+            "B1 = (2, 0, 0)",
+            "C1 = (2, 2, 0)",
+            "D1 = (0, 2, 0)",
+            "E = Midpoint(B, B1)",
+            "l1 = Line(A, E)",
+            "l2 = Line(B1, C)",
+            "F = Intersect(l1, l2)",
+            "P = Point(E, (2, 0, 1))",
+            "G = Vector(A, F)",
+            "H = Vector(F, B1)",
+            "I = Midpoint(G, H)",
+            "J = AngleBisector(B1, A, E)",
+            "K = AngleBisector(B1, C, F)",
+            "M = AngleBisector(E, A, B1)",
+            "N = AngleBisector(A, E, B1)",
+            "O = Center(D, (0, 2, 2))",
+            "T = Sphere(O, 1)",
+            "U = Cube(A, B, C, D, A1, B1, C1, D1)",
+            "V = Vector(B1, C)",
+            "W = Vector(E, A)",
+            "X = Intersect(V, W)",
+            "Y = Midpoint(X, X)",
+            "Z = AngleBisector(Y, V, W)",
+            "Q = AngleBisector(W, Y, V)",
+            "R = AngleBisector(V, Z, W)",
+            "S = AngleBisector(Z, V, W)",
+            "P1 = Point(E, (2, 0, 1))",
+            "P2 = Point(B1, (2, 0, 0))",
+            "P3 = Point(C, (2, 2, 2))",
+            "Q1 = Midpoint(P1, P2)",
+            "Q2 = Midpoint(Q1, P3)",
+            "R1 = AngleBisector(P1, Q1, P2)",
+            "R2 = AngleBisector(Q1, P2, P3)",
+            "R3 = AngleBisector(P2, R1, P3)",
+            "R4 = AngleBisector(R1, P3, P2)",
+            "R5 = AngleBisector(P3, R2, P2)",
+            "R6 = AngleBisector(R2, P2, P3)",
+            "R7 = AngleBisector(P3, R3, P2)",
+            "R8 = AngleBisector(R3, P2, P3)",
+            "R9 = AngleBisector(P2, R4, P3)",
+            "R10 = AngleBisector(R4, P3, P2)",
+            "R11 = AngleBisector(P3, R5, P2)",
+            "R12 = AngleBisector(R5, P2, P3)",
+            "R13 = AngleBisector(P2, R6, P3)",
+            "R14 = AngleBisector(R6, P3, P2)",
+            "R15 = AngleBisector(P3, R7, P2)",
+            "R16 = AngleBisector(R7, P2, P3)",
+            "R17 = AngleBisector(P2, R8, P3)",
+            "R18 = AngleBisector(R8, P3, P2)",
+            "R19 = AngleBisector(P3, R9, P2)",
+            "R20 = AngleBisector(R9, P2, P3)",
+            "R21 = AngleBisector(P2, R10, P3)",
+            "R22 = AngleBisector(R10, P3, P2)",
+            "R23 = AngleBisector(P3, R11, P2) #aux 辅助线  #eq1 #eq2 等长记号  #open 空心点  #fixed 禁止拖动"
+          ]
+        },
+        {
+          "id": "pyramid-sphere",
+          "category": "立体几何",
+          "analyzeSeconds": 6.785,
+          "tokensPerSecond": 112.98279403281902,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Sphere(O, r) #result",
+            "O = Center(B, A, C, P)",
+            "r = Distance(O, B)",
+            "Text(\"S = 4πr²\", (1, 3))",
+            "Angle(B, O, A) \"θ\" #eq1",
+            "Angle(C, O, B) \"φ\" #eq2",
+            "Angle(P, O, C) \"ψ\" #eq3",
+            "Text(\"PA=AB=BC=2\", (0.5, 0.5))",
+            "Segment(B, A)",
+            "Segment(B, C)",
+            "Segment(A, P)",
+            "Line(C, B)",
+            "Line(P, A)",
+            "Line(O, B)",
+            "Line(O, A)",
+            "Line(O, C)",
+            "Line(O, P)"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            }
+          ],
+          "repair": {
+            "seconds": 1.378,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Sphere(O, r) #result",
+            "O = Center(B, A, C, P)",
+            "r = Distance(O, B)",
+            "Text(\"S = 4πr²\", (1, 3))",
+            "Angle(B, O, A) \"θ\" #eq1",
+            "Angle(C, O, B) \"φ\" #eq2",
+            "Angle(P, O, C) \"ψ\" #eq3",
+            "Text(\"PA=AB=BC=2\", (0.5, 0.5))",
+            "Segment(B, A)",
+            "Segment(B, C)",
+            "Segment(A, P)",
+            "Line(C, B)",
+            "Line(P, A)",
+            "Line(O, B)",
+            "Line(O, A)",
+            "Line(O, C)",
+            "Line(O, P)"
+          ]
+        },
+        {
+          "id": "cylinder",
+          "category": "立体几何",
+          "analyzeSeconds": 12.035,
+          "tokensPerSecond": 116.13173102916328,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "Sphere(O, 2) #aux",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Line(O, (0,0,5), \"z 轴\")",
+            "Circle(O, 2) #eq1",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 4π×2.5 = 10π\", (0.5, 10))",
+            "Text(\"S_侧 = 4π×5 = 20π\", (0.5, 11))",
+            "Text(\"V ≈ 31.416\", (0.5, 12))",
+            "Text(\"S_侧 ≈ 62.832\", (0.5, 13))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 10π ≈ 31.42\", (0.5, 10))",
+            "Text(\"S_侧 = 20π ≈ 62.83\", (0.5, 11))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 10π ≈ 31.42\", (0.5, 10))",
+            "Text(\"S_侧 = 20π ≈ 62.83\", (0.5, 11))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 10π ≈ 31.42\", (0.5, 10))",
+            "Text(\"S_侧 = 20π ≈ 62.83\", (0.5, 11))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1"
+          ],
+          "firstErrors": 17,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": false,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 1.775,
+            "accepted": false,
+            "reason": "修正后图形对象变少了"
+          },
+          "finalErrors": 17,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": false,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "Sphere(O, 2) #aux",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Line(O, (0,0,5), \"z 轴\")",
+            "Circle(O, 2) #eq1",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 4π×2.5 = 10π\", (0.5, 10))",
+            "Text(\"S_侧 = 4π×5 = 20π\", (0.5, 11))",
+            "Text(\"V ≈ 31.416\", (0.5, 12))",
+            "Text(\"S_侧 ≈ 62.832\", (0.5, 13))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 10π ≈ 31.42\", (0.5, 10))",
+            "Text(\"S_侧 = 20π ≈ 62.83\", (0.5, 11))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 10π ≈ 31.42\", (0.5, 10))",
+            "Text(\"S_侧 = 20π ≈ 62.83\", (0.5, 11))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1",
+            "Text(\"r=2\", (0.5, 3))",
+            "Text(\"h=5\", (0.5, 4))",
+            "Text(\"S_侧 = 2πrh\", (0.5, 5))",
+            "Text(\"V = πr²h\", (0.5, 6))",
+            "Text(\"底面周长 C = 2πr\", (0.5, 7))",
+            "Text(\"侧面积 S_侧 = C × h\", (0.5, 8))",
+            "Text(\"体积 V = πr²h\", (0.5, 9))",
+            "Text(\"V = 10π ≈ 31.42\", (0.5, 10))",
+            "Text(\"S_侧 = 20π ≈ 62.83\", (0.5, 11))",
+            "ShowAxes(false)",
+            "Circle(O, 2) #eq1",
+            "Cylinder(O, (0,0,5), 2) #hl",
+            "Line(O, (0,0,5)) #eq1"
+          ]
+        },
+        {
+          "id": "moving-point",
+          "category": "函数",
+          "analyzeSeconds": 3.639,
+          "tokensPerSecond": 115.78970297075107,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "D = (0, 0)",
+            "A = (0, 4)",
+            "B = (4, 4)",
+            "C = (4, 0)",
+            "Segment(A, B) #aux",
+            "P1 = Point(x, 4)",
+            "y1 = If(0 <= x <= 4, 8 - x, 0)",
+            "Segment(B, C) #aux",
+            "P2 = Point(x - 4, 4)",
+            "y2 = If(4 < x <= 8, 4 * (x - 4), 0)",
+            "g(x) = Piecewise(y1, y2)",
+            "l: x = 4 #aux",
+            "m = Text(\"分段函数\", (3, 5))"
+          ],
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "repair": {
+            "seconds": 1.96,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 3,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "D = (0, 0)",
+            "A = (0, 4)",
+            "B = (4, 4)",
+            "C = (4, 0)",
+            "Segment(A, B) #aux",
+            "P1 = Point(x, 4)",
+            "y1 = If(0 <= x <= 4, 8 - x, 0)",
+            "Segment(B, C) #aux",
+            "P2 = Point(x - 4, 4)",
+            "y2 = If(4 < x <= 8, 4 * (x - 4), 0)",
+            "g(x) = Piecewise(y1, y2)",
+            "l: x = 4 #aux",
+            "m = Text(\"分段函数\", (3, 5))"
+          ]
+        },
+        {
+          "id": "meeting",
+          "category": "应用题",
+          "analyzeSeconds": 11.131,
+          "tokensPerSecond": 116.07887386362974,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")"
+          ],
+          "firstErrors": 24,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 2.279,
+            "accepted": false,
+            "reason": "修正后图形对象变少了"
+          },
+          "finalErrors": 24,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "ShowAxes(false)",
+            "a = Slider(0, 4, 1)",
+            "f(x) = 70*x + 50*(a - x)",
+            "g(x) = Function(f(x), 0, 360)",
+            "h(x) = If(x < 0, 0, 360 - f(x))",
+            "l: y = 120 #aux",
+            "P = Intersect(l, xAxis, 1)",
+            "Text(\"相遇时间\", (1, 4), \"#result\")",
+            "Brace(0, 360, \"360 千米\")",
+            "Integral(f(x), 0, 360) #eq1",
+            "Integral(h(x), 0, 360) #eq2",
+            "Text(\"相遇时间\", (1, 4), \"#result\")"
+          ]
+        }
+      ]
+    },
+    {
+      "summary": {
+        "model": "qwen3.5:0.8b-q8_0",
+        "problems": 17,
+        "jsonValid": 1,
+        "firstPassRate": 0.4117647058823529,
+        "repairTried": 10,
+        "repairAccepted": 4,
+        "finalRunnableRate": 0.47058823529411764,
+        "checkPassRate": 0.5,
+        "fullyCorrectRate": 0.23529411764705882,
+        "firstChecksPassRate": 0.48148148148148145,
+        "ocrAccuracy": 0.9501703367432268,
+        "ocrSeconds": 1.3207142857142855,
+        "analyzeSeconds": 4.444588235294117,
+        "tokensPerSecond": 145.92275401316493,
+        "memoryBytes": 1317923715
+      },
+      "rows": [
+        {
+          "id": "quad-roots",
+          "category": "函数",
+          "ocr": {
+            "accuracy": 0.962962962962963,
+            "seconds": 1.093,
+            "text": "1. 已知二次函数 $y = x^2 - 2x - 3$，求它与 $x$ 轴的交点坐标和顶点坐标。"
+          },
+          "analyzeSeconds": 3.672,
+          "tokensPerSecond": 153.40629701932448,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (-1, 0)",
+            "B = (3, 0)",
+            "C = (1, -4)",
+            "Polygon(A, B, C)",
+            "ShowAxes(true)"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": false,
+              "detail": "0 个函数/直线"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "fn",
+              "ok": false,
+              "detail": "0 个函数/直线"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (-1, 0)",
+            "B = (3, 0)",
+            "C = (1, -4)",
+            "Polygon(A, B, C)",
+            "ShowAxes(true)"
+          ]
+        },
+        {
+          "id": "quad-param",
+          "category": "函数",
+          "analyzeSeconds": 2.794,
+          "tokensPerSecond": 153.08991109651345,
+          "json": "ok",
+          "commands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(x) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P = (m, f(m)) \"最小值点\" #result"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "a = Slider(-1, 3, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(x) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P = (m, f(m)) \"最小值点\" #result"
+          ]
+        },
+        {
+          "id": "line-parabola",
+          "category": "函数",
+          "analyzeSeconds": 3.009,
+          "tokensPerSecond": 150.58066756210997,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (2, 3)",
+            "B = (-1, 0)",
+            "P = Intersect(A, B)",
+            "Text(\"交点坐标：(2, 3) 和 (-1, 0)\")",
+            "#eq1: y = x + 1",
+            "#eq2: y = x² - 1"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (2, 3)",
+            "B = (-1, 0)",
+            "P = Intersect(A, B)",
+            "Text(\"交点坐标：(2, 3) 和 (-1, 0)\")",
+            "#eq1: y = x + 1",
+            "#eq2: y = x² - 1"
+          ]
+        },
+        {
+          "id": "trig",
+          "category": "三角函数",
+          "ocr": {
+            "accuracy": 0.8666666666666667,
+            "seconds": 0.839,
+            "text": "4. 画出函数 $y = 2\\sin(2x + \\frac{\\pi}{3})$ 的图像，并指出它的最小正周期和最大值。"
+          },
+          "analyzeSeconds": 4.096,
+          "tokensPerSecond": 149.81096532309056,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "x: y = 2 * sin(2 * x + pi / 3)",
+            "l: y = 2 * sin(x) #aux",
+            "P1 = (0, 2)",
+            "P2 = (pi/3, 2)",
+            "P3 = (pi, -2)",
+            "P4 = (5pi/3, -2)",
+            "l: y = 2 * sin(x) #hl",
+            "A = Point(0, 2)",
+            "B = Point(pi/3, 2)",
+            "C = Point(pi, -2)",
+            "D = Point(5pi/3, -2)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(C, D) #eq1",
+            "Angle(A, B, C) \"α\"",
+            "Text(\"周期 T = pi\", (1, 7))",
+            "Text(\"最大值 M = 2\", (1, 8))",
+            "Text(\"最小值 m = -2\", (1, 9))",
+            "#result"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "5 个函数/直线"
+            }
+          ],
+          "repair": {
+            "seconds": 2.25,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "5 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "x: y = 2 * sin(2 * x + pi / 3)",
+            "l: y = 2 * sin(x) #aux",
+            "P1 = (0, 2)",
+            "P2 = (pi/3, 2)",
+            "P3 = (pi, -2)",
+            "P4 = (5pi/3, -2)",
+            "l: y = 2 * sin(x) #hl",
+            "A = Point(0, 2)",
+            "B = Point(pi/3, 2)",
+            "C = Point(pi, -2)",
+            "D = Point(5pi/3, -2)",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq1",
+            "Segment(C, D) #eq1",
+            "Angle(A, B, C) \"α\"",
+            "Text(\"周期 T = pi\", (1, 7))",
+            "Text(\"最大值 M = 2\", (1, 8))",
+            "Text(\"最小值 m = -2\", (1, 9))",
+            "#result"
+          ]
+        },
+        {
+          "id": "isosceles",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9722222222222222,
+            "seconds": 1.132,
+            "text": "5. 如图，在△ABC中，AB=AC=5，BC=6，D为BC的中点，DE⊥AC于点E，求DE的长。\n【图形】\n图中有三角形ABC，其中AB=AC=5，BC=6，D是BC的中点，DE垂直于AC于点E。"
+          },
+          "analyzeSeconds": 2.609,
+          "tokensPerSecond": 149.77432204300473,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "5.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "0.000"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "0.000"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 4)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "Polygon(A, B, C)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1"
+          ]
+        },
+        {
+          "id": "right-median",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9705882352941176,
+            "seconds": 0.891,
+            "text": "6.在 Rt△ABC 中，∠C = 90°，AC = 6，BC = 8，点 D 是斜边 AB 的中点，求 CD 的长。"
+          },
+          "analyzeSeconds": 3.482,
+          "tokensPerSecond": 142.39180504736353,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (6, 0)",
+            "B = (0, 8)",
+            "C = (0, 0)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, B))",
+            "Segment(C, E) #hl",
+            "Angle(C, E, A)",
+            "Text(\"CD = {Distance(C, E)}\", (1, 7))",
+            "l: x = 0 #aux"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": false,
+              "detail": "3.000"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "8.000"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "midpoint",
+              "ok": false,
+              "detail": "3.000"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (6, 0)",
+            "B = (0, 8)",
+            "C = (0, 0)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, B))",
+            "Segment(C, E) #hl",
+            "Angle(C, E, A)",
+            "Text(\"CD = {Distance(C, E)}\", (1, 7))",
+            "l: x = 0 #aux"
+          ]
+        },
+        {
+          "id": "rectangle",
+          "category": "平面几何",
+          "ocr": {
+            "accuracy": 0.9782608695652174,
+            "seconds": 1.018,
+            "text": "7. 在矩形 ABCD 中，AB = 8，BC = 6，点 E 在边 BC 上，且 BE = 2，连接 AE，过点 D 作 DF⊥AE 于点 F，求 DF 的长。"
+          },
+          "analyzeSeconds": 4.094,
+          "tokensPerSecond": 146.44924915804552,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 6)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, B))",
+            "Segment(E, A) #hl",
+            "Line(A, E) #eq1",
+            "P = Intersect(Line(A, E), y = -1/6*x + c)",
+            "F = Point(0, 4)",
+            "Angle(D, F, A) \"α\"",
+            "Text(\"DF = {Distance(D, F)}\", (1, 7))",
+            "Radius(D, F, E) #eq1"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "6.708"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "63.4"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "1.342"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "0.894"
+            },
+            {
+              "type": "perp",
+              "ok": false,
+              "detail": "0.894"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "0.447"
+            }
+          ],
+          "repair": {
+            "seconds": 1.516,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "6.708"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "63.4"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "1.342"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "0.894"
+            },
+            {
+              "type": "perp",
+              "ok": false,
+              "detail": "0.894"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "0.447"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 6)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, B))",
+            "Segment(E, A) #hl",
+            "Line(A, E) #eq1",
+            "P = Intersect(Line(A, E), y = -1/6*x + c)",
+            "F = Point(0, 4)",
+            "Angle(D, F, A) \"α\"",
+            "Text(\"DF = {Distance(D, F)}\", (1, 7))",
+            "Radius(D, F, E) #eq1"
+          ]
+        },
+        {
+          "id": "tangent",
+          "category": "平面几何",
+          "analyzeSeconds": 2.91,
+          "tokensPerSecond": 150.8194339097131,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "O = Center(0, 0)",
+            "P = Point(0, 5)",
+            "A = Point(0, 4)",
+            "Segment(O, A) #hl",
+            "Line(O, P) #aux",
+            "M = Foot(P, Line(O, A))",
+            "Length(M, O) = {Distance(M, O)}",
+            "Length(A, P) = {Distance(A, P)}",
+            "Angle(O, M, A) \"90°\"",
+            "Text(\"PA = 5\") #result"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "缺少点 O"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = Center(0, 0)",
+            "P = Point(0, 5)",
+            "A = Point(0, 4)",
+            "Segment(O, A) #hl",
+            "Line(O, P) #aux",
+            "M = Foot(P, Line(O, A))",
+            "Length(M, O) = {Distance(M, O)}",
+            "Length(A, P) = {Distance(A, P)}",
+            "Angle(O, M, A) \"90°\"",
+            "Text(\"PA = 5\") #result"
+          ]
+        },
+        {
+          "id": "parallelogram",
+          "category": "平面几何",
+          "analyzeSeconds": 5.314,
+          "tokensPerSecond": 129.4070758775661,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (0, 4)",
+            "C = A + B - D",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "Segment(B, C) #eq2",
+            "Segment(C, D) #eq2",
+            "Segment(D, A) #eq3",
+            "Angle(A, B, D) \"$\frac{\text{Area}(ABD)}{\text{Area}(ABC)/2}$\"",
+            "Text(\"BD = {Distance(B, D)}\", (1, 7))",
+            "Label(BD, 'BD') #result"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "10.000"
+            }
+          ],
+          "repair": {
+            "seconds": 1.36,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "6.000"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "90.0"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "10.000"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (0, 4)",
+            "C = A + B - D",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "Segment(B, C) #eq2",
+            "Segment(C, D) #eq2",
+            "Segment(D, A) #eq3",
+            "Angle(A, B, D) \"$\frac{\text{Area}(ABD)}{\text{Area}(ABC)/2}$\"",
+            "Text(\"BD = {Distance(B, D)}\", (1, 7))",
+            "Label(BD, 'BD') #result"
+          ]
+        },
+        {
+          "id": "ellipse",
+          "category": "解析几何",
+          "ocr": {
+            "accuracy": 0.9459459459459459,
+            "seconds": 1.053,
+            "text": "10. 已知椭圆 C: $x^2/4 + y^2/3 = 1$，直线 l: $y = x + m$ 与椭圆 C 交于 A、B 两点。当 $m = 1$ 时，求弦长 $|AB|$。"
+          },
+          "analyzeSeconds": 2.623,
+          "tokensPerSecond": 142.8002001686284,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (m, f(m)) #hl",
+            "B = (m, f(m)) #hl",
+            "Segment(A, B) #eq1",
+            "P = Intersect(f(x), x + m)",
+            "Intersect2(P, P)",
+            "Length(A, B) #result"
+          ],
+          "firstErrors": 6,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "repair": {
+            "seconds": 0.925,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 6,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (m, f(m)) #hl",
+            "B = (m, f(m)) #hl",
+            "Segment(A, B) #eq1",
+            "P = Intersect(f(x), x + m)",
+            "Intersect2(P, P)",
+            "Length(A, B) #result"
+          ]
+        },
+        {
+          "id": "circle-line",
+          "category": "解析几何",
+          "analyzeSeconds": 3.321,
+          "tokensPerSecond": 141.95535184465226,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "O = Center(1, -2)",
+            "C = Circle(O, 2)",
+            "l: x - y + 1 = 0 #aux",
+            "P = Intersect(C, l)",
+            "Intersect(C, l, 1) #eq1",
+            "Intersect(C, l, 2) #eq2",
+            "Text(\"交点情况\")",
+            "If(Intersect(C, l, 1), Text(\"相离\")) Else If(Intersect(C, l, 2), Text(\"相交\")) Else Text(\"相切\")"
+          ],
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/1"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/1"
+            }
+          ],
+          "repair": {
+            "seconds": 0.974,
+            "accepted": true,
+            "reason": "已修正"
+          },
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/1"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/1"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = Center(1, -2)",
+            "C = Circle(O, 2)",
+            "l: x - y + 1 = 0 #aux",
+            "P = Intersect(C, l)",
+            "Intersect(C, l, 1) #eq1",
+            "Intersect(C, l, 2) #eq2",
+            "Text(\"交点情况\")"
+          ]
+        },
+        {
+          "id": "lp",
+          "category": "不等式",
+          "analyzeSeconds": 4.195,
+          "tokensPerSecond": 151.33296418395008,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "x = Slider(0, 4, 1)",
+            "y = Slider(0, 4, 1)",
+            "z = 2*x + y #hl",
+            "A = (0, 4)",
+            "B = (4, 0)",
+            "C = (2, 2)",
+            "Polygon(A, B, C) #eq1",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"z_max = {Distance(D, A)}\", (1, 7))",
+            "Intersect(x + y <= 4, x >= 0, y >= 0, z = 2*x + y) #eq1"
+          ],
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 1.876,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 3,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "x = Slider(0, 4, 1)",
+            "y = Slider(0, 4, 1)",
+            "z = 2*x + y #hl",
+            "A = (0, 4)",
+            "B = (4, 0)",
+            "C = (2, 2)",
+            "Polygon(A, B, C) #eq1",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"z_max = {Distance(D, A)}\", (1, 7))",
+            "Intersect(x + y <= 4, x >= 0, y >= 0, z = 2*x + y) #eq1"
+          ]
+        },
+        {
+          "id": "cube",
+          "category": "立体几何",
+          "ocr": {
+            "accuracy": 0.9545454545454546,
+            "seconds": 3.219,
+            "text": "13. 在正方体 $ABCD-A_1B_1C_1D_1$ 中，E 为棱 $BB_1$ 的中点，求异面直线 $AE$ 与 $B_1C$ 所成角的余弦值。\n【图形】\n\n图中有正方体 $ABCD-A_1B_1C_1D_1$，其中：\n- 点 $A, B, C, D$ 是底面正方形的四个顶点；\n- 点 $A_1, B_1, C_1, D_1$ 是顶面正方形的四个顶点；\n- 棱 $BB_1$ 是右侧竖直的棱，其中点为 $E$；\n- 异面直线为 $AE$ 和 $B_1C$。\n\n**标注信息：**\n- 底面正方形边长为1（单位长度）；\n- 顶面正方形边长也为1；\n- 正方体棱长为1；\n- 点 $E$ 是 $BB_1$ 的中点，即 $BE = EB_1 = \\frac{1}{2}$。\n\n**几何关系：**\n- 直线 $AE$ 连接底面顶点 $A$ 与侧棱中点 $E$；\n- 直线 $B_1C$ 连接顶面后上顶点 $B_1$ 与底面右前下顶点 $C$；\n- 这两条直线在正方体内部相交，构成异面直线。\n\n**结论：**\n题目要求计算异面直线 $AE$ 与 $B_1C$ 所成角的余弦值。"
+          },
+          "analyzeSeconds": 10.014,
+          "tokensPerSecond": 145.63443185783302,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "D = Point(0, 0, 0)",
+            "A = Point(2, 0, 0)",
+            "B1 = Point(2, 2, 2)",
+            "C = Point(0, 2, 2)",
+            "E = Midpoint(B1, B) #hl",
+            "l: y = 2x + 1 #aux",
+            "P1 = Intersect(l, x = 2)",
+            "P2 = Intersect(l, x = 0)",
+            "A' = Rotate(A, 90°, D)",
+            "B1 = Translate(A', (0, -2, 0)) #hl",
+            "C = Translate(B1, (0, 2, 0)) #hl",
+            "D1 = Translate(C, (0, 0, 2)) #hl",
+            "A1 = Rotate(A, 90°, D1)",
+            "B1 = Rotate(B1, 90°, A1)",
+            "C = Rotate(C, 90°, B1)",
+            "D = Rotate(D, 90°, C)",
+            "E = Translate(E, (2, 0, -1)) #hl",
+            "P3 = Intersect(l, x = 2)",
+            "P4 = Intersect(l, x = 0)",
+            "A' = Rotate(A', (0, 2, 0)) #hl",
+            "B1 = Translate(B1, (0, -2, 0)) #hl",
+            "C = Translate(C, (0, 2, 0)) #hl",
+            "D1 = Translate(D1, (0, 0, 2)) #hl",
+            "A1 = Rotate(A1, 90°, D1)",
+            "B1 = Rotate(B1, 90°, A1)",
+            "C = Rotate(C, 90°, B1)",
+            "D = Rotate(D, 90°, C)",
+            "E = Translate(E, (2, 0, -1)) #hl",
+            "P3 = Intersect(l, x = 2)",
+            "P4 = Intersect(l, x = 0)",
+            "A' = Rotate(A', (0, 2, 0)) #hl",
+            "B1 = Translate(B1, (0, -2, 0)) #hl",
+            "C = Translate(C, (0, 2, 0)) #hl",
+            "D1 = Translate(D1, (0, 0, 2)) #hl",
+            "A1 = Rotate(A1, 90°, D1)",
+            "B1 = Rotate(B1, 90°, A1)",
+            "C = Rotate(C, 90°, B1)",
+            "D = Rotate(D, 90°, C)",
+            "E = Translate(E, (2, 0, -1)) #hl",
+            "P3 = Intersect(l, x = 2)",
+            "P4 = Intersect(l, x = 0)",
+            "A' = Rotate(A', (0, 2, 0)) #hl",
+            "B1 = Translate(B1, (0, -2, 0)) #hl",
+            "C = Translate(C, (0, 2, 0)) #hl",
+            "D1 = Translate(D1, (0, 0, 2)) #hl",
+            "A1 = Rotate(A1, 90°, D1)",
+            "B1 = Rotate(B1, 90°, A1)",
+            "C = Rotate(C, 90°, B1)",
+            "D = Rotate(D, 90°, C)",
+            "E = Translate(E, (2, 0, -1)) #hl",
+            "P3 = Intersect(l, x = 2)",
+            "P4 = Intersect(l, x = 0)",
+            "A' = Rotate(A', (0, 2, 0)) #hl",
+            "B1 = Translate(B1, (0, -2, 0)) #hl",
+            "C = Translate(C, (0, 2, 0)) #hl",
+            "D1 = Translate(D1, (0, 0, 2)) #hl",
+            "A1 = Rotate(A1, 90°, D1)",
+            "B1 = Rotate(B1, 90°, A1)",
+            "C = Rotate(C, 90°, B1)"
+          ],
+          "firstErrors": 51,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "midpoint",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "repair": {
+            "seconds": 5.919,
+            "accepted": true,
+            "reason": "还有 30 处错误"
+          },
+          "finalErrors": 30,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "equal",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "缺少点"
+            },
+            {
+              "type": "midpoint",
+              "ok": false,
+              "detail": "缺少点"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "D = Point(0, 0, 0)",
+            "A = Point(2, 0, 0)",
+            "B1 = Point(2, 2, 2)",
+            "C = Point(0, 2, 2)",
+            "E = Midpoint(B1, B) #hl",
+            "l: y = 2x + 1 #aux",
+            "P1 = Intersect(l, x = 2)",
+            "P2 = Intersect(l, x = 0)",
+            "A' = Rotate(A, 90°, D) #hl",
+            "B1 = Translate(A', (0, -2, 0)) #hl",
+            "C = Translate(B1, (0, 2, 0)) #hl",
+            "D1 = Translate(C, (0, 0, 2)) #hl",
+            "A1 = Rotate(A, 90°, D1) #hl",
+            "B1 = Rotate(B1, 90°, A1) #hl",
+            "C = Rotate(C, 90°, B1) #hl",
+            "D = Rotate(D, 90°, C) #hl",
+            "E = Translate(E, (2, 0, -1)) #hl",
+            "P3 = Intersect(l, x = 2)",
+            "P4 = Intersect(l, x = 0)",
+            "A' = Rotate(A', (0, 2, 0)) #hl",
+            "B1 = Translate(B1, (0, -2, 0)) #hl",
+            "C = Translate(C, (0, 2, 0)) #hl",
+            "D1 = Translate(D1, (0, 0, 2)) #hl",
+            "A1 = Rotate(A1, 90°, D1) #hl",
+            "B1 = Rotate(B1, 90°, A1) #hl",
+            "C = Rotate(C, 90°, B1) #hl",
+            "D = Rotate(D, 90°, C) #hl",
+            "E = Translate(E, (2, 0, -1)) #hl",
+            "P3 = Intersect(l, x = 2)",
+            "P4 = Intersect(l, x = 0)",
+            "A' = Rotate(A', (0, 2, 0)) #hl",
+            "B1 = Translate(B1, (0, -2, 0)) #hl",
+            "C = Translate(C, (0, 2, 0)) #hl",
+            "D1 = Translate(D1, (0, 0, 2)) #hl",
+            "A1 = Rotate(A1, 90°, D1) #hl",
+            "B1 = Rotate(B1, 90°, A1) #hl",
+            "C = Rotate(C, 90°, B1) #hl",
+            "D = Rotate(D, 90°, C) #hl"
+          ]
+        },
+        {
+          "id": "pyramid-sphere",
+          "category": "立体几何",
+          "analyzeSeconds": 4.722,
+          "tokensPerSecond": 139.7060894336293,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (2, 0, 0)",
+            "B = (0, 2, 0)",
+            "C = (0, 0, 2)",
+            "P = (2, 0, 2)",
+            "D = Midpoint(A, C)",
+            "Segment(D, A) #aux",
+            "Segment(D, B) #aux",
+            "Segment(D, P) #hl",
+            "Equation Sphere(O, R)",
+            "Radius R = √( (PA/2)^2 + (AB/2)^2 + (BC/2)^2 )",
+            "R = √(1^2 + 1^2 + 1^2) = √3",
+            "Surface Area S = 4πR^2 = 12π"
+          ],
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "2.828"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "2.828"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "60.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "45.0"
+            }
+          ],
+          "repair": {
+            "seconds": 1.702,
+            "accepted": false,
+            "reason": "错误没有减少"
+          },
+          "finalErrors": 3,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "2.000"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "2.828"
+            },
+            {
+              "type": "dist",
+              "ok": false,
+              "detail": "2.828"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "60.0"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "90.0"
+            },
+            {
+              "type": "angle",
+              "ok": false,
+              "detail": "45.0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (2, 0, 0)",
+            "B = (0, 2, 0)",
+            "C = (0, 0, 2)",
+            "P = (2, 0, 2)",
+            "D = Midpoint(A, C)",
+            "Segment(D, A) #aux",
+            "Segment(D, B) #aux",
+            "Segment(D, P) #hl",
+            "Equation Sphere(O, R)",
+            "Radius R = √( (PA/2)^2 + (AB/2)^2 + (BC/2)^2 )",
+            "R = √(1^2 + 1^2 + 1^2) = √3",
+            "Surface Area S = 4πR^2 = 12π"
+          ]
+        },
+        {
+          "id": "cylinder",
+          "category": "立体几何",
+          "analyzeSeconds": 7.383,
+          "tokensPerSecond": 146.25666879761062,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(true)",
+            "O = Center(D)",
+            "A = (2, 0, 0)",
+            "C = (0, 5, 0)",
+            "D1 = (0, 0, 5)",
+            "Sphere(O, 2)",
+            "Cylinder(A, B, 2)",
+            "Cone(O, A, 2)",
+            "ShowAxes(false)",
+            "Text(\"侧面积 S = 2πrh\", (1, 4))",
+            "Text(\"体积 V = πr²h\", (1, 6))",
+            "l: x = 0 #aux",
+            "P = Point(0, 5, 0)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: y = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: z = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"侧面积 S = 2πrh\", (1, 4))",
+            "Text(\"体积 V = πr²h\", (1, 6))",
+            "l: x = 0 #aux",
+            "P = Point(0, 5, 0)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: y = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"侧面积 S = 2πrh\", (1, 4))",
+            "Text(\"体积 V = πr²h\", (1, 6))",
+            "l: z = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"侧面积 S = 2πrh\", (1, 4))",
+            "Text(\"体积 V = πr²h\", (1, 6))",
+            "l: x = 0 #aux",
+            "P = Point(0, 5, 0)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: y = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P)",
+            "Angle(O, P, D1)",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: z = 5 #aux"
+          ],
+          "firstErrors": 35,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "repair": {
+            "seconds": 7.002,
+            "accepted": true,
+            "reason": "还有 34 处错误"
+          },
+          "finalErrors": 34,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "3d"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "finalCommands": [
+            "ShowAxes(true)",
+            "O = Center(D1)",
+            "A = (2, 0, 0)",
+            "C = (0, 5, 0)",
+            "D1 = (0, 0, 5)",
+            "Sphere(O, 2)",
+            "Cylinder(A, C, 2)",
+            "Cone(O, A, 2)",
+            "ShowAxes(false)",
+            "Text(\"侧面积 S = 2πrh\", (1, 4))",
+            "Text(\"体积 V = πr²h\", (1, 6))",
+            "l: x = 0 #aux",
+            "P = Point(0, 5, 0)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq1",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: y = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq2",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: z = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq3",
+            "Text(\"侧面积 S = 2πrh\", (1, 4))",
+            "Text(\"体积 V = πr²h\", (1, 6))",
+            "l: x = 0 #aux",
+            "P = Point(0, 5, 0)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq4",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: y = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq5",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: z = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq6",
+            "Text(\"侧面积 S = 2πrh\", (1, 4))",
+            "Text(\"体积 V = πr²h\", (1, 6))",
+            "l: x = 0 #aux",
+            "P = Point(0, 5, 0)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq7",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: y = 5 #aux",
+            "P = Point(0, 0, 5)",
+            "Segment(O, P) #hl",
+            "Angle(O, P, D1) #eq8",
+            "Text(\"底面半径 r=2\", (1, 3))",
+            "Text(\"高 h=5\", (1, 7))",
+            "l: z = 5 #aux"
+          ]
+        },
+        {
+          "id": "moving-point",
+          "category": "函数",
+          "analyzeSeconds": 7.996,
+          "tokensPerSecond": 139.60119182754883,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (-2, -2)",
+            "B = (2, -2)",
+            "C = (2, 2)",
+            "D = (-2, 2)",
+            "O = Center(A, B, C, D)",
+            "P1 = Point(0, 0)",
+            "P2 = Midpoint(A, B)",
+            "P3 = Midpoint(B, C)",
+            "Segment(O, P1) #aux",
+            "Segment(P1, P2) #hl",
+            "Segment(P2, P3) #hl",
+            "Segment(P3, O) #eq1",
+            "Segment(O, P1) #eq1",
+            "Segment(P1, P2) #eq1",
+            "Segment(P2, P3) #eq1",
+            "P = Midpoint(A, B)",
+            "x = 0",
+            "y = 2*x",
+            "P = Point(0, 0)",
+            "x = 2",
+            "y = 2*(2-2)",
+            "P = Point(2, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4\", y = 2*(4-2)\".text(\"y=2(x-2)\") #hl\n  ], "
+          ],
+          "firstErrors": 15,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "repair": {
+            "seconds": 4.964,
+            "accepted": true,
+            "reason": "还有 14 处错误"
+          },
+          "finalErrors": 14,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "4.00/4.00/4.00/4.00"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "4.000"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (-2, -2)",
+            "B = (2, -2)",
+            "C = (2, 2)",
+            "D = (-2, 2)",
+            "O = Center(A, B, C, D)",
+            "P1 = Point(0, 0)",
+            "P2 = Midpoint(A, B)",
+            "P3 = Midpoint(B, C)",
+            "Segment(O, P1) #aux",
+            "Segment(P1, P2) #hl",
+            "Segment(P2, P3) #hl",
+            "Segment(P3, O) #eq1",
+            "Segment(O, P1) #eq1",
+            "Segment(P1, P2) #eq1",
+            "Segment(P2, P3) #eq1",
+            "P = Midpoint(A, B)",
+            "x = 0",
+            "y = 2*x",
+            "P = Point(0, 0)",
+            "x = 2",
+            "y = 2*(2-2)",
+            "P = Point(2, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4",
+            "y = 2*(4-2)",
+            "P = Point(4, 0)",
+            "x = 4"
+          ]
+        },
+        {
+          "id": "meeting",
+          "category": "应用题",
+          "analyzeSeconds": 3.324,
+          "tokensPerSecond": 147.67019307321996,
+          "json": "ok",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 360)",
+            "B = (360, 0)",
+            "l: y = -70x + 360 #aux",
+            "P1 = A",
+            "P2 = B",
+            "Segment(P1, P2) #hl",
+            "t = Slider(0, 4, 2)",
+            "A' = Translate(A, (70, 0)) #result",
+            "B' = Translate(B, (-50, 0)) #result",
+            "P3 = Intersect(l, A') #hl",
+            "P4 = Intersect(l, B') #hl",
+            "Text(\"相遇时间 t = {Distance(P3, P4)}\", (1, 7))",
+            "Angle(P3, P2, P4) \"α\" #eq1",
+            "Angle(P4, P3, P1) \"β\" #eq1"
+          ],
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "2d"
+            },
+            {
+              "type": "kind",
+              "ok": false,
+              "detail": "0"
+            }
+          ],
+          "correct": false,
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 360)",
+            "B = (360, 0)",
+            "l: y = -70x + 360 #aux",
+            "P1 = A",
+            "P2 = B",
+            "Segment(P1, P2) #hl",
+            "t = Slider(0, 4, 2)",
+            "A' = Translate(A, (70, 0)) #result",
+            "B' = Translate(B, (-50, 0)) #result",
+            "P3 = Intersect(l, A') #hl",
+            "P4 = Intersect(l, B') #hl",
+            "Text(\"相遇时间 t = {Distance(P3, P4)}\", (1, 7))",
+            "Angle(P3, P2, P4) \"α\" #eq1",
+            "Angle(P4, P3, P1) \"β\" #eq1"
+          ]
+        }
+      ]
+    }
+  ]
+}
