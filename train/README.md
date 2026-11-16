@@ -11,12 +11,15 @@
 
 | 路径 | 内容 |
 |---|---|
-| `gen/` | 训练数据生成器：41 类题型随机出题（第三版加了 `more4.js` 的 6 类），参考答案由程序算出，逐题用 App 的引擎校验（`gen/build.js`），再整理成对话数据（`gen/dataset.js`，最后打印每个命令出现在多少道题里） |
+| `gen/` | 训练数据生成器：46 类题型随机出题（第三版加了 `more4.js` 的 6 类，第四版加了 `more5.js` 的 5 类），参考答案由程序算出，逐题用 App 的引擎校验（`gen/build.js`），再整理成对话数据（`gen/dataset.js`，最后打印每个命令出现在多少道题里） |
 | `data/mlx-v2/` | 第二版训练数据（`train.jsonl`、`valid.jsonl`、`meta.json`）；`data/mlx-v2a/` 是补足少见命令之前的版本（0.8B 用的），`data/mlx/` 是最近一次生成的 |
-| `lora-2b.yaml`、`lora-2b-v2.yaml`、`lora-2b-v3.yaml`、`lora-0.8b.yaml` | 作图（分析题意）的训练配置（2B 第一～三版、0.8B） |
+| `lora-2b.yaml`、`lora-2b-v2.yaml`、`lora-2b-v3.yaml`、`lora-2b-v4.yaml`、`lora-0.8b.yaml` | 作图（分析题意）的训练配置（2B 第一～四版、0.8B） |
 | `ocr/` | 第三版新增的“看图识别”训练：`texts.mjs`（试卷式题目文字）、`render.swift`（WebKit + KaTeX 渲染成图片）、`augment.py`（做成拍照/扫描的样子）、`make-data.mjs`（生成 `data/ocr/`、`data/ocr-test.jsonl`）、`eval_ocr.mjs`（用手机引擎评测识别） |
 | `lora-ocr.yaml`、`train_ocr.py`、`vlm_processor.py` | 识别 LoRA 的训练配置和入口（mlx-vlm；先把循环层换成核对过的分块算法，图片处理器换成不依赖 PyTorch 的版本） |
 | `after-v3.sh` | 第三版训练结束后的全部转换和评测 |
+| `after-v4.sh` | 第四版的训练、转换和评测（`--eval-only` 只跑评测；评测前先检查显卡能不能用） |
+| `checkpoints.sh` | 中间版本评测：训练时存下的中间版本逐个做成模型，和最终版一起用现在的代码在开发集上评测，看训练到第几步就够了 |
+| `bank/split.mjs` | 高中数学题库（`real/inbox/`，不对外发布）按题型分出测试集和训练题，写进 `eval/bank-split.json` |
 | `test_chunked_vlm.py` | 核对换进 mlx-vlm 的分块算法和它自带的逐 token 算法一致（输出、状态、梯度） |
 | `train_lora.py` | 启动训练；把 Qwen3.5 的循环层换成分块并行算法（`chunked_delta.py`），否则每步 20 秒 |
 | `chunked_delta.py`、`test_chunked_delta.py` | 分块并行算法，以及它和 MLX 原来逐 token 算法的核对（输出、状态、梯度） |
@@ -50,6 +53,7 @@ sh eval_model.sh shuxing-2b-v1 dev 2                    # 先开发集
 sh eval_model.sh shuxing-2b-v1 fresh 2                  # 新题型集：训练里没有的题型，看会不会变差
 sh eval_model.sh shuxing-2b-v1 holdout 2                # 最后保留题（只看总数）
 BASE_OLLAMA=qwen3.5:0.8b-q8_0 sh eval_model.sh shuxing-0.8b-v1 dev 2   # 0.8B：指定原模型（用它的 Modelfile）
+sh checkpoints.sh adapters/2b-v3 shuxing-2b-v3 "195 390 585" exam2-dev dev   # 中间版本逐个评测：训练到第几步就够了（只用开发集；评测时别合上电脑盖子）
 
 # 5. 手机引擎核对（项目根目录；models-cli 下每个文件夹里是 model.gguf，可选 adapter.gguf）
 node train/cli_eval.mjs train/out/models-cli qwen3.5-2b-lora-v1 dev --lora
@@ -64,15 +68,19 @@ node train/ocr/make-data.mjs 2000          # → train/data/ocr/（训练、验�
 # 2. 核对换进 mlx-vlm 的循环层算法（在 train/ 目录）
 .venv/bin/python test_chunked_vlm.py
 
-# 3. 训练（约 70 分钟）；不需要 PyTorch（vlm_processor.py 换了图片处理器）
+# 3. 训练（约 50 分钟，M4 Pro）；不需要 PyTorch（vlm_processor.py 换了图片处理器）
 .venv/bin/python train_ocr.py -c lora-ocr.yaml
 
-# 4. 转成手机用的文件：放进手机上 2B 的模型文件夹，命名为 adapter-ocr.gguf
+# 4. 转成手机用的文件 adapter-ocr.gguf（放进手机上 2B 的模型文件夹才会启用；ocr-v1 在真实过去问上比原模型差，没有放进手机，见下面的结果）
 .venv/bin/python adapter_to_gguf.py adapters/ocr-v1 ../ios/iphone-install/models/qwen3.5-2b-q4_K_M/model.gguf out/ocr-v1/adapter-ocr.gguf
 
 # 5. 评测识别（项目根目录；文件夹里要有 model.gguf、mmproj.gguf、adapter-ocr.gguf）
 node train/ocr/eval_ocr.mjs train/out/models-cli qwen3.5-2b-v3 test --lora --name shuxing-ocr-v1
 node train/ocr/eval_ocr.mjs train/out/models-cli qwen3.5-2b-v3 exam --lora --name shuxing-ocr-v1
+
+# 6. 过去问的识别结果要对照原图逐题核对（结论写进 eval/exam/ocr-review-v3.md），再查公式能不能在 App 里显示
+node train/ocr/compare_ocr.mjs qwen3.5_2b-q4_K_M phone-base shuxing-ocr-v1 --only kyudai-2025-1
+node train/ocr/latex_check.mjs qwen3.5_2b-q4_K_M phone-base shuxing-ocr-v1 --list
 ```
 
 第三版的全部转换和评测写在 `after-v3.sh` 里（两段训练结束后自动依次运行）。
@@ -99,10 +107,15 @@ node train/ocr/eval_ocr.mjs train/out/models-cli qwen3.5-2b-v3 exam --lora --nam
 |---|---|---|---|
 | 原 2B | 39% | 50% | 13.1 秒 |
 | 2B 第一版（`adapters/2b-v1`） | 63% | 59% | 4.3 秒 |
-| **2B 第二版（`adapters/2b-v2`）** | **71%** | 56% | 4.2 秒 |
+| 2B 第二版（`adapters/2b-v2`） | 71% | 56% | 4.2 秒 |
+| **2B 第三版（`adapters/2b-v3`）** | **74%** | **59%** | **3.9 秒** |
+| 2B 第四版（`adapters/2b-v4`） | 74% | 66% | 3.7 秒 |
 | 原 0.8B | 39% | 38% | 12.9 秒 |
 | 0.8B（`adapters/0.8b-v1`） | 50% | 50% | 3.7 秒 |
 
-- 手机上建议用 2B 第二版：把 `out/shuxing-2b-v2/adapter.gguf` 放进手机上 2B 的模型文件夹。
+- 第三版（2026-11-12，详见 `docs/model-eval.md` 的“结果四”）：同一版代码重跑第二版是 68%、53%，第三版各题集持平或略好、更快；过去问第一组 56%（第二版 50%，原 2B 38%）；过去问第二组测试集（没有参与设计题型）67%（第二版 53%，原 2B 33%）。
+- 第四版（2026-11-13，详见 `docs/model-eval.md` 的“结果五”）：照着过去问第二组开发集的错题加了 5 类题型，没有提高。第二组测试集 66%（第三版 67%），开发集 79%（第三版 86%；用同一版代码重跑是 83%），过去问第一组 60%（第三版 62%）。作图仍以第三版为准。
+- 训练步数（2026-11-15，详见 `docs/model-eval.md` 的“结果六”）：第三版 195、390、585、780 步，过去问第二组开发集 78%、81%、86%、83%，开发集 97%、95%、100%、100%，逐题比较分不出高低；195 步第一次写的命令错得多、要多修正。训练一半左右就够了。
+- 手机上推荐用 2B 第三版：把 `out/shuxing-2b-v3/adapter.gguf` 放进手机上 2B 的模型文件夹（还没放，等真机测试）。识别 LoRA（`out/ocr-v1/adapter-ocr.gguf`）在真实考题上变差，不放。
 - 手机引擎核对（`cli_eval.mjs`，开发集 19 题，只看第一次生成）：原模型 + 第二版 `adapter.gguf` 完全正确 18/19，原 2B 用长提示 10/19；输入 282 token 对 2806 token。
 - 没学过的题型上，微调做到的是“不变差、快约 3 倍”；要让更多题型做对，需要扩大训练数据覆盖的题型。

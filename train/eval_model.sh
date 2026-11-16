@@ -17,7 +17,8 @@ if ! curl -s 127.0.0.1:11434/api/version >/dev/null; then
   trap 'kill $STARTED 2>/dev/null' EXIT
   for i in $(seq 60); do curl -s 127.0.0.1:11434/api/version >/dev/null && break; sleep 1; done
 fi
-if ! "$O" list | grep -q "^$NAME"; then
+# 名字要完全一样（后面跟“:标签”或空格）：只比开头的话，有了 shuxing-2b-v3-s195 就会以为 shuxing-2b-v3 也有了
+if ! "$O" list | grep -qE "^${NAME}[: ]"; then
   { echo "FROM $T/out/$NAME/model.gguf"; "$O" show --modelfile "$BASE_OLLAMA" | grep -v "^#\|^FROM"; } > "$T/out/$NAME/Modelfile"
   "$O" create "$NAME" -f "$T/out/$NAME/Modelfile" 2>&1 | tail -1
 fi
