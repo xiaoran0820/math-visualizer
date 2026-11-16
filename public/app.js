@@ -9,7 +9,7 @@ import { createApi, normalizeBaseUrl } from './lib/api.js';
 import { createDeviceApi, createOllamaDevicePlugin } from './lib/api-device.js';
 import { runPipeline, isPerfect } from './lib/pipeline.js';
 import { extractFacts, verifyFacts } from './lib/constraints.js';
-import { tooLittleText, ocrBody, ocrRetryHint, dedupeOcr, cleanModelText } from './lib/prompts.js';
+import { tooLittleText, ocrQuality, ocrRetryHintFor, pickBetterOcr, ocrLangFor, ocrLangOf, dedupeOcr, dropOcrPreamble, cleanModelText, dropRunawayFigure, ocrRunawayWatch } from './lib/prompts.js';
 import { EXAMPLES } from './examples.js';
 
 const $ = (id) => document.getElementById(id);
@@ -36,6 +36,8 @@ const app = {
   commands: [],
   facts: [], // 从题目文字里提取的、可以自动核对的条件（lib/constraints.js）
   added: [], // 程序按题目补画的内容
+  ocrQuality: null, // 最近一次识别的质量（lib/prompts.js 的 ocrQuality）
+  perf: [], // 最近几次模型请求的分阶段耗时，设置里的“性能数据”
 };
 
 // 模型在哪里运行：
@@ -119,6 +121,7 @@ function init() {
   $('settingsBtn').addEventListener('click', openSettings);
   $('serverTestBtn').addEventListener('click', testServer);
   $('settingsForm').addEventListener('submit', saveSettings);
+  $('perfClearBtn')?.addEventListener('click', () => { app.perf.length = 0; renderPerf(); });
   $('solveBtn').addEventListener('click', solve);
   $('modelSelect').addEventListener('change', (e) => { app.model = e.target.value; store.set('model', app.model); });
 
@@ -388,19 +391,26 @@ function ticker(step, run) {
 
 async function recognize(run, image, hint) {
   const tk = ticker('ocr', run);
+  const setting = store.get('ocrLang', 'auto');
+  // “自动”时按上一道题的语言：上一道是日文题，这道也检查是否被译成了中文
+  const lang = ocrLangFor(setting, store.get('ocrLastLang', ''));
   let text = '';
   try {
     text = await recognizeOnce(run, image, hint, tk);
-    // 几乎没有识别出题目文字（R7-1 只有「【图形】没有图形。」）：换个说法再识别一次，用题目文字多的那次
-    if (run.alive() && tooLittleText(text)) {
+    // 不只看字数：公式在中间断掉、整题被译成中文时也重试，并按质量而不是长度选结果。
+    let q = ocrQuality(text, { lang });
+    if (run.alive() && q.needsRetry) {
       let again = '';
       try {
-        again = await recognizeOnce(run, image, ocrRetryHint(hint), tk, '文字太少，重新识别');
+        again = await recognizeOnce(run, image, ocrRetryHintFor(q.reasons, hint), tk, '识别不完整，重新识别');
       } catch (e) {
         if (run.signal.aborted || !text) throw e; // 重试出错时，用第一次的结果
       }
-      if (ocrBody(again).length > ocrBody(text).length) text = again;
+      if (run.alive() && again && pickBetterOcr(again, text, { lang })) text = again;
+      q = ocrQuality(text, { lang });
     }
+    app.ocrQuality = { ...q, langSetting: setting };
+    if (run.alive() && text) store.set('ocrLastLang', ocrLangOf(q, store.get('ocrLastLang', '')));
   } finally {
     tk.stop();
   }
@@ -408,24 +418,39 @@ async function recognize(run, image, hint) {
   if (!run.alive()) return '';
   if (!text) throw new Error('没有识别出题目内容。可以换一张更清晰的照片，或在图上框选题目区域后重试。');
   showProblem(text);
+  showOcrWarning(app.ocrQuality);
   setStep('ocr', 'done', `${secs.toFixed(1)} 秒`);
   return text;
 }
 
-// 识别一次，边生成边显示
+// 识别一次，边生成边显示。【图形】部分跑偏（同一行出现第 3 次，或超过 350 字）或正文整行重复时停下，去掉跑偏的图形描述
 async function recognizeOnce(run, image, hint, tk, label = '') {
-  let text = '';
+  let text = '', looped = false;
   showProblem('', true);
   const render = throttle(() => { if (run.alive()) showProblem(text, true); }, 120);
+  const ac = new AbortController();
+  const stopWithRun = () => ac.abort();
+  if (run.signal.aborted) ac.abort();
+  else run.signal.addEventListener('abort', stopWithRun, { once: true });
+  const watch = ocrRunawayWatch(() => { looped = true; tk.note([label, '输出跑偏，已停下'].filter(Boolean).join(' · ')); ac.abort(); });
   try {
-    await api.recognize({ image, hint, model: app.model }, run.signal, (ev) => {
-      if (!run.alive()) return;
-      if (ev.t === 'delta') { text += ev.v; tk.note([label, `${text.length} 字`].filter(Boolean).join(' · ')); render(); }
+    await api.recognize({ image, hint, model: app.model }, ac.signal, (ev) => {
+      if (ev.t === 'done') { recordPerf('ocr', ev.stats, { attempt: label ? 2 : 1 }); return; }
+      if (!run.alive() || looped) return;
+      if (ev.t !== 'delta') return;
+      text += ev.v;
+      tk.note([label, `${text.length} 字`].filter(Boolean).join(' · '));
+      render();
+      watch(text);
     });
+  } catch (e) {
+    if (!looped || run.signal.aborted) throw e;
   } finally {
     render.cancel();
+    run.signal.removeEventListener('abort', stopWithRun);
   }
-  return dedupeOcr(cleanText(text));
+  // 去掉开场白要在去重之前：开场白只出现一次，留着的话整段抄两遍就认不出来
+  return dropRunawayFigure(dedupeOcr(dropOcrPreamble(cleanText(text))));
 }
 
 const cleanText = cleanModelText;
@@ -459,15 +484,19 @@ async function runAnalysis(run, problem, image, hint, setFailed) {
         if (!run.alive()) return;
         if (ev.type === 'facts') app.facts = ev.facts;
         else if (ev.type === 'delta' && ev.attempt === 1) { latest = ev.text; live(); }
-        else if (ev.type === 'analyze-done' && ev.attempt === 1) {
-          live.cancel();
-          const secs = tk.stop();
-          const speed = ev.stats?.tokensPerSecond ? ` · ${Math.round(ev.stats.tokensPerSecond)} 字元/秒` : '';
-          setStep('analyze', ev.candidate ? 'done' : 'error', ev.candidate ? `${secs.toFixed(1)} 秒${speed}` : '输出格式不对');
+        else if (ev.type === 'analyze-done') {
+          recordPerf('analyze', ev.stats, { attempt: ev.attempt });
+          if (ev.attempt === 1) {
+            live.cancel();
+            const secs = tk.stop();
+            const speed = ev.stats?.tokensPerSecond ? ` · ${Math.round(ev.stats.tokensPerSecond)} 字元/秒` : '';
+            setStep('analyze', ev.candidate ? 'done' : 'error', ev.candidate ? `${secs.toFixed(1)} 秒${speed}` : '输出格式不对');
+          }
         } else if (ev.type === 'best') {
           best = ev.candidate;
           showCandidate(best);
         } else if (ev.type === 'repair-start') progress('正在请模型按核对结果修改');
+        else if (ev.type === 'repair-done') recordPerf('repair', ev.stats);
         else if (ev.type === 'analyze-start' && ev.attempt > 1) progress(`重新生成第 ${ev.attempt} 版`);
       },
     });
@@ -517,8 +546,11 @@ function resetResults() {
   app.commands = [];
   app.facts = [];
   app.added = [];
+  app.ocrQuality = null;
   for (const k of Object.keys(app.sceneState)) delete app.sceneState[k];
   ['problemCard', 'figureCard', 'analysisCard', 'commandsCard', 'solutionCard', 'errorBox'].forEach((id) => { $(id).hidden = true; });
+  $('ocrWarn').hidden = true;
+  $('ocrWarn').textContent = '';
   $('figure').innerHTML = '';
   $('sliders').innerHTML = '';
   $('figTools').innerHTML = '';
@@ -544,6 +576,7 @@ function showProblem(text, streaming = false) {
   v.innerHTML = text ? renderMarkdown(text) : '<span class="muted">正在识别…</span>';
   v.classList.toggle('streaming', streaming);
   $('editBtn').hidden = streaming;
+  $('ocrWarn').hidden = true;
 }
 
 function toggleEdit(on) {
@@ -565,6 +598,52 @@ function showError(e) {
   box.hidden = false;
   box.querySelector('[data-help]')?.addEventListener('click', (ev) => { ev.preventDefault(); openHelp('help'); });
   if (e.code === 'unreachable') checkHealth();
+}
+
+// 识别结果可能有问题时给一句提醒；不影响继续分析，只让用户有机会先检查。
+function showOcrWarning(q) {
+  const el = $('ocrWarn');
+  if (!el) return;
+  if (!q) { el.hidden = true; el.textContent = ''; return; }
+  const msgs = [];
+  if (q.tooLittle) msgs.push('识别出的文字很少，建议换一张更清晰的照片，或点“修改”补全。');
+  else if (q.incomplete) msgs.push('识别结果可能在公式中间断了，建议点“修改”检查补全。');
+  // 只有按日文检查时才会判成被翻译（选了“日文”，或“自动”且上一道是日文题），这时已经自动重新识别过一次
+  if (q.likelyTranslated) msgs.push(q.langSetting === 'ja'
+    ? '识别结果看起来被译成了中文，自动重新识别后仍然这样。建议点“修改”对照原题，或者重新拍一张。'
+    : '识别结果里没有假名。如果原题是日文，可能被译成了中文，建议点“修改”对照原题；如果是中文题，可以忽略这条提醒。');
+  if (q.figureMissing) msgs.push('题目里提到了图形，但识别结果没有图形描述；可以点“修改”补充，或重新识别。');
+  el.hidden = !msgs.length;
+  el.textContent = msgs.join(' ');
+}
+
+// ====================== 性能数据 ======================
+// 手机上到底慢在“加载 / 预填 / 生成”哪一段，只靠猜会改错地方。这里记录每次请求的分阶段耗时，
+// 在设置里显示最近 12 次；手机原生端和服务端的 stats 字段都兼容。
+const PERF_LABEL = { ocr: '识别', analyze: '分析', repair: '修正' };
+function recordPerf(kind, stats, extra = {}) {
+  if (!stats || typeof stats !== 'object') return;
+  app.perf.unshift({ kind, at: Date.now(), ...extra, ...stats });
+  if (app.perf.length > 12) app.perf.length = 12;
+}
+const fmtPerf = (v, unit = '') => (Number.isFinite(v) ? `${v.toFixed(v < 10 ? 1 : 0)}${unit}` : '—');
+function renderPerf() {
+  const box = $('perfBody');
+  if (!box) return;
+  if (!app.perf.length) {
+    box.textContent = '还没有数据。做一次识别或分析后，这里会显示加载、预填、生成各花了多久。';
+    return;
+  }
+  const rows = app.perf.map((p) => {
+    const sub = [p.loadSeconds, p.promptSeconds, p.generateSeconds].filter((v) => Number.isFinite(v));
+    const total = Number.isFinite(p.wallSeconds) ? p.wallSeconds
+      : Number.isFinite(p.seconds) ? p.seconds
+        : sub.length ? sub.reduce((a, b) => a + b, 0) : NaN;
+    const io = `${Number.isFinite(p.promptTokens) ? p.promptTokens : '—'} / ${Number.isFinite(p.outputTokens) ? p.outputTokens : '—'}`;
+    const label = `${PERF_LABEL[p.kind] || esc(p.kind)}${p.attempt > 1 ? `#${p.attempt}` : ''}`;
+    return `<tr><td>${label}</td><td>${fmtPerf(p.loadSeconds, 's')}</td><td>${fmtPerf(p.promptSeconds, 's')}</td><td>${fmtPerf(p.generateSeconds, 's')}</td><td>${io}</td><td>${Number.isFinite(p.cachedTokens) ? p.cachedTokens : '—'}</td><td>${fmtPerf(total, 's')}</td></tr>`;
+  }).join('');
+  box.innerHTML = `<table class="perf-table"><thead><tr><th>请求</th><th>加载</th><th>预填</th><th>生成</th><th>输入/输出</th><th>缓存</th><th>总耗时</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function applyAnalysis(a, final) {
@@ -919,6 +998,8 @@ function openSettings() {
   $('serverInput').value = api.kind === 'device' ? store.get('server', '') : api.baseUrl;
   $('serverStatus').textContent = api.baseUrl ? `当前：${api.baseUrl}` : `当前：与页面相同（${location.origin}）`;
   $('serverStatus').className = 'muted';
+  $('ocrLangSelect').value = store.get('ocrLang', 'auto');
+  renderPerf();
   $('settingsDialog').showModal();
 }
 
@@ -944,6 +1025,7 @@ function saveSettings(e) {
   const v = normalizeBaseUrl($('serverInput').value);
   store.set('server', v);
   store.set('engine', $('engineSelect').value);
+  store.set('ocrLang', $('ocrLangSelect').value);
   api = makeApi();
   $('settingsDialog').close();
   checkHealth();
@@ -974,7 +1056,10 @@ const HELP = `### 第一次使用
 右上角“设置”里可以选：**连接服务**（模型在电脑上运行，默认）或 **本机**（模型在这台设备上运行；在电脑浏览器里会直接调用 Ollama，打包成手机 App 后使用手机上的模型）。
 
 ### 换模型
-右上角可以切换已下载的模型。电脑内存较大时可以换更大的模型（如 \`qwen3.5:9b\`），作图更准确，但速度会慢一些。`;
+右上角可以切换已下载的模型。电脑内存较大时可以换更大的模型（如 \`qwen3.5:9b\`），作图更准确，但速度会慢一些。
+
+### 题目语言
+识别出的文字太少、公式在中间断掉或整行重复时，会自动换一种说法再识别一次，并按质量选更好的一版；任何设置下都是这样。日文题还会检查是否被译成了中文：选“日文”时每道题都查，选“自动”时上一道是日文题才查。中文题选“自动”或“中文”即可。识别结果下面如果出现黄色提醒，可以先点题目右上角的“修改”检查。`;
 
 const SYNTAX = `每行一条命令，格式和 GeoGebra 类似。
 

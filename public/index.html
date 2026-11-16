@@ -123,6 +123,7 @@
           <div class="card-actions"><button id="editBtn" class="btn ghost small">修改</button></div>
         </header>
         <div id="problemView" class="md problem"></div>
+        <p id="ocrWarn" class="warn-text" hidden></p>
         <div id="problemEdit" hidden>
           <textarea id="problemText" class="input" rows="7"></textarea>
           <div class="row">
@@ -195,10 +196,22 @@
           <option value="device">本机（模型在这台设备上运行，实验功能）</option>
         </select>
         <p class="field-help" id="engineHelp"></p>
+        <label class="field-label" for="ocrLangSelect">题目语言</label>
+        <select id="ocrLangSelect" class="input">
+          <option value="auto">自动（上一道是日文题时，检查是否被译成中文）</option>
+          <option value="ja">日文（每道题都检查是否被译成中文）</option>
+          <option value="zh">中文（不检查）</option>
+        </select>
+        <p class="field-help">只在拍照识别时用来判断结果是否被翻译，不影响其它功能。一直做日文题时建议选“日文”。</p>
         <label class="field-label" for="serverInput">服务地址</label>
         <input id="serverInput" class="input" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="留空 = 使用当前网页所在的服务；例如 http://192.168.1.5:3000">
         <p class="field-help">在电脑上用 <code>npm run lan</code> 启动服务后，把终端里显示的“手机访问”地址填在这里。网页版一般留空。</p>
         <p id="serverStatus" class="muted"></p>
+        <details class="perf-detail">
+          <summary>性能数据（最近 12 次）</summary>
+          <div id="perfBody" class="perf-body">还没有数据。</div>
+          <div class="row"><button id="perfClearBtn" class="btn ghost small" type="button">清空</button></div>
+        </details>
         <div class="row">
           <button id="serverTestBtn" class="btn" type="button">测试连接</button>
           <button class="btn primary" type="submit">保存</button>
