@@ -31,6 +31,8 @@ eval/exam/pdf/
 eval/exam/images/
 eval/exam/ocr/
 eval/exam/tools/build/
+# 用来训练的真题（你找来的 PDF、图片，以及识别出的文字、生成的答案）同样不对外发布
+train/real/
 
 # 编译出的工具
 native/local-model/tools/build/
