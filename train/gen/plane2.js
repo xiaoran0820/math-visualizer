@@ -18,7 +18,8 @@ export function solveTriangle(r, S) {
     const x = (a * a + b * b - c * c) / (2 * a);
     const top = Math.round(Math.sqrt(Math.max(1, b * b - x * x)) * 10) / 10 + 1;
     return {
-      text: `在 ${S.tri('ABC')} 中，角 A、B、C 的对边分别为 ${lab(`a = ${a}`)}，${lab(`b = ${b}`)}，${lab(`c = ${c}`)}，求最大角的余弦值。`,
+      text: S.ja ? `$\\triangle ABC$ において、$a=${a}$、$b=${b}$、$c=${c}$ のとき、最も大きい角の余弦の値を求めよ。`
+        : `在 ${S.tri('ABC')} 中，角 A、B、C 的对边分别为 ${lab(`a = ${a}`)}，${lab(`b = ${b}`)}，${lab(`c = ${c}`)}，求最大角的余弦值。`,
       out: out({
         title: '余弦定理求角', category: '三角函数', knowns: [`$a=${a}$，$b=${b}$，$c=${c}$`], goal: '求最大角的余弦值',
         layout: `取 C(0,0)、B(${a},0)（BC=a=${a}）；A 到 C 的距离是 b=${b}、到 B 的距离是 c=${c}，用两个圆的交点确定，由程序计算。大边对大角，所求是角 ${which}。`,
@@ -46,7 +47,8 @@ export function solveTriangle(r, S) {
     };
   }
   return {
-    text: `在 ${S.tri('ABC')} 中，${lab(`a = ${a}`)}，${lab(`b = ${b}`)}，${ang}，求 ${S.tri('ABC')} 的面积。`,
+    text: S.ja ? `$\\triangle ABC$ において、$a=${a}$、$b=${b}$、$C=${C}^\\circ$ のとき、$\\triangle ABC$ の面積を求めよ。`
+      : `在 ${S.tri('ABC')} 中，${lab(`a = ${a}`)}，${lab(`b = ${b}`)}，${ang}，求 ${S.tri('ABC')} 的面积。`,
     out: out({
       title: '三角形的面积', category: '三角函数', knowns: [`$a=${a}$，$b=${b}$，$C=${C}^\\circ$`], goal: '求面积',
       layout: `取 C(0,0)、B(${a},0)；A(${b}cos${C}°, ${b}sin${C}°)，写成算式由程序计算。S=½ab·sinC。`,

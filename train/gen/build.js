@@ -21,6 +21,7 @@ import * as Y from './more2.js';
 import * as P2 from './plane2.js';
 import * as Z from './more3.js';
 import * as V from './more4.js';
+import * as W from './more5.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const FAMILIES = {
@@ -32,19 +33,22 @@ export const FAMILIES = {
   sector: Y.sector, work: Z.work, sequence: Y.sequence, inequality: Y.inequality, solid2: Y.solid2, analytic: Y.analytic, tetra: Z.tetra,
   // 第三版
   complexCircle: V.complexCircle, complexPoints: V.complexPoints, space3d: V.space3d, parametric: V.parametric, integerTable: V.integerTable, recurrence: V.recurrence,
+  // 第四版（主攻需要画图的题）
+  complexPolar: W.complexPolar, solidParam: W.solidParam, integralFunction: W.integralFunction, circleChords: W.circleChords, radicalTable: W.radicalTable,
 };
 // 题型里花样多、或者含有出现次数少的命令的，多出一些题（dataset.js 最后会统计每个命令出现在多少道题里）
-const BOOST = { triangle: 2, analytic: 2, transform: 2, round: 2.5, circleMore: 1.5 };
+const BOOST = { triangle: 2, analytic: 2, transform: 2, round: 2.5, circleMore: 1.5, complexPolar: 1.5, solidParam: 1.5, integralFunction: 1.5, circleChords: 1.5 };
 // 有日文写法的题型（日本考题里常见的）
 const JA = new Set(['quadratic', 'quadraticParam', 'cubic', 'trig', 'lineCurve', 'circleLine', 'linearProgram', 'solveTriangle', 'integral', 'extremum', 'tangent', 'sequence', 'inequality', 'analytic',
-  'complexCircle', 'complexPoints', 'space3d', 'parametric', 'integerTable', 'recurrence']);
+  'complexCircle', 'complexPoints', 'space3d', 'parametric', 'integerTable', 'recurrence',
+  'complexPolar', 'solidParam', 'integralFunction', 'circleChords', 'radicalTable']);
 
 const grams = (s) => { const t = String(s).replace(/\s+/g, ''); const g = new Set(); for (let i = 0; i + 3 <= t.length; i++) g.add(t.slice(i, i + 3)); return g; };
 const jaccard = (a, b) => { let n = 0; for (const x of a) if (b.has(x)) n++; return n / (a.size + b.size - n || 1); };
-// 开发集、保留集、新题型集，以及过去问集（没有原文，用识别出的文字）
-const EXAM_OCR = path.join(HERE, '..', '..', 'eval', 'exam', 'ocr', 'qwen3.5_2b-q4_K_M');
+// 开发集、保留集、新题型集，以及两组过去问（没有原文，用识别出的文字；第二组 58 题在 phone-base 里）
+const EXAM_OCR = ['qwen3.5_2b-q4_K_M', 'phone-base'].map((d) => path.join(HERE, '..', '..', 'eval', 'exam', 'ocr', d));
 const EVAL = [...PROBLEMS, ...HOLDOUT, ...FRESH].map((p) => p.text)
-  .concat(fs.existsSync(EXAM_OCR) ? fs.readdirSync(EXAM_OCR).map((f) => JSON.parse(fs.readFileSync(path.join(EXAM_OCR, f), 'utf8')).text) : [])
+  .concat(EXAM_OCR.flatMap((dir) => (fs.existsSync(dir) ? fs.readdirSync(dir).map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')).text) : [])))
   .map(grams);
 
 // 输出格式的长度上限（public/lib/prompts.js 的 ANALYSIS_SCHEMA；推理时语法会强制执行，超长的答案模型学了也写不出来）

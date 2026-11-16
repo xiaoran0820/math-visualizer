@@ -165,7 +165,9 @@ export function integral(r, S) {
   }
   const a = int(r, 0, 1), b = a + int(r, 1, 3);
   const e = pick(r, ['x^2', 'x^2 + 1', '2x + 1', 'x^3', '3x^2']);
-  const text = S.L ? `计算定积分 $\\int_{${a}}^{${b}} (${e.replace(/\^(\d)/g, '^$1').replace(/ /g, '')})\\,dx$，并说明它的几何意义。`
+  const integ = `$\\int_{${a}}^{${b}} (${e.replace(/\^(\d)/g, '^$1').replace(/ /g, '')})\\,dx$`;
+  const text = S.ja ? `定積分 ${integ} を求め、その値がどのような図形の面積を表すかを図示せよ。`
+    : S.L ? `计算定积分 ${integ}，并说明它的几何意义。`
     : `计算函数 ${S.m(`f(x) = ${e}`)} 在区间 [${a}, ${b}] 上的定积分，并说明它的几何意义。`;
   return {
     text,
@@ -287,7 +289,8 @@ export function sequence(r, S) {
   }
   const a1 = pick(r, [1, 2, 3]), q = pick(r, [2, 3, 1 / 2]), n = pick(r, [5, 6]);
   const qT = q === 1 / 2 ? '1/2' : String(q);
-  const text = `在等比数列 ${S.L ? '$\\{a_n\\}$' : '{aₙ}'} 中，${S.L ? `$a_1=${a1}$` : `a₁ = ${a1}`}，公比 ${S.L ? `$q=${q === 1 / 2 ? '\\frac{1}{2}' : q}$` : `q = ${qT}`}，求第 ${n} 项和前 ${n} 项的和。`;
+  const text = S.ja ? `初項 $${a1}$、公比 $${q === 1 / 2 ? '\\frac{1}{2}' : q}$ の等比数列 $\\{a_n\\}$ について、第 $${n}$ 項と初項から第 $${n}$ 項までの和を求めよ。`
+    : `在等比数列 ${S.L ? '$\\{a_n\\}$' : '{aₙ}'} 中，${S.L ? `$a_1=${a1}$` : `a₁ = ${a1}`}，公比 ${S.L ? `$q=${q === 1 / 2 ? '\\frac{1}{2}' : q}$` : `q = ${qT}`}，求第 ${n} 项和前 ${n} 项的和。`;
   const pts = Array.from({ length: 6 }, (_, i) => `P${i + 1} = (${i + 1}, ${i === 0 ? 'a' : i === 1 ? 'a*q' : `a*q^${i}`})`);
   return {
     text,
@@ -322,7 +325,7 @@ export function inequality(r, S) {
   }
   const a = int(r, -2, 3), b = int(r, 1, 4);
   const lhs = a === 0 ? '|x|' : `|x ${a > 0 ? '-' : '+'} ${Math.abs(a)}|`;
-  const text = `解不等式 ${S.m(`${lhs} < ${b}`)}。`;
+  const text = S.ja ? `不等式 ${S.m(`${lhs} < ${b}`)} を解け。` : `解不等式 ${S.m(`${lhs} < ${b}`)}。`;
   return {
     text,
     out: out({
@@ -381,7 +384,8 @@ export function analytic(r, S) {
   if (kind === 'param') {
     const a = pick(r, [2, 3, 4, 5]), b = pick(r, [1, 2, 3].filter((v) => v !== a));
     const bs = b === 1 ? '' : String(b);
-    const text = S.L ? `参数方程 $\\begin{cases} x=${a}\\cos t \\\\ y=${bs}\\sin t \\end{cases}$（$t$ 为参数）表示什么曲线？画出它的图形。`
+    const text = S.ja ? `媒介変数 $t$ を用いて $x=${a}\\cos t$、$y=${bs}\\sin t$ と表される曲線はどのような曲線か。その概形をかけ。`
+      : S.L ? `参数方程 $\\begin{cases} x=${a}\\cos t \\\\ y=${bs}\\sin t \\end{cases}$（$t$ 为参数）表示什么曲线？画出它的图形。`
       : `参数方程 x = ${a}cos t，y = ${bs}sin t（t 为参数）表示什么曲线？画出它的图形。`;
     return {
       text,
@@ -413,7 +417,7 @@ export function analytic(r, S) {
   }
   if (kind === 'dist') {
     return {
-      text: `求点 P${pt(a, b)} 到直线 ${S.m(l)} 的距离。`,
+      text: S.ja ? `点 P${pt(a, b)} と直線 ${S.m(l)} の距離を求めよ。` : `求点 P${pt(a, b)} 到直线 ${S.m(l)} 的距离。`,
       out: out({
         title: '点到直线的距离', category: '解析几何', knowns: [`点 $P(${a},${b})$`, `直线 ${T(l)}`], goal: '求点到直线的距离',
         layout: `过 P 作直线的垂线，垂足为 H，PH 的长就是所求；d=|${num(k)}·${a}-${b}${m >= 0 ? '+' : '-'}${Math.abs(m)}|/√(${num(k)}²+1)=${num(Math.abs(k * a - b + m) / Math.hypot(k, 1))}。`,
@@ -424,7 +428,7 @@ export function analytic(r, S) {
   }
   const c = a + pick(r, [2, 4, 6]), d = b + pick(r, [-2, 2, 4]);
   return {
-    text: `已知点 A${pt(a, b)}、B${pt(c, d)}，求线段 AB 的垂直平分线的方程。`,
+    text: S.ja ? `2 点 A${pt(a, b)}、B${pt(c, d)} を結ぶ線分 AB の垂直二等分線の方程式を求めよ。` : `已知点 A${pt(a, b)}、B${pt(c, d)}，求线段 AB 的垂直平分线的方程。`,
     out: out({
       title: '线段的垂直平分线', category: '解析几何', knowns: [`$A(${a},${b})$、$B(${c},${d})$`], goal: '求 $AB$ 的垂直平分线的方程',
       layout: `AB 的中点 M(${num((a + c) / 2)}, ${num((b + d) / 2)})，AB 的斜率 ${num((d - b) / (c - a))}，垂直平分线的斜率 ${num(-(c - a) / (d - b))}；用 PerpendicularBisector(A, B) 由程序画出。`,

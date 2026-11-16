@@ -30,7 +30,8 @@ export function quadratic(r, S) {
   } else if (ask === 'tri') {
     if (!c) return null;
     title = '抛物线与坐标轴围成的三角形';
-    text = `抛物线 ${fx} 与 x 轴交于 A、B 两点，与 y 轴交于点 C，求 ${S.tri('ABC')} 的面积。`;
+    text = S.ja ? `放物線 ${fx} と $x$ 軸の交点を A、B、$y$ 軸との交点を C とするとき、${S.tri('ABC')} の面積を求めよ。`
+      : `抛物线 ${fx} 与 x 轴交于 A、B 两点，与 y 轴交于点 C，求 ${S.tri('ABC')} 的面积。`;
     cmds.push('A = Intersect(f, xAxis, 1)', 'B = Intersect(f, xAxis, 2)', 'C = Intersect(f, yAxis)', 'Polygon(A, B, C) #hl', `Text("面积 {Area(Polygon(A, B, C))}", (${p}, ${num(Math.max(k, c, 0) + 2)}))`);
     goal = '求 $\\triangle ABC$ 的面积';
     layout = `与 x 轴的交点：${e.replace(/ /g, '')}=0 的两根 ${p} 和 ${q}；与 y 轴的交点：x=0 时 y=${num(c)}。交点都用 Intersect 由程序求出。`;
@@ -254,7 +255,8 @@ export function lineCurve(r, S) {
   const m = y1 - a * x1;
   const l = poly([a, m]);
   title = '直线与反比例函数的交点';
-  text = `已知反比例函数 ${S.m(`y = ${k}/x`)} 与一次函数 ${S.m(`y = ${l}`)} 的图像交于 A、B 两点，求 A、B 的坐标。`;
+  text = S.ja ? `曲線 ${S.m(`y = ${k}/x`)} と直線 ${S.m(`y = ${l}`)} の 2 つの交点を A、B とする。A、B の座標を求めよ。`
+    : `已知反比例函数 ${S.m(`y = ${k}/x`)} 与一次函数 ${S.m(`y = ${l}`)} 的图像交于 A、B 两点，求 A、B 的坐标。`;
   cmds = [`f(x) = ${k}/x`, `l: y = ${l}`, 'A = Intersect(f, l, 1) #result', 'B = Intersect(f, l, 2) #result', 'Segment(A, B) #aux'];
   layout = `联立 ${k}/x=${l.replace(/ /g, '')}，得 ${a === 1 ? '' : a === -1 ? '-' : a}x²${m >= 0 ? '+' : '-'}${Math.abs(m)}x-${k}=0，其中一个根是 x=${x1}。`.replace('+0x', '').replace('-0x', '');
   return { text, out: out({ title, category: '函数', knowns: [T(`y=${k}/x`), T(`y=${l}`)], goal: '求交点 $A$、$B$ 的坐标', layout, commands: cmds, insight: '两个交点分别在双曲线的两支上（或同一支上），看直线怎样穿过图像。' }) };
