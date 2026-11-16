@@ -1,7 +1,7 @@
 // 过去问集检验条件的自测：给每道题写一份“画对的图”，确认能全部通过；
 // 再用一份“故意画错的图”核对每道题，确认会被检出。只检查检验条件本身，不涉及模型。
 //   node eval/exam/ref-check.mjs
-import { EXAM } from '../exam.js';
+import { ALL_EXAM } from '../exam-sets.js';
 import { buildScene } from '../../public/lib/scene.js';
 import { runChecks } from '../checks.js';
 
@@ -87,8 +87,71 @@ const REF = {
 };
 const WRONG = ['P = (7, 7)', 'f(x) = 3x + 5', 'Circle((9, 9), 2)'];
 
+// 第二组（eval/exam2.js）：每道题都写一份画对的图（不需要图的题列表格或只画点）
+Object.assign(REF, {
+  'kobe-2024-1': ['c = Slider(0.5, 4, 2)', 'f(x) = Function(x + sqrt(c - x^2), 0, sqrt(c))'],
+  'kobe-2024-2': ['l1: y = -3x + 3', 'l2: y = x + 3', 'a = -0.5', 'f(x) = a x^2 - x + 3 + 1/a'],
+  'kobe-2024-3': ['Table(Row("n", 60, 120, 180), Row("概率", 1, 1, 1))'],
+  'kobe-2024-4': ['A = (1, 0, 0)', 'B = (0, 1, 0)', 'C = (-1, 0, 0)', 'D = (0, -1, 0)', 'E = (1, 0, 1)', 'F = (0, 1, 1)', 'G = (-1, 0, 1)', 'H = (0, -1, 1)', 'Polygon(A, B, C, D)', 'Polygon(E, F, G, H)'],
+  'kobe-2024-5': ['f(x) = Function(atan(x), 0, 3)', 'Region(x >= 0, x <= 1, y >= 0, y <= (1 - x)/(1 + x))'],
+  'kobe-2025-1': ['f(x) = |x^3 - x|', 'k = 0.5', 'g(x) = k (x + 1)'],
+  'kobe-2025-2': ['Table(Row("n", 1, 2, 3), Row("a_n", 0.414, 0.236, 0.162))'],
+  'kobe-2025-3': ['C = Curve(sin(t), cos(t) + |sin(t)|, t, 0, 2pi)'],
+  'kobe-2025-4': ['A = (-4, -1, 0)', 'B = (-3, 0, -1)', 's = Slider(-2, 2, 0.5)', 't = Slider(-2, 2, 1)', 'P = (s, t, -2s + t - 1)', 'Polygon(A, B, P)'],
+  'kobe-2025-5': ['f(x) = Function(sqrt(3) x, 0, 3)'],
+  'kobe-2026-1': ['Table(Row("事件", "r(x)=0"), Row("概率", "1/36"))'],
+  'kobe-2026-2': ['f(x) = Function(sin(ln(x)) cos(ln(x)), 1, e^pi)'],
+  'kobe-2026-3': ['Table(Row("m", 32, 34, 36, 37), Row("z", "4+4i", "5+3i", "6", "6+i"))'],
+  'kobe-2026-4': ['g(x) = sin(x) - sin(x)^2', 'f(x) = sin(x)^2 - 2cos(x)^2'],
+  'kobe-2026-5': ['O = (0, 0)', 'B = (1, 0)', 'r = Slider(0.1, 3, 1)', 'A = (1/(1 + r^2), r/(1 + r^2))', 'Polygon(O, A, B)'],
+  'kobe-2024k-1': ['f(x) = ln(x)', 'a = 1', 'P = (3, a)', 'l: y = -2(x - 2) + ln(2)'],
+  'kobe-2024k-2': ['f(x) = 3x^2 - 2x + 1', 'g(x) = 3x^2 - 4', 'h(x) = x^3 - 3x', 'l: y = 6x - 4'],
+  'kobe-2024k-3': ['f(x) = |cos(x)|'],
+  'kobe-2024k-4': ['Table(Row("n", 1, 2, 3), Row("q_n(4)", 0, 1, 7))'],
+  'kobe-2024k-5': ['P1 = (-2, 1)', 'P2 = (-1, 2)', 'P3 = (0, 3)', 'P4 = (1, 4)', 'P5 = (2, 5)'],
+  'kobe-2025k-1': ['θ = Slider(0, pi/2, pi/6)', 'f(x) = Function(sin(x + θ) cos(x) + 1, 0, pi/2)'],
+  'kobe-2025k-2': ['a = 2', 'f(x) = a^2 x^2 - 2*a*(a - 1)*x + 2'],
+  'kobe-2025k-3': ['A = (0, 0)', 't = Slider(0.1, 1.5, 0.5)', 'B = (cos(t), -sin(t))', 'C = (cos(t), sin(t))', 'Polygon(A, B, C)', 'Incircle(A, B, C)'],
+  'kobe-2025k-4': ['Table(Row("n", 1, 2), Row("x_n", "1/5", "9/25"))'],
+  'kobe-2025k-5': ['f(x) = Function(1 - cos(x), 0, pi/2)', 'g(x) = x^2/2', 'h(x) = 4/pi^2 x^2'],
+  'kobe-2026k-1': ['O = (0, 0)', 'Circle(O, 1)', 'P1 = (cos(60°), sin(60°))', 'P2 = (1, 0)', 'P3 = (cos(-60°), sin(-60°))', 'Polygon(P1, P2, P3)'],
+  'kobe-2026k-2': ['f(x) = Function(tan(x) - x^2/2, -1.5, 1.5)'],
+  'kobe-2026k-3': ['f(x) = Function(x^(ln(2^(ln(x)))), 0.01, 10)'],
+  'kobe-2026k-4': ['f(x) = Function(1 - 2/pi * abs(pi/2 - x), 0, pi)', 'g(x) = Function(sin(x), 0, pi)'],
+  'kobe-2026k-5': ['a = 1', 'f(x) = Function(a sin(x) + sin(2x), 0, 2pi)'],
+  'hitotsubashi-2025-1': ['Table(Row("n", 2025), Row("f(n)", "1/3"))'],
+  'hitotsubashi-2025-2': ['O = (0, 0)', 'Circle(O, 3)', 'b = Slider(-3, 3, 1)', 'P = (2, b)', 'Circle(P, 1)'],
+  'hitotsubashi-2025-3': ['a = Slider(-1, 5, 1)', 'f(x) = |x^2 - a|'],
+  'hitotsubashi-2025-4': ['O = (0, 0, 0)', 'A = (0, 3, -5)', 'B = (5, -2, 10)', 'Segment(O, A)', 'Segment(O, B)'],
+  'hitotsubashi-2025-5': ['A = (0, 0)', 'B = (1, 0)', 'C = (2, 1)', 'D = (2, -1)', 'E = (3, 0)', 'Segment(A, B)', 'Segment(B, C)', 'Segment(B, D)', 'Segment(C, E)', 'Segment(D, E)'],
+  'hitotsubashi-2026-1': ['Table(Row("x", 0, 7), Row("y", 1, 1))'],
+  'hitotsubashi-2026-2': ['Table(Row("n", 1, 2, 3), Row("log a_n", 0.1505, 0.3495, 0.6505))'],
+  'hitotsubashi-2026-3': ['α = Slider(-2, -1, -1.5)', 'β = Slider(1, 2, 1.5)', 'f(x) = x^3 - 3/2 (α + β) x^2 + 3 α β x'],
+  'hitotsubashi-2026-4': ['O = (0, 0, 0)', 'A = (6, 0, 0)', 'B = (0, 6, 0)', 'C = (0, 0, 6)', 'D = (0, 2, 6)', 'E = (0, 6, 3)', 'F = (3, 6, 0)', 'Polygon(D, E, F)'],
+  'hitotsubashi-2026-5': ['Table(Row("N", 1, 4), Row("概率", "16/35", "1/105"))'],
+  'hitotsubashi-2025k-1': ['Table(Row("a", 3), Row("b", 4), Row("c", 5))'],
+  'hitotsubashi-2025k-2': ['f(x) = x^3', 'k = 0.5', 'Polygon((k - 1, (k - 1)^3), (k + 1, (k - 1)^3), (k + 1, (k + 1)^3), (k - 1, (k + 1)^3))'],
+  'hitotsubashi-2025k-3': ['O = (0, 0)', 'A = (4, 0)', 'B = (0, 4)', 'M = (3, 1)', 'N = (1, 3)', 'Polygon(O, A, B)', 'Segment(O, M)', 'Segment(O, N)'],
+  'hitotsubashi-2025k-4': ['Table(Row("回数", 4), Row("概率", "1/8"))'],
+  'hitotsubashi-2025k-5': ['t = Slider(-1, 3, 2.5)', 'C: x^2 + y^2 - 1 - t (4x + 2y - 10) = 0'],
+  'hitotsubashi-2026k-1': ['Table(Row("整数", 2, 5, 8))'],
+  'hitotsubashi-2026k-2': ['a = Slider(-1, 3, 1)', 'f(x) = x^2 - 2x - a', 'g(x) = x^2 - 2a x - 1'],
+  'hitotsubashi-2026k-3': ['Table(Row("n", 4), Row("概率", "1/16"))'],
+  'hitotsubashi-2026k-4': ['C = Curve(|t| + |t - 2|, t^3 - 12t, t, -2, 4)'],
+  'hitotsubashi-2026k-5': ['f(x) = sin(x)/e^x'],
+  'isct-2026-1': ['Table(Row("p", "-2a"), Row("q", "a^2 - n b^2"))'],
+  'isct-2026-2': ['Table(Row("n", 4, 5), Row("个数", 1, 4))'],
+  'isct-2026-3': ['a = 4', 'b = 2', 'O = (0, 0)', 'A = (a, 0)', 'B = (0, b)', 'C = Midpoint(A, B)', 'P = Midpoint(A, C)', 'Q = Circumcenter(B, C, O)', 'Polygon(O, A, B)'],
+  'isct-2026-4': ['O = (0, 0)', 'Circle(O, 1)', 'A = (1, 0)', 'B = (cos(60°), sin(60°))', 'l1 = Line(A, B)'],
+  'isct-2026-5': ['k = Slider(1, 10, 3)', 'f(x) = x^k e^(-x)'],
+  'isct-2026m-1': ['O = (0, 0, 0)', 'a = 0.4', 'b = 0.6', 'h = 0.5', 'A = (a, 0, 0)', 'B = (a, a, 0)', 'C = (0, a, 0)', 'P = (0, 0, h)', 'Q = (b, 0, h)', 'R = (b, b, h)', 'S = (0, b, h)', 'Polygon(O, A, B, C)', 'Polygon(P, Q, R, S)'],
+  'isct-2026m-2': ['Table(Row("n", 2), Row("p_n", 30))'],
+  'isct-2026m-3': ['r = 2', 'c = 1', 'Circle((0, c), r)', 'Circle((0, -c), r)'],
+});
+
+
 let bad = 0, n = 0;
-for (const p of EXAM) {
+for (const p of ALL_EXAM) {
   const wrong = runChecks(buildScene(WRONG, {}), p.checks);
   if (wrong.every((c) => c.ok)) { bad++; console.log(`✗ ${p.id}：画错的图也能通过`); }
   if (!REF[p.id]) continue;
@@ -100,4 +163,4 @@ for (const p of EXAM) {
     console.log(`✗ ${p.id}：${s.errors.map((e) => e.message || e).join('；')} ${r.filter((c) => !c.ok).map((c) => `${c.type}（${c.detail}）`).join('；')}`);
   }
 }
-console.log(`画对的图 ${n} 题、画错的图 ${EXAM.length} 题，${bad ? `${bad} 处有问题` : '全部符合预期'}`);
+console.log(`画对的图 ${n} 题、画错的图 ${ALL_EXAM.length} 题，${bad ? `${bad} 处有问题` : '全部符合预期'}`);

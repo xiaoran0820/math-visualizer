@@ -2,13 +2,14 @@
 //   node eval/exam/make-images.mjs            # 全部
 //   node eval/exam/make-images.mjs todai-2024-1,kyodai-2026-3
 // 需要 macOS（用 PDFKit 渲染，tools/pdftool.swift，第一次运行时编译）。
-// 裁剪位置写在 eval/exam.js 的 src 里：按 100 DPI 渲染时的像素行；这里按 150 DPI 渲染，坐标乘 1.5。
+// 裁剪位置写在 eval/exam.js、eval/exam2.js 的 src 里：按 100 DPI 渲染时的像素；这里按 150 DPI 渲染，坐标乘 1.5。
+// src 的第 5、6 项（可选）是左右边界 x，用来去掉页面四周的裁切标记。
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { EXAM } from '../exam.js';
+import { ALL_EXAM } from '../exam-sets.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DPI = 150, K = DPI / 100;
@@ -43,12 +44,12 @@ function autoRange(file) {
 }
 
 const only = process.argv[2] ? process.argv[2].split(',') : null;
-for (const p of EXAM.filter((x) => !only || only.includes(x.id))) {
-  const segs = p.src.map(([pdf, n, y0, y1], i) => {
+for (const p of ALL_EXAM.filter((x) => !only || only.includes(x.id))) {
+  const segs = p.src.map(([pdf, n, y0, y1, x0, x1], i) => {
     const file = page(pdf, n);
     const [a, b] = y0 === 'auto' ? autoRange(file) : [Math.round(y0 * K), Math.round(y1 * K)];
     const seg = path.join(tmp, `${p.id}-${i}.png`);
-    run('crop', file, a, b, seg);
+    run('crop', file, a, b, seg, ...(x0 === undefined ? [] : [Math.round(x0 * K), Math.round(x1 * K)]));
     return seg;
   });
   const out = path.join(outDir, `${p.id}.png`);
