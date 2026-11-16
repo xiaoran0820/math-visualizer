@@ -1,0 +1,6372 @@
+{
+  "date": "2026-11-15T01:46:01.988Z",
+  "set": "exam2-dev",
+  "problems": [
+    "kobe-2024-1",
+    "kobe-2024-4",
+    "kobe-2025-2",
+    "kobe-2026-1",
+    "kobe-2026-2",
+    "kobe-2026-4",
+    "kobe-2024k-2",
+    "kobe-2024k-3",
+    "kobe-2024k-5",
+    "kobe-2025k-1",
+    "kobe-2025k-2",
+    "kobe-2026k-2",
+    "kobe-2026k-3",
+    "kobe-2026k-4",
+    "kobe-2026k-5",
+    "hitotsubashi-2025-3",
+    "hitotsubashi-2025-4",
+    "hitotsubashi-2025-5",
+    "hitotsubashi-2026-1",
+    "hitotsubashi-2026-4",
+    "hitotsubashi-2025k-1",
+    "hitotsubashi-2025k-3",
+    "hitotsubashi-2025k-4",
+    "hitotsubashi-2026k-1",
+    "hitotsubashi-2026k-2",
+    "isct-2026-1",
+    "isct-2026-2",
+    "isct-2026-4",
+    "isct-2026m-1"
+  ],
+  "pipelines": [
+    "best3"
+  ],
+  "withOcr": false,
+  "runs": 2,
+  "results": [
+    {
+      "model": "shuxing-2b-v3-s195",
+      "ocrAccuracy": null,
+      "tokensPerSecond": 90.07100147305898,
+      "memoryBytes": null,
+      "byPipeline": [
+        {
+          "pipeline": "best3",
+          "all": {
+            "problems": 58,
+            "errors": 0,
+            "jsonValid": 1,
+            "firstPassRate": 0.3620689655172414,
+            "repairTried": 37,
+            "repairAccepted": 3,
+            "finalRunnableRate": 0.603448275862069,
+            "checkPassRate": 0.826530612244898,
+            "fullyCorrectRate": 0.7758620689655172,
+            "calls": 2.7758620689655173,
+            "seconds": 15.965534482758619,
+            "factsSatRate": 0.9523809523809523,
+            "completed": 5
+          },
+          "bySet": {
+            "exam2-dev": {
+              "problems": 58,
+              "errors": 0,
+              "jsonValid": 1,
+              "firstPassRate": 0.3620689655172414,
+              "repairTried": 37,
+              "repairAccepted": 3,
+              "finalRunnableRate": 0.603448275862069,
+              "checkPassRate": 0.826530612244898,
+              "fullyCorrectRate": 0.7758620689655172,
+              "calls": 2.7758620689655173,
+              "seconds": 15.965534482758619,
+              "factsSatRate": 0.9523809523809523,
+              "completed": 5
+            }
+          }
+        }
+      ],
+      "rows": [
+        {
+          "id": "kobe-2024-1",
+          "category": "数列",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 18.068,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 5.128,
+              "tokensPerSecond": 54.0087697778557,
+              "looped": false,
+              "errors": 5,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.758,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 5,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 5.392,
+              "tokensPerSecond": 55.79421894934141,
+              "looped": false,
+              "errors": 7,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.762,
+              "tokensPerSecond": 55.90081839645115,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 5.128,
+          "tokensPerSecond": 54.0087697778557,
+          "firstErrors": 5,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 2.758
+          },
+          "source": "retry2",
+          "commands": [
+            "ShowAxes(false)",
+            "f(x) = x + sqrt(c - x^2) #hl",
+            "P = (x, y) \"最大值点\" #result",
+            "g(x) = x + sqrt(a - x^2) #hl",
+            "Q = (x, y) \"最大值点\" #result",
+            "s = Slider(0, 3.14, 0.8)",
+            "a(x) = x + sqrt(c - x^2) #aux",
+            "P2 = (s, y) \"第 n 项\" #result",
+            "l: y = b #aux"
+          ],
+          "finalCommands": [
+            "c = Slider(0, 4, 2)",
+            "a(x) = x + sqrt(c - x^2) #hl",
+            "s = Slider(0, 4, 2) \"x\"",
+            "y = s + sqrt(a - s^2) #hl",
+            "b(n) = Log(2, a(n)) #result",
+            "Text(\"n = {n}，a_n = {a(n)}\", (3.5, 1))"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2024-1",
+          "category": "数列",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 42.772,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 9.179,
+              "tokensPerSecond": 53.264383356261135,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 7.855,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 16.02,
+              "looped": true,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 9.676,
+              "tokensPerSecond": 50.947386487813496,
+              "looped": false,
+              "errors": 7,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 9.179,
+          "tokensPerSecond": 53.264383356261135,
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 7.855
+          },
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "c = Slider(0, 4, 2)",
+            "a = Function(x + sqrt(c - x^2), 0, sqrt(c)) #hl",
+            "b = Function(x + sqrt(b - x^2), 0, sqrt(b)) #hl",
+            "P = (x, y) \"最大值点\" #result",
+            "Q = (x, y) #aux",
+            "Row(1, 0, 0.8)",
+            "Row(2, 0.7, 0.9)",
+            "Row(3, 0.6, 1.0)",
+            "Row(4, 0.5, 1.1)",
+            "Row(5, 0.4, 1.2)",
+            "Row(6, 0.3, 1.3)",
+            "Row(7, 0.2, 1.4)",
+            "Row(8, 0.1, 1.5)",
+            "Row(9, 0.0, 1.6)",
+            "Table(1, 0, 0.8)",
+            "Table(2, 0.7, 0.9)",
+            "Table(3, 0.6, 1.0)",
+            "Table(4, 0.5, 1.1)",
+            "Table(5, 0.4, 1.2)",
+            "Table(6, 0.3, 1.3)",
+            "Table(7, 0.2, 1.4)",
+            "Table(8, 0.1, 1.5)",
+            "Table(9, 0.0, 1.6)",
+            "Brace(P, (x, y))",
+            "Text(\"c = {c} 时，a₁ = {y}\", (0, 2))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "c = Slider(0, 4, 2)",
+            "a = Function(x + sqrt(c - x^2), 0, sqrt(c)) #hl",
+            "b = Function(x + sqrt(b - x^2), 0, sqrt(b)) #hl",
+            "P = (x, y) \"最大值点\" #result",
+            "Q = (x, y) #aux",
+            "Row(1, 0, 0.8)",
+            "Row(2, 0.7, 0.9)",
+            "Row(3, 0.6, 1.0)",
+            "Row(4, 0.5, 1.1)",
+            "Row(5, 0.4, 1.2)",
+            "Row(6, 0.3, 1.3)",
+            "Row(7, 0.2, 1.4)",
+            "Row(8, 0.1, 1.5)",
+            "Row(9, 0.0, 1.6)",
+            "Table(1, 0, 0.8)",
+            "Table(2, 0.7, 0.9)",
+            "Table(3, 0.6, 1.0)",
+            "Table(4, 0.5, 1.1)",
+            "Table(5, 0.4, 1.2)",
+            "Table(6, 0.3, 1.3)",
+            "Table(7, 0.2, 1.4)",
+            "Table(8, 0.1, 1.5)",
+            "Table(9, 0.0, 1.6)",
+            "Brace(P, (x, y))",
+            "Text(\"c = {c} 时，a₁ = {y}\", (0, 2))"
+          ],
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2024-4",
+          "category": "立体几何",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 6.154,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 6.146,
+              "tokensPerSecond": 51.26263341534775,
+              "looped": false,
+              "errors": 0,
+              "sat": 12,
+              "total": 12,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 6.146,
+          "tokensPerSecond": 51.26263341534775,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(-1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, -1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(0, 1, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 G(-1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 H(0, -1, 1)"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "A = (1, 0, 0)",
+            "B = (0, 1, 0)",
+            "C = (-1, 0, 0)",
+            "D = (0, -1, 0)",
+            "E = (1, 0, 1)",
+            "F = (0, 1, 1)",
+            "G = (-1, 0, 1)",
+            "H = (0, -1, 1)",
+            "Polygon(A, B, C, D)",
+            "Segment(E, F)",
+            "Segment(G, H)",
+            "Segment(A, E) #aux",
+            "Segment(B, F) #aux",
+            "Segment(C, G) #aux",
+            "Segment(D, H) #aux",
+            "Angle(A, E, B)",
+            "Text(\"V = {Volume(X1)}\", (0, 0, 2))"
+          ],
+          "finalCommands": [
+            "A = (1, 0, 0)",
+            "B = (0, 1, 0)",
+            "C = (-1, 0, 0)",
+            "D = (0, -1, 0)",
+            "E = (1, 0, 1)",
+            "F = (0, 1, 1)",
+            "G = (-1, 0, 1)",
+            "H = (0, -1, 1)",
+            "Polygon(A, B, C, D)",
+            "Segment(E, F)",
+            "Segment(G, H)",
+            "Segment(A, E) #aux",
+            "Segment(B, F) #aux",
+            "Segment(C, G) #aux",
+            "Segment(D, H) #aux",
+            "Angle(A, E, B)",
+            "Text(\"V = {Volume(X1)}\", (0, 0, 2))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(-1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, -1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(0, 1, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 G(-1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 H(0, -1, 1)"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 12,
+            "total": 12,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2024-4",
+          "category": "立体几何",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 5.969,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 5.967,
+              "tokensPerSecond": 50.32443215717705,
+              "looped": false,
+              "errors": 0,
+              "sat": 12,
+              "total": 12,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 5.967,
+          "tokensPerSecond": 50.32443215717705,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(-1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, -1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(0, 1, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 G(-1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 H(0, -1, 1)"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "A = (1, 0, 0)",
+            "B = (0, 1, 0)",
+            "C = (-1, 0, 0)",
+            "D = (0, -1, 0)",
+            "E = (1, 0, 1)",
+            "F = (0, 1, 1)",
+            "G = (-1, 0, 1)",
+            "H = (0, -1, 1)",
+            "Polygon(A, B, C, D)",
+            "Segment(E, F)",
+            "Segment(G, H)",
+            "Segment(A, E) #aux",
+            "Segment(B, F) #aux",
+            "Segment(C, G) #aux",
+            "Segment(D, H) #aux",
+            "Angle(A, E, B)",
+            "Text(\"V = {Volume(X1)}\", (0, 0, 2))"
+          ],
+          "finalCommands": [
+            "A = (1, 0, 0)",
+            "B = (0, 1, 0)",
+            "C = (-1, 0, 0)",
+            "D = (0, -1, 0)",
+            "E = (1, 0, 1)",
+            "F = (0, 1, 1)",
+            "G = (-1, 0, 1)",
+            "H = (0, -1, 1)",
+            "Polygon(A, B, C, D)",
+            "Segment(E, F)",
+            "Segment(G, H)",
+            "Segment(A, E) #aux",
+            "Segment(B, F) #aux",
+            "Segment(C, G) #aux",
+            "Segment(D, H) #aux",
+            "Angle(A, E, B)",
+            "Text(\"V = {Volume(X1)}\", (0, 0, 2))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(-1, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, -1, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(0, 1, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 G(-1, 0, 1)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 H(0, -1, 1)"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 12,
+            "total": 12,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2025-2",
+          "category": "数列",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 12.682,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 3.184,
+              "tokensPerSecond": 50.03352941380856,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.896,
+              "accepted": true,
+              "reason": "还有 2 处错误",
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 3.72,
+              "tokensPerSecond": 51.04396784942267,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 3.875,
+              "tokensPerSecond": 50.776288310905834,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 3.184,
+          "tokensPerSecond": 50.03352941380856,
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": true,
+            "reason": "还有 2 处错误",
+            "seconds": 1.896
+          },
+          "source": "repair",
+          "commands": [
+            "ShowAxes(false)",
+            "a = sqrt(n^2 + 1) - n",
+            "k = Int(a) #result",
+            "d = a - k #hl",
+            "Text(\"a = {a}，k = {k}\", (0, 5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "n = Slider(1, 6, 3)",
+            "a = sqrt(n^2 + 1) - n",
+            "k = Int(a) #result",
+            "d = a - k #hl",
+            "Text(\"a = {a}，k = {k}\", (0, 5))"
+          ],
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2025-2",
+          "category": "数列",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 11.192,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.823,
+              "tokensPerSecond": 51.75200296423973,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.969,
+              "accepted": true,
+              "reason": "还有 2 处错误",
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 3.74,
+              "tokensPerSecond": 50.89994336277979,
+              "looped": false,
+              "errors": 6,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.655,
+              "tokensPerSecond": 50.09270975175047,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.823,
+          "tokensPerSecond": 51.75200296423973,
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": true,
+            "reason": "还有 2 处错误",
+            "seconds": 1.969
+          },
+          "source": "repair",
+          "commands": [
+            "ShowAxes(false)",
+            "a = sqrt(n^2 + 1) - n",
+            "k = Int(a) #result",
+            "d = a - k #hl",
+            "Text(\"a = {a}，k = {k}\", (0, 3))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "n = Slider(1, 6, 3)",
+            "a = sqrt(n^2 + 1) - n",
+            "k = Int(a) #result",
+            "d = a - k #hl",
+            "Text(\"a = {a}，k = {k}\", (0, 3))"
+          ],
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2026-1",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 15.929,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 6.768,
+              "looped": true,
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 4.65,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 4.503,
+              "tokensPerSecond": 49.85538308658549,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 6.768,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 18 行"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 4.65
+          },
+          "source": "retry1",
+          "commands": [
+            "Table(次数, 概率)",
+            "Row(0, 1/36)",
+            "Row(1, 2/36)",
+            "Row(2, 3/36)",
+            "Row(3, 4/36)",
+            "Row(4, 5/36)",
+            "Row(5, 6/36)",
+            "Row(6, 7/36)",
+            "Row(7, 8/36)",
+            "Row(8, 9/36)",
+            "Row(9, 10/36)",
+            "Row(10, 11/36)",
+            "Row(11, 12/36)",
+            "Row(12, 13/36)",
+            "Row(13, 14/36)",
+            "Row(14, 15/36)",
+            "Row(15, 16/36)",
+            "Row(16, 17/36)",
+            "Row(17, 18/36)",
+            "Row"
+          ],
+          "finalCommands": [
+            "Table(余数的次数与概率)",
+            "Row(次数, 0, 1, 2, 3, 4, 5, 6)",
+            "Row(P, 0.444, 0.833, 1.000, 1.000, 0.917, 0.526, 0.122)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 2 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2026-1",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 16.275,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.223,
+              "tokensPerSecond": 48.268683564847784,
+              "looped": false,
+              "errors": 2,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.889,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 4,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 4.682,
+              "tokensPerSecond": 51.910528595834165,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.474,
+              "tokensPerSecond": 49.71118928823293,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.223,
+          "tokensPerSecond": 48.268683564847784,
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 2 行"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 2.889
+          },
+          "source": "retry2",
+          "commands": [
+            "Table(次数, 概率)",
+            "Row(次数, 0, 1)",
+            "Row(概率, 1/6, 5/36)",
+            "Brace(f, g, #aux",
+            "l: y = r(x) #hl",
+            "Text(\"r(x) 的次数 {Degree(r)}，概率 {Probability(r)}\", (2, 4))"
+          ],
+          "finalCommands": [
+            "Table(余数)",
+            "Row(余数, 0, 1, 2, 3, 4, 5, 6)",
+            "Row(P, 49/36, 1/36, 1/18, 1/18, 1/18, 1/18, 1/18)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 2 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2026-2",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 4.134,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.125,
+              "tokensPerSecond": 48.645545012524934,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.125,
+          "tokensPerSecond": 48.645545012524934,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = sin(ln(x))cos(ln(x))",
+            "g(x) = x #aux",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "S = Integral(f, 1, e^pi) #hl",
+            "Text(\"面积 {Area(S)}\", (1, 4))"
+          ],
+          "finalCommands": [
+            "f(x) = sin(ln(x))cos(ln(x))",
+            "g(x) = x #aux",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "S = Integral(f, 1, e^pi) #hl",
+            "Text(\"面积 {Area(S)}\", (1, 4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2026-2",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 5.266,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 5.259,
+              "tokensPerSecond": 51.16488257084564,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 5.259,
+          "tokensPerSecond": 51.16488257084564,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "5 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = sin(ln(x))cos(ln(x))",
+            "g(x) = x #aux",
+            "A = (1, 0)",
+            "B = (e^pi, 0)",
+            "C = Intersect(f, g, 1)",
+            "D = Intersect(f, g, 2)",
+            "Segment(A, C) #hl",
+            "Segment(C, D) #hl",
+            "Segment(D, B) #aux",
+            "Text(\"面积 {Area(Segment(A, C) + Segment(C, D) + Segment(D, B))}\", (1, 4))"
+          ],
+          "finalCommands": [
+            "f(x) = sin(ln(x))cos(ln(x))",
+            "g(x) = x #aux",
+            "A = (1, 0)",
+            "B = (e^pi, 0)",
+            "C = Intersect(f, g, 1)",
+            "D = Intersect(f, g, 2)",
+            "Segment(A, C) #hl",
+            "Segment(C, D) #hl",
+            "Segment(D, B) #aux",
+            "Text(\"面积 {Area(Segment(A, C) + Segment(C, D) + Segment(D, B))}\", (1, 4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "5 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2026-4",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 18.538,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 5.871,
+              "tokensPerSecond": 50.36364719452823,
+              "looped": false,
+              "errors": 7,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 3.548,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 7,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 4.686,
+              "tokensPerSecond": 52.174828426409476,
+              "looped": false,
+              "errors": 4,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.354,
+              "tokensPerSecond": 49.77332302678291,
+              "looped": false,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 5.871,
+          "tokensPerSecond": 50.36364719452823,
+          "firstErrors": 7,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 3.548
+          },
+          "source": "retry2",
+          "commands": [
+            "a = Slider(0, pi, 0.5)",
+            "f(x) = Slider(0, 2pi, 1)",
+            "g(x) = Integral(f(t)*sin(x - t), a, x)",
+            "m = Slider(0, 6.28, 3.14)",
+            "l: y = Function(sin(x) - sin^2(x), 0, pi) #hl",
+            "n: y = Function(-2cos^2(x) + sin^2(x), 0, pi) #aux",
+            "p = (a, g(a)) #result",
+            "q = (m, l(m)) #result",
+            "r = (m, n(m)) #aux"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "a = Slider(0, pi, 0)",
+            "f(x) = 1 #eq1",
+            "g(x) = Integral(f(t), 0, x) #hl",
+            "l: y = cos(x) #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "3 个函数/直线；3 个函数/直线；图中没有表格；画了 3 个图形"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2026-4",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 25.863,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.172,
+              "tokensPerSecond": 52.22077974125211,
+              "looped": false,
+              "errors": 4,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.252,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 4,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 6.14,
+              "tokensPerSecond": 50.064998178669896,
+              "looped": false,
+              "errors": 4,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 13.28,
+              "tokensPerSecond": 51.04529204967311,
+              "looped": false,
+              "errors": 6,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.172,
+          "tokensPerSecond": 52.22077974125211,
+          "firstErrors": 4,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "1 个函数/直线；1 个函数/直线；图中没有表格；画了 1 个图形"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 2.252
+          },
+          "source": "first",
+          "commands": [
+            "a = Slider(0, pi, 3)",
+            "f(x) = Derivative(Sin^2(x) - 2Cos^2(x), x)",
+            "g(x) = Integral(f(t) * Sin(x - t), a, x)",
+            "l: y = g(a) #result",
+            "m: y = f(x) #aux",
+            "n: x = a #aux"
+          ],
+          "finalCommands": [
+            "a = Slider(0, pi, 3)",
+            "f(x) = Derivative(Sin^2(x) - 2Cos^2(x), x)",
+            "g(x) = Integral(f(t) * Sin(x - t), a, x)",
+            "l: y = g(a) #result",
+            "m: y = f(x) #aux",
+            "n: x = a #aux"
+          ],
+          "finalErrors": 4,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "1 个函数/直线；1 个函数/直线；图中没有表格；画了 1 个图形"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2024k-2",
+          "category": "函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 5.458,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 5.419,
+              "tokensPerSecond": 50.02133262714981,
+              "looped": false,
+              "errors": 0,
+              "sat": 4,
+              "total": 4,
+              "added": 2
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 5.419,
+          "tokensPerSecond": 50.02133262714981,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "4 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "s = Slider(-3, 4, 1)",
+            "C = (3, 1) #aux",
+            "P = (1, -1) #eq1",
+            "Q = (2, 8) #eq2",
+            "f(x) = 3(x - s)^2 - 2(x - s) + 1 #hl",
+            "g(x) = 6x - 4 #aux",
+            "l: y = 4 #result",
+            "m = Vertex(f) \"极大值点\" #result",
+            "n = Tangent(m, f) #aux"
+          ],
+          "finalCommands": [
+            "s = Slider(-3, 4, 1)",
+            "C = (3, 1) #aux",
+            "P = (1, -1) #eq1",
+            "Q = (2, 8) #eq2",
+            "f(x) = 3x^2 - 2x + 1 #hl",
+            "g(x) = 6x - 4 #aux",
+            "l: y = 4 #result",
+            "m = Vertex(f) \"极大值点\" #result",
+            "n = Tangent(m, f) #aux",
+            "y = x^3 - 3x"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "5 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 4,
+            "total": 4,
+            "added": [
+              "f(x) = 3x^2 - 2x + 1 #hl",
+              "y = x^3 - 3x"
+            ],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2024k-2",
+          "category": "函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 12.359,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.435,
+              "tokensPerSecond": 49.742400536305226,
+              "looped": false,
+              "errors": 2,
+              "sat": 4,
+              "total": 4,
+              "added": 2
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.996,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 2,
+              "sat": 4,
+              "total": 4,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.435,
+          "tokensPerSecond": 49.742400536305226,
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "1 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 2.996
+          },
+          "source": "first",
+          "commands": [
+            "f(x) = 3*(x - x0)^2 - 2*(x - x0) + 1",
+            "P = (1, -1)",
+            "Q = (2, 8)",
+            "M = Vertex(f) \"极大值点\" #result",
+            "l: y = 6x - 4 #aux",
+            "Text(\"x = {x0}，y = 4\", (1.5, 5))"
+          ],
+          "finalCommands": [
+            "f(x) = 3*(x - x0)^2 - 2*(x - x0) + 1",
+            "P = (1, -1)",
+            "Q = (2, 8)",
+            "M = Vertex(f) \"极大值点\" #result",
+            "l: y = 6x - 4 #aux",
+            "Text(\"x = {x0}，y = 4\", (1.5, 5))",
+            "y = 3x^2 - 2x + 1",
+            "y = x^3 - 3x"
+          ],
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 4,
+            "total": 4,
+            "added": [
+              "y = 3x^2 - 2x + 1",
+              "y = x^3 - 3x"
+            ],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2024k-3",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 20.412,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 6.699,
+              "tokensPerSecond": 48.945529743586604,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.773,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 5.986,
+              "tokensPerSecond": 47.503824678272366,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.768,
+              "tokensPerSecond": 42.54411252981263,
+              "looped": false,
+              "errors": 5,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 6.699,
+          "tokensPerSecond": 48.945529743586604,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "1 个函数/直线；1 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 2.773
+          },
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "n = 6",
+            "t = 3pi/2",
+            "f(t) = Limit(2*Sin(t/(2n))*Sum(|Cos(k*t/n)|, k = 1..n), n -> Infinity)",
+            "A = (0, 0)",
+            "B = (3pi/2, 4)",
+            "Segment(A, B) #hl",
+            "Text(\"t = {t} 时，f(t) = {f(t)}\", (0, 5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "n = 6",
+            "t = 3pi/2",
+            "f(t) = Limit(2*Sin(t/(2n))*Sum(|Cos(k*t/n)|, k = 1..n), n -> Infinity)",
+            "A = (0, 0)",
+            "B = (3pi/2, 4)",
+            "Segment(A, B) #hl",
+            "Text(\"t = {t} 时，f(t) = {f(t)}\", (0, 5))"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "1 个函数/直线；1 个函数/直线"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2024k-3",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 26.966,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 8.433,
+              "tokensPerSecond": 31.84740447843949,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 3.65,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 9.912,
+              "tokensPerSecond": 41.432348322525755,
+              "looped": false,
+              "errors": 7,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.361,
+              "tokensPerSecond": 40.58194979804103,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 8.433,
+          "tokensPerSecond": 31.84740447843949,
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "0 个函数/直线；0 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 3.65
+          },
+          "source": "retry2",
+          "commands": [
+            "ShowAxes(false)",
+            "f(t) = Limit(2*Sin(t/(2n))*Sum(|Cos(kt/n)|, k=1..n), n -> Infinity)",
+            "t = Slider(0, 6pi, 3pi)",
+            "P = Intersect(f, Line(t, 0, 2pi)) #hl",
+            "Text(\"t = {t}，f(t) = {y(P)}\", (0, 5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "f(t) = Integral(abs(cos(x)), 0, t)",
+            "s = Slider(0, 6.28, 0.5)",
+            "t = s",
+            "P = (t, f(t)) #hl",
+            "l: y = 0 #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2024k-5",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 17.628,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 7.319,
+              "tokensPerSecond": 31.48028293838028,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 3.352,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 6.948,
+              "tokensPerSecond": 41.559334035147025,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 7.319,
+          "tokensPerSecond": 31.48028293838028,
+          "firstErrors": 4,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 3.352
+          },
+          "source": "retry1",
+          "commands": [
+            "X = [-2, -1, 0, 1, 2]",
+            "Y = [5, 4, 3, 2, 1]",
+            "P = (X, Y)",
+            "r = Correlation(X, Y) #hl",
+            "Text(\"r = {r}\", (-2, 6))"
+          ],
+          "finalCommands": [
+            "O = (0, 0)",
+            "P1 = (-2, 1)",
+            "P2 = (-1, 2)",
+            "P3 = (0, 3)",
+            "P4 = (1, 4)",
+            "P5 = (2, 5)",
+            "Curve(P1, P2, P3, P4, P5) #hl",
+            "Text(\"r = {Corr(P1, P2, P3, P4, P5)}\", (-2, 6))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "图中没有表格；画了 1 个图形"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2024k-5",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 364.433,
+          "calls": 2,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 7.549,
+              "tokensPerSecond": 31.983654220449736,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 7.549,
+          "tokensPerSecond": 31.983654220449736,
+          "firstErrors": 4,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Data(x, y) = (-2, 1), (-1, 2), (0, 3), (1, 4), (2, 5)",
+            "X = (-2, -1, 0, 1, 2)",
+            "Y = (1, 2, 3, 4, 5)",
+            "r = Correlation(X, Y) #hl",
+            "Text(\"r = {r}\", (-2, 6))"
+          ],
+          "finalCommands": [
+            "Data(x, y) = (-2, 1), (-1, 2), (0, 3), (1, 4), (2, 5)",
+            "X = (-2, -1, 0, 1, 2)",
+            "Y = (1, 2, 3, 4, 5)",
+            "r = Correlation(X, Y) #hl",
+            "Text(\"r = {r}\", (-2, 6))"
+          ],
+          "finalErrors": 4,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2025k-1",
+          "category": "三角函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 11.93,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.406,
+              "tokensPerSecond": 57.95245291000998,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.419,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.999,
+              "tokensPerSecond": 96.67517945330187,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 3.095,
+              "tokensPerSecond": 104.19417365717317,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.406,
+          "tokensPerSecond": 57.95245291000998,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.419
+          },
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "theta = Slider(0, pi/2, 0.3)",
+            "f(x) = sin(x + theta)*cos(x) + 1",
+            "g(theta) = Function(sin(theta)*cos(theta) + 1, 0, pi/2) #hl",
+            "P = (pi/24, f(pi/24)) #result",
+            "l: x = 0 #aux",
+            "m: x = pi/2 #aux"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "theta = Slider(0, pi/2, 0.3)",
+            "f(x) = sin(x + theta)*cos(x) + 1",
+            "g(theta) = Function(sin(theta)*cos(theta) + 1, 0, pi/2) #hl",
+            "P = (pi/24, f(pi/24)) #result",
+            "l: x = 0 #aux",
+            "m: x = pi/2 #aux"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2025k-1",
+          "category": "三角函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 9.276,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.565,
+              "tokensPerSecond": 110.45397764034142,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.557,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 3.448,
+              "tokensPerSecond": 117.18785495151587,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 1.682,
+              "tokensPerSecond": 116.81405911393524,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.565,
+          "tokensPerSecond": 110.45397764034142,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.557
+          },
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "theta = Slider(0, pi/2, pi/6)",
+            "f(x) = sin(x + theta)*cos(x) + 1",
+            "g(theta) = Function(sin(theta)*cos(pi/24) + 1, 0, pi/2)",
+            "l: x = pi/24 #hl",
+            "m: theta = pi/6 #aux",
+            "P = (pi/24, 1.5) \"最大值点\" #result",
+            "Text(\"θ = {theta} 时，f(x) = {f(pi/24)}\", (0, 3))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "theta = Slider(0, pi/2, pi/6)",
+            "f(x) = sin(x + theta)*cos(x) + 1",
+            "g(theta) = Function(sin(theta)*cos(pi/24) + 1, 0, pi/2)",
+            "l: x = pi/24 #hl",
+            "m: theta = pi/6 #aux",
+            "P = (pi/24, 1.5) \"最大值点\" #result",
+            "Text(\"θ = {theta} 时，f(x) = {f(pi/24)}\", (0, 3))"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2025k-2",
+          "category": "函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 8.845,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.489,
+              "tokensPerSecond": 114.7004978090866,
+              "looped": false,
+              "errors": 2,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.585,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 2,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.554,
+              "tokensPerSecond": 118.31863992723403,
+              "looped": false,
+              "errors": 2,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.203,
+              "tokensPerSecond": 117.79043477503632,
+              "looped": false,
+              "errors": 2,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.489,
+          "tokensPerSecond": 114.7004978090866,
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.585
+          },
+          "source": "first",
+          "commands": [
+            "a = Slider(-2, 5, 1)",
+            "f(x) = a^2x^2 - 2a(a - 1)x + 2",
+            "g(x) = Function(a^2x^2 - 2a(a - 1)x + 2, -3, 4) #hl",
+            "l: x = a - 1 #aux",
+            "m = If(a < 0, -3, 5) #result",
+            "n = Integers(-3, 4) #eq1",
+            "P = (n, f(n))",
+            "Q = (a - 1, 2 - a) \"顶点\" #result"
+          ],
+          "finalCommands": [
+            "a = Slider(-2, 5, 1)",
+            "f(x) = a^2x^2 - 2a(a - 1)x + 2",
+            "g(x) = Function(a^2x^2 - 2a(a - 1)x + 2, -3, 4) #hl",
+            "l: x = a - 1 #aux",
+            "m = If(a < 0, -3, 5) #result",
+            "n = Integers(-3, 4) #eq1",
+            "P = (n, f(n))",
+            "Q = (a - 1, 2 - a) \"顶点\" #result"
+          ],
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2025k-2",
+          "category": "函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 6.122,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.075,
+              "tokensPerSecond": 120.14641329886854,
+              "looped": false,
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.467,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.57,
+              "tokensPerSecond": 118.13542631367456,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.075,
+          "tokensPerSecond": 120.14641329886854,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.467
+          },
+          "source": "retry1",
+          "commands": [
+            "a = Slider(-2, 4, 1)",
+            "f(x) = a^2x^2 - 2a(a - 1)x + 2",
+            "g(x) = Function(a^2x^2 - 2a(a - 1)x + 2, -3, 5) #hl",
+            "l: x = a - 1 #aux",
+            "m = If(a < 0, -3, 5) #result",
+            "P = (n, f(n))",
+            "Text(\"a = {a} 时，最小值 {f(m)}\", (-4, 6))"
+          ],
+          "finalCommands": [
+            "a = Slider(-3, 4, 1)",
+            "f(x) = a^2*x^2 - 2a*(a - 1)*x + 2",
+            "g(x) = Function(a^2*x^2 - 2a*(a - 1)*x + 2, (a - 1, 2 - a^2))",
+            "l: x = a - 1 #aux",
+            "m = If(a < 0, -1, If(a > 0, 1, 0))",
+            "P = (m, f(m)) \"最小值点\" #result",
+            "Text(\"a = {a} 时，最小值 {f(m)}\", (-1, 7))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2026k-2",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 7.018,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.334,
+              "tokensPerSecond": 117.11693247330464,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.263,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 1.826,
+              "tokensPerSecond": 124.43167604954571,
+              "looped": false,
+              "errors": 5,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 1.59,
+              "tokensPerSecond": 119.76307296756332,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.334,
+          "tokensPerSecond": 117.11693247330464,
+          "firstErrors": 2,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.263
+          },
+          "source": "first",
+          "commands": [
+            "f(x) = tan(x) - x^2/2",
+            "g(y) = Inverse(f) #result",
+            "a = f(pi/4)",
+            "l: y = g(y) #aux",
+            "P = (a, 0) \"点 a\" #result",
+            "Q = (0, 1) \"点 0\" #result",
+            "Segment(P, Q) #hl",
+            "Text(\"g'(a) = {Derivative(a, g)}\", (a, 2))"
+          ],
+          "finalCommands": [
+            "f(x) = tan(x) - x^2/2",
+            "g(y) = Inverse(f) #result",
+            "a = f(pi/4)",
+            "l: y = g(y) #aux",
+            "P = (a, 0) \"点 a\" #result",
+            "Q = (0, 1) \"点 0\" #result",
+            "Segment(P, Q) #hl",
+            "Text(\"g'(a) = {Derivative(a, g)}\", (a, 2))"
+          ],
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2026k-2",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 1.779,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.775,
+              "tokensPerSecond": 115.15200920303978,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.775,
+          "tokensPerSecond": 115.15200920303978,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "5 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = tan(x) - x^2/2",
+            "g(x) = Derivative(f) #aux",
+            "A = (0, f(0))",
+            "B = (1, f(1))",
+            "l: y = A #hl",
+            "m: y = B #result",
+            "n = Function(Derivative(f), 0, 1) #aux"
+          ],
+          "finalCommands": [
+            "f(x) = tan(x) - x^2/2",
+            "g(x) = Derivative(f) #aux",
+            "A = (0, f(0))",
+            "B = (1, f(1))",
+            "l: y = A #hl",
+            "m: y = B #result",
+            "n = Function(Derivative(f), 0, 1) #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "5 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2026k-3",
+          "category": "函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 5.146,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.183,
+              "tokensPerSecond": 111.99206930235162,
+              "looped": false,
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 1
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.043,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 1.914,
+              "tokensPerSecond": 121.30748056850393,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 1
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.183,
+          "tokensPerSecond": 111.99206930235162,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": false,
+              "detail": "1 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.043
+          },
+          "source": "retry1",
+          "commands": [
+            "f(x) = 4^x #aux",
+            "A = (0, 1) \"A\" #aux",
+            "B = (1, 0) \"B\" #aux",
+            "g(x) = x^t #hl",
+            "C = (0, 1) \"C\" #aux",
+            "D = (1, 0) \"D\" #aux"
+          ],
+          "finalCommands": [
+            "f(x) = x^ log(2^(log x))",
+            "g(x) = ln(7^x)",
+            "l: y = x #aux",
+            "A = (0, 1) #aux",
+            "B = (1, 2.699) #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [
+              "f(x) = x^ log(2^(log x))"
+            ],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2026k-3",
+          "category": "函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 4.496,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.62,
+              "tokensPerSecond": 120.63118234809534,
+              "looped": false,
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 1
+            },
+            {
+              "kind": "repair",
+              "seconds": 0.814,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.057,
+              "tokensPerSecond": 114.0807450350195,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.62,
+          "tokensPerSecond": 120.63118234809534,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": false,
+              "detail": "1 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 0.814
+          },
+          "source": "retry1",
+          "commands": [
+            "f(x) = (4^x)^{log(7^(1/x))",
+            "g(x) = log(2^x) #aux",
+            "l: x > 0 #aux"
+          ],
+          "finalCommands": [
+            "f(x) = x^log(2^log(x))",
+            "g(x) = Function(x, 0) #aux",
+            "l: x > 0 #aux",
+            "A = (1, 1) \"左极限\"",
+            "B = (Infinity, 1) \"右极限\""
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2026k-4",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 8.535,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.31,
+              "tokensPerSecond": 116.35076860237689,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.336,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.678,
+              "tokensPerSecond": 113.69376895677013,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.198,
+              "tokensPerSecond": 114.77825071518328,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.31,
+          "tokensPerSecond": 116.35076860237689,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.336
+          },
+          "source": "retry1",
+          "commands": [
+            "f(x) = 1 - (2/pi)*abs(pi/2 - x) #hl",
+            "g(x) = sin(x) #hl",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "C = Intersect(g, f, 1)",
+            "D = Intersect(g, f, 2)",
+            "E = Region(A, B, C, D) #hl",
+            "Text(\"面积 {Area(E)}\", (0, 4))"
+          ],
+          "finalCommands": [
+            "f(x) = 1 - (2/pi)*abs(pi/2 - x)",
+            "g(x) = sin(x)",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "C = Intersect(g, A, 1)",
+            "D = Intersect(g, B, 2)",
+            "Segment(A, C) #eq1",
+            "Segment(B, D) #eq1",
+            "Segment(C, A) #eq2",
+            "Segment(D, B) #eq2",
+            "Text(\"面积 {Area(Segment(A, B))}\", (0, 2))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 1,
+            "added": [],
+            "violated": [
+              "画成立体图（图是平面图）"
+            ]
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2026k-4",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 7.688,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.92,
+              "tokensPerSecond": 122.04558928818487,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.295,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.353,
+              "tokensPerSecond": 111.09833934434667,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.112,
+              "tokensPerSecond": 108.22293157724867,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.92,
+          "tokensPerSecond": 122.04558928818487,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.295
+          },
+          "source": "retry1",
+          "commands": [
+            "f(x) = 1 - 2/pi*abs(pi/2 - x) #hl",
+            "g(x) = sin(x) #hl",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "C = Intersect(g, f, 1)",
+            "D = Intersect(g, f, 2)",
+            "E = Region(A, B, C, D) #hl",
+            "Text(\"面积 {Area(E)}\", (0, 3))"
+          ],
+          "finalCommands": [
+            "f(x) = 1 - 2/pi*abs(pi/2 - x) #hl",
+            "g(x) = sin(x) #hl",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "C = Foot(A, xAxis)",
+            "D = Foot(B, xAxis)",
+            "S = Area(Circle(A, D, B))",
+            "E = Foot(A, xAxis)",
+            "F = Foot(B, xAxis)",
+            "P = (A, E) #result",
+            "Q = (B, F) #result"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 1,
+            "added": [],
+            "violated": [
+              "画成立体图（图是平面图）"
+            ]
+          },
+          "run": 2
+        },
+        {
+          "id": "kobe-2026k-5",
+          "category": "三角函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 8.36,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.431,
+              "tokensPerSecond": 111.54581847777139,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.27,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.285,
+              "tokensPerSecond": 109.90673698726414,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.348,
+              "tokensPerSecond": 110.46840753987716,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.431,
+          "tokensPerSecond": 111.54581847777139,
+          "firstErrors": 3,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.27
+          },
+          "source": "retry2",
+          "commands": [
+            "a = Slider(0, 6.28, 3)",
+            "f(x) = a*sin(x) + sin(2x)",
+            "g(a) = a^2 - 4cos(2b) #aux",
+            "l: a = 2cos(2b) #hl",
+            "m = (1, -4cos(2b)) \"极大值点\" #result",
+            "n = (0, 0) #aux"
+          ],
+          "finalCommands": [
+            "a = Slider(0, 7, 3)",
+            "f(x) = a*sin(x) + sin(2x)",
+            "Curve(f, (0, 0), (2pi, 0))",
+            "s = Slider(0, 6.28, 0.5)",
+            "P = (s, f(s)) #hl",
+            "T = Tangent(s, P) #hl",
+            "Text(\"a = {a} 时，切线斜率 {k(T)}\", (0, 1))",
+            "Extremum(f, (0, 0), (2pi, 0)) #result"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "kobe-2026k-5",
+          "category": "三角函数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 2.538,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.529,
+              "tokensPerSecond": 110.75869306335835,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.529,
+          "tokensPerSecond": 110.75869306335835,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "a = Slider(0, 3, 1)",
+            "f(x) = a*sin(x) + sin(2x)",
+            "g(x) = Function(a, 1/4, π/3) #aux",
+            "l: x = π/3 #aux",
+            "m = Slider(0, 2π, 0.8)",
+            "P = (m, f(m)) #hl",
+            "Q = (π/3, 1/4) \"顶点\" #result",
+            "Text(\"a = {a} 时，极大值 {f(m)}\", (0, 2))"
+          ],
+          "finalCommands": [
+            "a = Slider(0, 3, 1)",
+            "f(x) = a*sin(x) + sin(2x)",
+            "g(x) = Function(a, 1/4, π/3) #aux",
+            "l: x = π/3 #aux",
+            "m = Slider(0, 2π, 0.8)",
+            "P = (m, f(m)) #hl",
+            "Q = (π/3, 1/4) \"顶点\" #result",
+            "Text(\"a = {a} 时，极大值 {f(m)}\", (0, 2))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "curve",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2025-3",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 8.066,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.263,
+              "tokensPerSecond": 111.99120365430265,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.451,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.295,
+              "tokensPerSecond": 110.13147303718182,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.04,
+              "tokensPerSecond": 110.45903406299037,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.263,
+          "tokensPerSecond": 111.99120365430265,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.451
+          },
+          "source": "retry2",
+          "commands": [
+            "a = Slider(-3, 4, 1)",
+            "f(x) = abs(x^2 - a)",
+            "g(x) = Function(x^2, 0, 2) #aux",
+            "l: x = a #hl",
+            "m = Integral(f, 0, 2) #result",
+            "n = Slider(0, 6, 3.5) \"k\"",
+            "P = (a, m - n + k) #result",
+            "Q = (0, 0) #aux",
+            "R = (2, 4) #aux"
+          ],
+          "finalCommands": [
+            "a = Slider(-1, 4, 2)",
+            "f(x) = abs(x^2 - a)",
+            "g(x) = Function(abs(x^2 - a)) #aux",
+            "l: x^2 - a = 0 #aux",
+            "P = (0, 0)",
+            "Q = (2, 0)",
+            "R = (0, 1) #result",
+            "S = (2, 1) #result",
+            "Text(\"a = {a} 时，k = {Integrate(f, 0, 2)}\", (-3, -1))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2025-3",
+          "category": "微积分",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 7.568,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.865,
+              "tokensPerSecond": 114.38081221218454,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.322,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.448,
+              "tokensPerSecond": 112.97793702286997,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 1.923,
+              "tokensPerSecond": 110.96981305530925,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.865,
+          "tokensPerSecond": 114.38081221218454,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.322
+          },
+          "source": "first",
+          "commands": [
+            "a = Slider(-3, 4, 1)",
+            "f(x) = abs(x^2 - a)",
+            "g(x) = Function(x^2, 0, 2) #aux",
+            "l: x = a #hl",
+            "m = Integral(f, 0, 2) #result",
+            "n = a^2 - 2a + k #result",
+            "P = (0, 0) #eq1",
+            "Q = (2, 4) #eq1"
+          ],
+          "finalCommands": [
+            "a = Slider(-3, 4, 1)",
+            "f(x) = abs(x^2 - a)",
+            "g(x) = Function(x^2, 0, 2) #aux",
+            "l: x = a #hl",
+            "m = Integral(f, 0, 2) #result",
+            "n = a^2 - 2a + k #result",
+            "P = (0, 0) #eq1",
+            "Q = (2, 4) #eq1"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "3 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2025-4",
+          "category": "向量",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 2.642,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.642,
+              "tokensPerSecond": 111.08175111965355,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.642,
+          "tokensPerSecond": 111.08175111965355,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(0, 3, -5)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(5, -2, 10)"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "O = (0, 0, 0)",
+            "A = (0, 3, -5)",
+            "B = (5, -2, 10)",
+            "s = Slider(0, 3/5, 1)",
+            "t = Slider(1/5, 3/5, 1)",
+            "P = s*(1 - t)*A + t*B",
+            "C = Extremum(P, 2) #result",
+            "Segment(O, C) #hl",
+            "Text(\"最小距离 {Distance(O, C)}\", (0, 0, 6))"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "A = (0, 3, -5)",
+            "B = (5, -2, 10)",
+            "s = Slider(0, 3/5, 1)",
+            "t = Slider(1/5, 3/5, 1)",
+            "P = s*(1 - t)*A + t*B",
+            "C = Extremum(P, 2) #result",
+            "Segment(O, C) #hl",
+            "Text(\"最小距离 {Distance(O, C)}\", (0, 0, 6))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(0, 3, -5)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(5, -2, 10)"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2025-4",
+          "category": "向量",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 7.382,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.909,
+              "tokensPerSecond": 110.06011774355991,
+              "looped": false,
+              "errors": 1,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.833,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.638,
+              "tokensPerSecond": 113.70345633239815,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.909,
+          "tokensPerSecond": 110.06011774355991,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(0, 3, -5)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(5, -2, 10)"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.833
+          },
+          "source": "retry1",
+          "commands": [
+            "O = (0, 0, 0)",
+            "A = (0, 3, -5)",
+            "B = (5, -2, 10)",
+            "s = Slider(0, 3/5, 1)",
+            "t = Slider(1/5, 3/5, 1)",
+            "P = s*(1-t)*A + t*B",
+            "D = Region(s, t, P)",
+            "C = O + (1 - 1/sqrt(2))*Vector(O, P) #result",
+            "Circle(O, 10sqrt(2)) #aux",
+            "Segment(O, C) #hl",
+            "Text(\"最小距离 {Distance(O, C)}\", (0, 0, 5))"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "A = (0, 3, -5)",
+            "B = (5, -2, 10)",
+            "s = Slider(0, 1, 0.5)",
+            "P = A + s*(B - A)",
+            "C = Foot(O, Line(A, B))",
+            "Segment(O, C) #hl",
+            "Text(\"圆心 {C}，距离 {Distance(O, C)}\", (0, 0, 2))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(0, 3, -5)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(5, -2, 10)"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2025-5",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 13.361,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.65,
+              "tokensPerSecond": 115.57345805381274,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.61,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 5.666,
+              "looped": true,
+              "errors": 28,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 3.432,
+              "tokensPerSecond": 117.07218353153243,
+              "looped": false,
+              "errors": 3,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.65,
+          "tokensPerSecond": 115.57345805381274,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "6"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.61
+          },
+          "source": "retry2",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (3, 0)",
+            "C = (3, 3)",
+            "D = (2, 2)",
+            "E = (5, 3)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, E)",
+            "Segment(B, D)",
+            "Segment(D, E)",
+            "Segment(C, D)",
+            "P1 = A",
+            "Pn = Random(Segment(Pn, P(n + 1)) #hl",
+            "Text(\"第 {n} 次游走后，A 的概率 {P(A)}\", (0, 4))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (4.8, 0)",
+            "C = (1.6, 3.9)",
+            "D = (4.8, 3.9)",
+            "E = (7.6, 3.9)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, E)",
+            "Segment(B, D)",
+            "Segment(D, E)",
+            "Segment(C, D)",
+            "P1 = A",
+            "P2 = Random(A, B, C, D, E) #result",
+            "P3 = Random(A, B, C, D, E) #result",
+            "P4 = Random(A, B, C, D, E) #result",
+            "Table(1..4, Pn, Qn)",
+            "Row(n, 1, 2, 3, 4)",
+            "Row(Pn, 0.167, 0.556, 0.190, 0.128)",
+            "Row(Qn, 0.167, 0.333, 0.219, 0.128)"
+          ],
+          "finalErrors": 3,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "6"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2025-5",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 9.213,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.416,
+              "tokensPerSecond": 111.46075370847042,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.509,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.803,
+              "tokensPerSecond": 121.03553159410654,
+              "looped": false,
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.481,
+              "tokensPerSecond": 119.06895392844241,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.416,
+          "tokensPerSecond": 111.46075370847042,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "6"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.509
+          },
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (3, 0)",
+            "C = (3, 3)",
+            "D = (2, 2)",
+            "E = (5, 3)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, E)",
+            "Segment(B, D)",
+            "Segment(D, E)",
+            "Segment(C, D)",
+            "P1 = A",
+            "Pn = RandomEndpoint(Pn-1, 4) #result",
+            "Text(\"第 {n} 步的位置：{Pn}\", (0, 4))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (3, 0)",
+            "C = (3, 3)",
+            "D = (2, 2)",
+            "E = (5, 3)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, E)",
+            "Segment(B, D)",
+            "Segment(D, E)",
+            "Segment(C, D)",
+            "P1 = A",
+            "Pn = RandomEndpoint(Pn-1, 4) #result",
+            "Text(\"第 {n} 步的位置：{Pn}\", (0, 4))"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "6"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 1,
+            "added": [],
+            "violated": [
+              "用表格列出各种情况（图中没有表格）"
+            ]
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2026-1",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 1.946,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.923,
+              "tokensPerSecond": 116.71072207537087,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 1
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.923,
+          "tokensPerSecond": 116.71072207537087,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 2 行"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = abs(x^2 - 7x + 1)",
+            "g(y) = y^2 #aux",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "Row(A, (x, y))",
+            "Row(B, (x, y))"
+          ],
+          "finalCommands": [
+            "f(x) = abs(x^2 - 7x + 1)",
+            "g(y) = y^2 #aux",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "Row(A, (x, y))",
+            "Row(B, (x, y))",
+            "|x^2 - 7x + 1| = y^2"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 2 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [
+              "|x^2 - 7x + 1| = y^2"
+            ],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2026-1",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 1.802,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.768,
+              "tokensPerSecond": 119.002393778921,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 1
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.768,
+          "tokensPerSecond": 119.002393778921,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "图中没有表格；画了 3 个图形"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = abs(x^2 - 7x + 1)",
+            "g(y) = y^2",
+            "l: y = 0 #aux",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "P = Slider(0, 6, 3)",
+            "Q = (x(P), y(P)) #hl",
+            "R = (7, 0) #aux"
+          ],
+          "finalCommands": [
+            "f(x) = abs(x^2 - 7x + 1)",
+            "g(y) = y^2",
+            "l: y = 0 #aux",
+            "A = Intersect(f, g, 1)",
+            "B = Intersect(f, g, 2)",
+            "P = Slider(0, 6, 3)",
+            "Q = (x(P), y(P)) #hl",
+            "R = (7, 0) #aux",
+            "|x^2 - 7x + 1| = y^2"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "图中没有表格；画了 4 个图形"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [
+              "|x^2 - 7x + 1| = y^2"
+            ],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2026-4",
+          "category": "立体几何",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 9.725,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.644,
+              "tokensPerSecond": 113.21031698474066,
+              "looped": false,
+              "errors": 1,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.41,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.829,
+              "tokensPerSecond": 120.21666742444266,
+              "looped": false,
+              "errors": 2,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.839,
+              "tokensPerSecond": 117.45548135633757,
+              "looped": false,
+              "errors": 1,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.644,
+          "tokensPerSecond": 113.21031698474066,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(6, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 6, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(0, 0, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, 2, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(0, 6, 3)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(3, 6, 0)"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 1.41
+          },
+          "source": "first",
+          "commands": [
+            "O = (0, 0, 0)",
+            "A = (6, 0, 0)",
+            "B = (0, 6, 0)",
+            "C = (0, 0, 6)",
+            "D = (0, 2, 6)",
+            "E = (0, 6, 3)",
+            "F = (3, 6, 0)",
+            "Plane(A, B, C, D, E, F) #aux",
+            "OAB #aux",
+            "DAE #hl",
+            "V = 1/3*6^2*6 #result"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "A = (6, 0, 0)",
+            "B = (0, 6, 0)",
+            "C = (0, 0, 6)",
+            "D = (0, 2, 6)",
+            "E = (0, 6, 3)",
+            "F = (3, 6, 0)",
+            "Plane(A, B, C, D, E, F) #aux",
+            "OAB #aux",
+            "DAE #hl",
+            "V = 1/3*6^2*6 #result"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(6, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 6, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(0, 0, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, 2, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(0, 6, 3)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(3, 6, 0)"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 8,
+            "total": 8,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2026-4",
+          "category": "立体几何",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 11.786,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.93,
+              "tokensPerSecond": 114.85624228202158,
+              "looped": false,
+              "errors": 1,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.175,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 3.825,
+              "tokensPerSecond": 117.00849398088806,
+              "looped": false,
+              "errors": 16,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.854,
+              "tokensPerSecond": 113.73671011267705,
+              "looped": false,
+              "errors": 5,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.93,
+          "tokensPerSecond": 114.85624228202158,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(6, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 6, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(0, 0, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, 2, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(0, 6, 3)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(3, 6, 0)"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 2.175
+          },
+          "source": "first",
+          "commands": [
+            "O = (0, 0, 0)",
+            "A = (6, 0, 0)",
+            "B = (0, 6, 0)",
+            "C = (0, 0, 6)",
+            "D = (0, 2, 6)",
+            "E = (0, 6, 3)",
+            "F = (3, 6, 0)",
+            "Plane(A, B, C, D, E, F) #aux",
+            "OABC #hl",
+            "Segment(O, A) #eq1",
+            "Segment(O, B) #eq1",
+            "Segment(O, C) #eq1",
+            "Segment(D, O) #eq2",
+            "Segment(E, O) #eq2",
+            "Segment(F, O) #eq2",
+            "Segment(A, D) #aux",
+            "Segment(B, E) #aux",
+            "Segment(C, F) #aux",
+            "Segment(O, A) #hl",
+            "Segment(O, B) #hl",
+            "Segment(O, C) #hl"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "A = (6, 0, 0)",
+            "B = (0, 6, 0)",
+            "C = (0, 0, 6)",
+            "D = (0, 2, 6)",
+            "E = (0, 6, 3)",
+            "F = (3, 6, 0)",
+            "Plane(A, B, C, D, E, F) #aux",
+            "OABC #hl",
+            "Segment(O, A) #eq1",
+            "Segment(O, B) #eq1",
+            "Segment(O, C) #eq1",
+            "Segment(D, O) #eq2",
+            "Segment(E, O) #eq2",
+            "Segment(F, O) #eq2",
+            "Segment(A, D) #aux",
+            "Segment(B, E) #aux",
+            "Segment(C, F) #aux",
+            "Segment(O, A) #hl",
+            "Segment(O, B) #hl",
+            "Segment(O, C) #hl"
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 A(6, 0, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 B(0, 6, 0)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 C(0, 0, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 D(0, 2, 6)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 E(0, 6, 3)"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 F(3, 6, 0)"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 8,
+            "total": 8,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2025k-1",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 5.07,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.075,
+              "tokensPerSecond": 116.16186015306225,
+              "looped": false,
+              "errors": 5,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.162,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 5,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 1.831,
+              "tokensPerSecond": 116.8502369463138,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.075,
+          "tokensPerSecond": 116.16186015306225,
+          "firstErrors": 5,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.162
+          },
+          "source": "retry1",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0) #fixed",
+            "B = (a, 0) #fixed",
+            "C = (c, 0) #aux",
+            "Segment(A, B) #eq1",
+            "Segment(B, C) #eq2",
+            "Segment(C, A) #eq3",
+            "Text(\"ab = {a*b}，是 {4k} 的倍数\", (0, 6))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (3, 0)",
+            "B = (4, 0)",
+            "C = (5, 0)",
+            "Segment(A, B) #hl",
+            "Segment(B, C) #hl",
+            "Segment(C, A) #aux",
+            "Text(\"ab = {a*b}，是 4 的倍数\", (2.6, 3))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "图中没有表格；画了 3 个图形"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2025k-1",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 1.49,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.49,
+              "tokensPerSecond": 117.72183079902503,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.49,
+          "tokensPerSecond": 117.72183079902503,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 3 行"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "Table(勾股数)",
+            "Row(a,3,b,4,c,5)",
+            "Row(ab,12,4 的倍数)",
+            "Row(a,5,b,12,c,169)"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "Table(勾股数)",
+            "Row(a,3,b,4,c,5)",
+            "Row(ab,12,4 的倍数)",
+            "Row(a,5,b,12,c,169)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 3 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2025k-3",
+          "category": "向量",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 3.502,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 3.501,
+              "tokensPerSecond": 114.5500551233441,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 3.501,
+          "tokensPerSecond": 114.5500551233441,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "M 不在直线 AB 上"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "A = (4, 0)",
+            "B = (2, 2.828)",
+            "C = (2, 0) #aux",
+            "D = (2, 2.828) #aux",
+            "M = (2, 0) #hl",
+            "N = (2, 2.828) #hl",
+            "Segment(A, B) #aux",
+            "Segment(O, M) #hl",
+            "Segment(M, N) #hl",
+            "Segment(N, B) #aux",
+            "Angle(O, M, A)",
+            "Angle(M, O, N)",
+            "Angle(O, N, B)",
+            "Text(\"OM = {Distance(O, M)}，ON = {Distance(O, N)}\", (4, 3))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "A = (4, 0)",
+            "B = (2, 2.828)",
+            "C = (2, 0) #aux",
+            "D = (2, 2.828) #aux",
+            "M = (2, 0) #hl",
+            "N = (2, 2.828) #hl",
+            "Segment(A, B) #aux",
+            "Segment(O, M) #hl",
+            "Segment(M, N) #hl",
+            "Segment(N, B) #aux",
+            "Angle(O, M, A)",
+            "Angle(M, O, N)",
+            "Angle(O, N, B)",
+            "Text(\"OM = {Distance(O, M)}，ON = {Distance(O, N)}\", (4, 3))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "M 不在直线 AB 上"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2025k-3",
+          "category": "向量",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 3.336,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 3.335,
+              "tokensPerSecond": 105.88490823307954,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 3.335,
+          "tokensPerSecond": 105.88490823307954,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "M 不在直线 AB 上"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "N 不在直线 AB 上"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "A = (4, 0)",
+            "B = (2.8, 3.7)",
+            "M = (1/3*A) #result",
+            "N = (2/3*B) #result",
+            "Segment(A, B) #aux",
+            "Segment(O, M) #hl",
+            "Segment(O, N) #hl",
+            "Angle(O, M, A) \"1/3∠AOB\"",
+            "Angle(M, O, N) \"1/3∠AOB\"",
+            "Angle(N, O, B) \"1/3∠AOB\"",
+            "Text(\"OM = {1/3}OA + 2/3OB\", (4, 5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "A = (4, 0)",
+            "B = (2.8, 3.7)",
+            "M = (1/3*A) #result",
+            "N = (2/3*B) #result",
+            "Segment(A, B) #aux",
+            "Segment(O, M) #hl",
+            "Segment(O, N) #hl",
+            "Angle(O, M, A) \"1/3∠AOB\"",
+            "Angle(M, O, N) \"1/3∠AOB\"",
+            "Angle(N, O, B) \"1/3∠AOB\"",
+            "Text(\"OM = {1/3}OA + 2/3OB\", (4, 5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "M 不在直线 AB 上"
+            },
+            {
+              "type": "collinear",
+              "ok": false,
+              "detail": "N 不在直线 AB 上"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2025k-4",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 1.747,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.747,
+              "tokensPerSecond": 104.89186882346287,
+              "looped": false,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.747,
+          "tokensPerSecond": 104.89186882346287,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 3 行"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(点 P 的随机移动)",
+            "Row(每次移动, +1, -1)",
+            "Row(总共有 2^7 种结果)",
+            "Row(恰好 4 次移动, C(7,4))"
+          ],
+          "finalCommands": [
+            "Table(点 P 的随机移动)",
+            "Row(每次移动, +1, -1)",
+            "Row(总共有 2^7 种结果)",
+            "Row(恰好 4 次移动, C(7,4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 3 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2025k-4",
+          "category": "概率统计",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 2.215,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.214,
+              "tokensPerSecond": 107.67253497190248,
+              "looped": false,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.214,
+          "tokensPerSecond": 107.67253497190248,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 5 行"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(2^7 种结果)",
+            "Row(次数, +1, -1, 停止)",
+            "Row(4, 1, 3, 结束)",
+            "Row(7, 1, 6, 结束)",
+            "Row(P(恰好 4 次), C(7,4))",
+            "Row(P(P=3|停止), 10/2^7)"
+          ],
+          "finalCommands": [
+            "Table(2^7 种结果)",
+            "Row(次数, +1, -1, 停止)",
+            "Row(4, 1, 3, 结束)",
+            "Row(7, 1, 6, 结束)",
+            "Row(P(恰好 4 次), C(7,4))",
+            "Row(P(P=3|停止), 10/2^7)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 5 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2026k-1",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 2.737,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.736,
+              "tokensPerSecond": 106.95839635295637,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.736,
+          "tokensPerSecond": 106.95839635295637,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 2 行"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "Table(整数 x 从 1 到 10，对应的 y)",
+            "Row(x, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)",
+            "Row(y, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "Table(整数 x 从 1 到 10，对应的 y)",
+            "Row(x, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)",
+            "Row(y, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 2 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2026k-1",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 5.861,
+          "calls": 3,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.034,
+              "tokensPerSecond": 107.3684053554963,
+              "looped": false,
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 1.192,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 4,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.63,
+              "tokensPerSecond": 108.34625975891717,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.034,
+          "tokensPerSecond": 107.3684053554963,
+          "firstErrors": 4,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 1.192
+          },
+          "source": "retry1",
+          "commands": [
+            "Eq(1, 2)",
+            "Eq(2, 3)",
+            "m = Int(1/2) #fixed",
+            "n = Int(2/3) #fixed",
+            "s = (sqrt(3m) + sqrt(3n - 1))/(sqrt(3m) - sqrt(3n - 1))",
+            "Text(\"x = {s}\", (0, 6))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "m = Slider(1, 4, 2)",
+            "n = Slider(1, 8, 4)",
+            "f(x) = (sqrt(3x) + sqrt(3n - 1)) / (sqrt(3x) - sqrt(3n - 1)) #hl",
+            "l: y = 1 #aux",
+            "m2 = Slider(1, 4, 2)",
+            "n2 = Slider(1, 8, 4)",
+            "P = (2, 5) #result",
+            "Q = (3, 7) #result"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "图中没有表格；画了 2 个图形"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "hitotsubashi-2026k-2",
+          "category": "不等式",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 1.822,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.818,
+              "tokensPerSecond": 107.48713925807473,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.818,
+          "tokensPerSecond": 107.48713925807473,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            },
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "a = Slider(-2, 3, -1)",
+            "f(x) = x^2 - 2x - a #aux",
+            "g(x) = x^2 - 2a x - 1 #hl",
+            "l: a = -1 #aux"
+          ],
+          "finalCommands": [
+            "a = Slider(-2, 3, -1)",
+            "f(x) = x^2 - 2x - a #aux",
+            "g(x) = x^2 - 2a x - 1 #hl",
+            "l: a = -1 #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            },
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "hitotsubashi-2026k-2",
+          "category": "不等式",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 1.359,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.357,
+              "tokensPerSecond": 107.89329353269616,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.357,
+          "tokensPerSecond": 107.89329353269616,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            },
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "a = Slider(-3, 4, 1)",
+            "f(x) = x^2 - 2x - a #hl",
+            "g(x) = x^2 - 2a x - 1 #aux",
+            "l: x = 1 #aux"
+          ],
+          "finalCommands": [
+            "a = Slider(-3, 4, 1)",
+            "f(x) = x^2 - 2x - a #hl",
+            "g(x) = x^2 - 2a x - 1 #aux",
+            "l: x = 1 #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            },
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "已画出"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "isct-2026-1",
+          "category": "代数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 2.735,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.728,
+              "tokensPerSecond": 105.50783890271848,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.728,
+          "tokensPerSecond": 105.50783890271848,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "图中没有表格；画了 3 个图形"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "a = Slider(-2, 4, 1)",
+            "b = Slider(0, 3, 1)",
+            "n = Slider(2, 6, 3)",
+            "x = a + b*cbrt(n)",
+            "f(x) = x^3 + p*x^2 + q*x + r",
+            "p = Slider(-5, 8, 2)",
+            "q = Slider(-4, 7, 0)",
+            "r = Slider(-1, 9, -1)",
+            "l: y = x^3 + p*x^2 + q*x + r #hl",
+            "Text(\"p = {p}，q = {q}，r = {r}\", (-5, 6))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "a = Slider(-2, 4, 1)",
+            "b = Slider(0, 3, 1)",
+            "n = Slider(2, 6, 3)",
+            "x = a + b*cbrt(n)",
+            "f(x) = x^3 + p*x^2 + q*x + r",
+            "p = Slider(-5, 8, 2)",
+            "q = Slider(-4, 7, 0)",
+            "r = Slider(-1, 9, -1)",
+            "l: y = x^3 + p*x^2 + q*x + r #hl",
+            "Text(\"p = {p}，q = {q}，r = {r}\", (-5, 6))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": false,
+              "detail": "图中没有表格；画了 3 个图形"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "isct-2026-1",
+          "category": "代数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 11.58,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 3.311,
+              "looped": true,
+              "errors": 27,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 3.688,
+              "accepted": false,
+              "reason": "错误没有减少",
+              "errors": 27,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.656,
+              "tokensPerSecond": 109.84821013156763,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 1.915,
+              "tokensPerSecond": 109.30491053630692,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 3.311,
+          "firstErrors": 27,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "错误没有减少",
+            "seconds": 3.688
+          },
+          "source": "retry2",
+          "commands": [
+            "ShowAxes(false)",
+            "a = Slider(-1, 5, 2)",
+            "b = Slider(0, 3, 1)",
+            "n = Slider(2, 6, 4)",
+            "c = a + b*root(n, 3)",
+            "f(x) = x^3 + p*x^2 + q*x + r",
+            "g(x) = (x - c)^3 #aux",
+            "l: x = c #result",
+            "m = Root(f, 1) #result",
+            "n = Root(f, 2) #result",
+            "o = Root(f, 3) #result",
+            "P = (c, 0)",
+            "Q = (c, 0)",
+            "R = (c, 0)",
+            "S = (c, 0)",
+            "T = (c, 0)",
+            "U = (c, 0)",
+            "V = (c, 0)",
+            "W = (c, 0)",
+            "X = (c, 0)",
+            "Y = (c, 0)",
+            "Z = (c, 0)",
+            "A = (c, 0)",
+            "B = (c, 0)",
+            "C = (c, 0)",
+            "D = (c, 0)",
+            "E = (c, 0)",
+            "F = (c, 0)",
+            "G = (c, 0)",
+            "H = (c, 0)",
+            "I = (c, 0)"
+          ],
+          "finalCommands": [
+            "Curve(x^3, (0, 0)) #aux",
+            "s = Slider(-2, 4, 1)",
+            "P = (s, 0) #hl",
+            "Q = Derivative(s^3, s) #result",
+            "l: y = a + b*Root(x^3 - n, 1) #eq2"
+          ],
+          "finalErrors": 2,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "没有画无关的图形"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "isct-2026-2",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 31.748,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 14.018,
+              "looped": true,
+              "errors": 14,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 11.339,
+              "accepted": true,
+              "reason": "题目条件 1/1，还有 13 处错误",
+              "errors": 13,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.073,
+              "tokensPerSecond": 104.49820406034672,
+              "looped": false,
+              "errors": 2,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.314,
+              "tokensPerSecond": 104.13992307720656,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 14.018,
+          "firstErrors": 14,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 8 行"
+            }
+          ],
+          "repair": {
+            "accepted": true,
+            "reason": "题目条件 1/1，还有 13 处错误",
+            "seconds": 11.339
+          },
+          "source": "repair",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0, 0) #result",
+            "B = (n, 0, 0) #aux",
+            "C = Function(x, y, z, x + y + z < n) #hl",
+            "D = Function(x, y, z, x + y + z = 3n) #aux",
+            "E = Function(x, y, z, x < y < z) #aux",
+            "F = Slider(1, n, 2) \"r\"",
+            "G = (0, 0, 0) #result",
+            "H = (n, 0, 0) #aux",
+            "I = Function(x, y, z, x + y + z = 3n) #aux",
+            "J = Function(x, y, z, x < y < z) #aux",
+            "K = Table(1, 2, 3, 4, 5, 6, 7, 8, 9)",
+            "L = Row(r, 1, 2, 3, 4, 5, 6, 7, 8)",
+            "M = Row(nC_r, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "N = Row(方法一, 1, 3, 10, 45, 210, 1050, 7920, 7200)",
+            "O = Row(方法二, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "P = Slider(1, n, 2) \"r\"",
+            "Q = (0, 0, 0) #result",
+            "R = (n, 0, 0) #aux",
+            "S = Function(x, y, z, x + y + z = 3n) #aux",
+            "T = Function(x, y, z, x < y < z) #aux",
+            "U = Table(1, 2, 3, 4, 5, 6, 7, 8, 9)",
+            "V = Row(r, 1, 2, 3, 4, 5, 6, 7, 8)",
+            "W = Row(nC_r, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "X = Row(方法一, 1, 3, 10, 45, 210, 1050, 7920, 7200)",
+            "Y = Row(方法二, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "Z = Slider(1, n, 2) \"r\"",
+            "A = (0, 0, 0) #result",
+            "B = (n, 0, 0) #aux",
+            "C = Function(x, y, z, x + y + z < n) #hl",
+            "D = Function(x, y, z, x + y + z = 3n) #aux",
+            "E = Function(x, y, z, x < y < z) #aux",
+            "F = Slider(1, n, 2) \"r\"",
+            "G = (0, 0, 0) #result",
+            "H = (n, 0, 0) #aux",
+            "I = Function(x, y, z, x + y + z = 3n) #aux",
+            "J = Function(x, y, z, x < y < z) #aux",
+            "K = Table(1, 2, 3, 4, 5, 6, 7, 8, 9)",
+            "L = Row(r, 1, 2, 3, 4, 5, 6, 7, 8)",
+            "M = Row(nC_r, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "N = Row(方法一, 1, 3, 10, 45, 210, 1050, 7920, 7200)",
+            "O = Row(方法二, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "P = Slider(1, n, 2) \"r\"",
+            "Q = (0, 0, 0) #result",
+            "R = (n, 0, 0) #aux",
+            "S = Function(x, y, z, x + y + z = 3n) #aux",
+            "T = Function(x, y, z, x < y < z) #aux",
+            "U = Table(1, 2, 3, 4, 5, 6, 7, 8, 9)",
+            "V = Row(r, 1, 2, 3, 4, 5, 6, 7, 8)",
+            "W = Row(nC_r, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "X = Row(方法一, 1, 3, 10, 45, 210, 1050, 7920, 7200)",
+            "Y = Row(方法二, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "Z = Slider(1, n, 2) \"r\"",
+            "A = (0, 0, 0) #result",
+            "B = (n, 0, 0) #aux",
+            "C = Function"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0, 0) #result",
+            "B = (n, 0, 0) #aux",
+            "C = Function(x, y, z, x + y + z < n) #hl",
+            "D = Function(x, y, z, x + y + z = 3n) #aux",
+            "E = Function(x, y, z, x < y < z) #aux",
+            "F = Slider(1, n, 2) \"r\"",
+            "G = (0, 0, 0) #result",
+            "H = (n, 0, 0) #aux",
+            "I = Function(x, y, z, x + y + z = 3n) #aux",
+            "J = Function(x, y, z, x < y < z) #aux",
+            "K = Table(1, 2, 3, 4, 5, 6, 7, 8, 9)",
+            "L = Row(r, 1, 2, 3, 4, 5, 6, 7, 8)",
+            "M = Row(nC_r, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "N = Row(方法一, 1, 3, 10, 45, 210, 1050, 7920, 7200)",
+            "O = Row(方法二, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "P = Slider(1, n, 2) \"r\"",
+            "Q = (0, 0, 0) #result",
+            "R = (n, 0, 0) #aux",
+            "S = Function(x, y, z, x + y + z = 3n) #aux",
+            "T = Function(x, y, z, x < y < z) #aux",
+            "U = Table(1, 2, 3, 4, 5, 6, 7, 8, 9)",
+            "V = Row(r, 1, 2, 3, 4, 5, 6, 7, 8)",
+            "W = Row(nC_r, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "X = Row(方法一, 1, 3, 10, 45, 210, 1050, 7920, 7200)",
+            "Y = Row(方法二, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "Z = Slider(1, n, 2) \"r\"",
+            "A = (0, 0, 0) #result",
+            "B = (n, 0, 0) #aux",
+            "C = Function(x, y, z, x + y + z < n) #hl",
+            "D = Function(x, y, z, x + y + z = 3n) #aux",
+            "E = Function(x, y, z, x < y < z) #aux",
+            "F = Slider(1, n, 2) \"r\"",
+            "G = (0, 0, 0) #result",
+            "H = (n, 0, 0) #aux",
+            "I = Function(x, y, z, x + y + z = 3n) #aux",
+            "J = Function(x, y, z, x < y < z) #aux",
+            "K = Table(1, 2, 3, 4, 5, 6, 7, 8, 9)",
+            "L = Row(r, 1, 2, 3, 4, 5, 6, 7, 8)",
+            "M = Row(nC_r, 1, 2, 6, 24, 120, 720, 5040, 4620)",
+            "N = Row(方法一, 1, 3, 10, 45, 210, 1050, 7920, 7200)"
+          ],
+          "finalErrors": 13,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 8 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "isct-2026-2",
+          "category": "整数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 15.928,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.601,
+              "tokensPerSecond": 104.90581097327896,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 5.792,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 1,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 3.288,
+              "tokensPerSecond": 98.59909423984706,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.246,
+              "tokensPerSecond": 97.70853229627208,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.601,
+          "tokensPerSecond": 104.90581097327896,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 6 行"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 5.792
+          },
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "Table(组合数的递推)",
+            "Row(r, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)",
+            "Row(n, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)",
+            "Row(C(n, r), 6, 15, 45, 120, 360, 1035, 3430, 8740, 20429, 43758)",
+            "Row(C(n - 1, r), 5, 14, 42, 120, 360, 1035, 3430, 8740, 20429, 43758)",
+            "Row(C(n - 1, r - 1), 4, 13, 42, 120, 360, 1035, 3430, 8740, 20429, 43758)",
+            "Row(加和, 6, 19, 60, 230, 720, 2035, 5430, 16740, 43758, 97429)"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "Table(组合数的递推)",
+            "Row(r, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)",
+            "Row(n, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)",
+            "Row(C(n, r), 6, 15, 45, 120, 360, 1035, 3430, 8740, 20429, 43758)",
+            "Row(C(n - 1, r), 5, 14, 42, 120, 360, 1035, 3430, 8740, 20429, 43758)",
+            "Row(C(n - 1, r - 1), 4, 13, 42, 120, 360, 1035, 3430, 8740, 20429, 43758)",
+            "Row(加和, 6, 19, 60, 230, 720, 2035, 5430, 16740, 43758, 97429)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "any",
+              "ok": true,
+              "detail": "表格有 6 行"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 1,
+            "added": [],
+            "violated": [
+              "画成立体图（图是平面图）"
+            ]
+          },
+          "run": 2
+        },
+        {
+          "id": "isct-2026-4",
+          "category": "复数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 5.412,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 5.411,
+              "looped": true,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 5.411,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "point",
+              "ok": true,
+              "detail": "有这个点"
+            },
+            {
+              "type": "point",
+              "ok": false,
+              "detail": "图中没有这个点"
+            },
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "O = (0, 0)",
+            "A = (1, 0)",
+            "B = (2, 0)",
+            "C = (3, 0)",
+            "D = (4, 0)",
+            "E = (5, 0)",
+            "F = (6, 0)",
+            "G = (7, 0)",
+            "H = (8, 0)",
+            "I = (9, 0)",
+            "J = (10, 0)",
+            "K = (11, 0)",
+            "L = (12, 0)",
+            "M = (13, 0)",
+            "N = (14, 0)",
+            "P = (15, 0)",
+            "Q = (16, 0)",
+            "R = (17, 0)",
+            "S = (18, 0)",
+            "T = (19, 0)",
+            "U = (20, 0)",
+            "V = (21, 0)",
+            "W = (22, 0)",
+            "X = (23, 0)",
+            "Y = (24, 0)",
+            "Z = (25, 0)",
+            "A = (1, 0)",
+            "B = (2, 0)",
+            "C = (3, 0)",
+            "D = (4, 0)",
+            "E = (5, 0)",
+            "F = (6, 0)",
+            "G = (7, 0)",
+            "H = (8, 0)",
+            "I = (9, 0)",
+            "J = (10, 0)",
+            "K = (11, 0)",
+            "L = (12, 0)",
+            "M = (13, 0)",
+            "N = (14, 0)",
+            "P = (15, 0)",
+            "Q = (16, 0)",
+            "R = (17, 0)",
+            "S = (18, 0)",
+            "T = (19, 0)"
+          ],
+          "finalCommands": [
+            "O = (0, 0)",
+            "A = (1, 0)",
+            "B = (2, 0)",
+            "C = (3, 0)",
+            "D = (4, 0)",
+            "E = (5, 0)",
+            "F = (6, 0)",
+            "G = (7, 0)",
+            "H = (8, 0)",
+            "I = (9, 0)",
+            "J = (10, 0)",
+            "K = (11, 0)",
+            "L = (12, 0)",
+            "M = (13, 0)",
+            "N = (14, 0)",
+            "P = (15, 0)",
+            "Q = (16, 0)",
+            "R = (17, 0)",
+            "S = (18, 0)",
+            "T = (19, 0)",
+            "U = (20, 0)",
+            "V = (21, 0)",
+            "W = (22, 0)",
+            "X = (23, 0)",
+            "Y = (24, 0)",
+            "Z = (25, 0)",
+            "A = (1, 0)",
+            "B = (2, 0)",
+            "C = (3, 0)",
+            "D = (4, 0)",
+            "E = (5, 0)",
+            "F = (6, 0)",
+            "G = (7, 0)",
+            "H = (8, 0)",
+            "I = (9, 0)",
+            "J = (10, 0)",
+            "K = (11, 0)",
+            "L = (12, 0)",
+            "M = (13, 0)",
+            "N = (14, 0)",
+            "P = (15, 0)",
+            "Q = (16, 0)",
+            "R = (17, 0)",
+            "S = (18, 0)",
+            "T = (19, 0)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "point",
+              "ok": true,
+              "detail": "有这个点"
+            },
+            {
+              "type": "point",
+              "ok": false,
+              "detail": "图中没有这个点"
+            },
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "isct-2026-4",
+          "category": "复数",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 14.413,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.772,
+              "looped": true,
+              "errors": 1,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 4.362,
+              "accepted": false,
+              "reason": "修正后图形对象变少了",
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 2.461,
+              "tokensPerSecond": 97.23686763356196,
+              "looped": false,
+              "errors": 3,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 2.817,
+              "tokensPerSecond": 99.60805306027828,
+              "looped": false,
+              "errors": 6,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.772,
+          "firstErrors": 1,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "point",
+              "ok": false,
+              "detail": "图中没有这个点"
+            },
+            {
+              "type": "point",
+              "ok": false,
+              "detail": "图中没有这个点"
+            },
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后图形对象变少了",
+            "seconds": 4.362
+          },
+          "source": "first",
+          "commands": [
+            "O = (0, 0)",
+            "A = (60, 0)",
+            "B = (60, 60)",
+            "C = (0, 60)",
+            "D = (60, 60)",
+            "E = (0, 0)",
+            "F = (0, 0)",
+            "G = (60, 0)",
+            "H = (60, 60)",
+            "I = (0, 60)",
+            "J = (60, 60)",
+            "K = (0, 0)",
+            "L = (0, 0)",
+            "M = (60, 0)",
+            "N = (60, 60)",
+            "P = (0, 60)",
+            "Q = (60, 60)",
+            "R = (0, 0)",
+            "S = (0, 0)",
+            "T = (60, 0)",
+            "U = (60, 60)",
+            "V = (0, 60)",
+            "W = (60, 60)",
+            "X = (0, 0)",
+            "Y = (0, 0)",
+            "Z = (60, 0)",
+            "AA = (60, 0)",
+            "BB = (60, 60)",
+            "CC = (0, 60)",
+            "DD = (60, 60)",
+            "EE = (0, 0)",
+            "FF = (0, 0)",
+            "GG = (60, 0)",
+            "HH = (60, 60)",
+            "II = (0, 60)",
+            "JJ = (60, 60)",
+            "KK = (0, 0)",
+            "LL = (0, 0)",
+            "MM = (60, 0)",
+            "NN = (60, 60)",
+            "PP = (0, 60)",
+            "QQ = (60, 60)",
+            "RR = (0, 0)",
+            "SS = (0, 0)",
+            "TT ="
+          ],
+          "finalCommands": [
+            "O = (0, 0)",
+            "A = (60, 0)",
+            "B = (60, 60)",
+            "C = (0, 60)",
+            "D = (60, 60)",
+            "E = (0, 0)",
+            "F = (0, 0)",
+            "G = (60, 0)",
+            "H = (60, 60)",
+            "I = (0, 60)",
+            "J = (60, 60)",
+            "K = (0, 0)",
+            "L = (0, 0)",
+            "M = (60, 0)",
+            "N = (60, 60)",
+            "P = (0, 60)",
+            "Q = (60, 60)",
+            "R = (0, 0)",
+            "S = (0, 0)",
+            "T = (60, 0)",
+            "U = (60, 60)",
+            "V = (0, 60)",
+            "W = (60, 60)",
+            "X = (0, 0)",
+            "Y = (0, 0)",
+            "Z = (60, 0)",
+            "AA = (60, 0)",
+            "BB = (60, 60)",
+            "CC = (0, 60)",
+            "DD = (60, 60)",
+            "EE = (0, 0)",
+            "FF = (0, 0)",
+            "GG = (60, 0)",
+            "HH = (60, 60)",
+            "II = (0, 60)",
+            "JJ = (60, 60)",
+            "KK = (0, 0)",
+            "LL = (0, 0)",
+            "MM = (60, 0)",
+            "NN = (60, 60)",
+            "PP = (0, 60)",
+            "QQ = (60, 60)",
+            "RR = (0, 0)",
+            "SS = (0, 0)",
+            "TT ="
+          ],
+          "finalErrors": 1,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "point",
+              "ok": false,
+              "detail": "图中没有这个点"
+            },
+            {
+              "type": "point",
+              "ok": false,
+              "detail": "图中没有这个点"
+            },
+            {
+              "type": "through",
+              "ok": false,
+              "detail": "0/0"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "isct-2026m-1",
+          "category": "立体几何",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 14.405,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 4.008,
+              "tokensPerSecond": 95.9335372453964,
+              "looped": false,
+              "errors": 16,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.477,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 16,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 3.568,
+              "tokensPerSecond": 96.65080787994037,
+              "looped": false,
+              "errors": 14,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.347,
+              "tokensPerSecond": 94.41116013960819,
+              "looped": false,
+              "errors": 14,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 4.008,
+          "tokensPerSecond": 95.9335372453964,
+          "firstErrors": 16,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 O(0, 0, 0)"
+            },
+            {
+              "type": "perp",
+              "ok": false,
+              "detail": "缺少点 A、C"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 2.477
+          },
+          "source": "retry1",
+          "commands": [
+            "O = (0, 0, 0)",
+            "A = (a, 0, 0)",
+            "B = (a, a, 0)",
+            "C = (0, a, 0)",
+            "O' = (0, 0, h)",
+            "A' = (b, 0, h)",
+            "B' = (b, b, h)",
+            "C' = (0, b, h)",
+            "Polygon(O, A, B, C)",
+            "Segment(O, O')",
+            "Segment(A, A')",
+            "Segment(B, B')",
+            "Segment(C, C')",
+            "Segment(O, A') #hl",
+            "Segment(A, B) #aux",
+            "Segment(B, C) #aux",
+            "Text(\"V = {Volume(Polygon(O, A, B, C))}\", (0, 0, h + 1))"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "A = (a, 0, 0)",
+            "B = (a, a, 0)",
+            "C = (0, a, 0)",
+            "O' = (0, 0, h)",
+            "A' = (b, 0, h)",
+            "B' = (b, b, h)",
+            "C' = (0, b, h)",
+            "Polygon(O, A, B, C)",
+            "Segment(O, O')",
+            "Segment(A, A')",
+            "Segment(B, B')",
+            "Segment(C, C')",
+            "Segment(O, A') #hl",
+            "Text(\"a = {a}，h = {h}，V = {Area(Polygon(O, A, B, C))}\", (0, 0, h + 1))"
+          ],
+          "finalErrors": 14,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 O(0, 0, 0)"
+            },
+            {
+              "type": "perp",
+              "ok": false,
+              "detail": "缺少点 A、C"
+            }
+          ],
+          "correct": false,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "isct-2026m-1",
+          "category": "立体几何",
+          "set": "exam2-dev",
+          "pipeline": "best3",
+          "seconds": 15.319,
+          "calls": 4,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 3.282,
+              "tokensPerSecond": 98.32152860480522,
+              "looped": false,
+              "errors": 18,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "repair",
+              "seconds": 2.764,
+              "accepted": false,
+              "reason": "修正后没有变得更好",
+              "errors": 18,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 2,
+              "temperature": 0.7,
+              "seconds": 4.831,
+              "tokensPerSecond": 95.67885230504675,
+              "looped": false,
+              "errors": 16,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            },
+            {
+              "kind": "analyze",
+              "attempt": 3,
+              "temperature": 0.7,
+              "seconds": 4.436,
+              "tokensPerSecond": 97.23719438281807,
+              "looped": false,
+              "errors": 16,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 3.282,
+          "tokensPerSecond": 98.32152860480522,
+          "firstErrors": 18,
+          "firstOk": false,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 O(0, 0, 0)"
+            },
+            {
+              "type": "perp",
+              "ok": false,
+              "detail": "缺少点 A、C"
+            }
+          ],
+          "repair": {
+            "accepted": false,
+            "reason": "修正后没有变得更好",
+            "seconds": 2.764
+          },
+          "source": "retry1",
+          "commands": [
+            "O = (0, 0, 0)",
+            "A = (a, 0, 0)",
+            "B = (a, a, 0)",
+            "C = (0, a, 0)",
+            "O' = (0, 0, h)",
+            "A' = (b, 0, h)",
+            "B' = (b, b, h)",
+            "C' = (0, b, h)",
+            "Polygon(O, A, B, C)",
+            "Segment(O, O')",
+            "Segment(A, A')",
+            "Segment(B, B')",
+            "Segment(C, C')",
+            "Segment(O, A) #eq1",
+            "Segment(O, O') #aux",
+            "Segment(A, A') #aux",
+            "Segment(B, B') #aux",
+            "Segment(C, C') #aux",
+            "Text(\"V = {Volume(Polygon(O, A, B, C))}\", (0, 0, h + 2))"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "A = (1/2, 0, 0)",
+            "B = (1/2, 1/2, 0)",
+            "C = (0, 1/2, 0)",
+            "O' = (0, 0, h)",
+            "A' = (1/2, 0, h)",
+            "B' = (1/2, 1/2, h)",
+            "C' = (0, 1/2, h)",
+            "Polygon(O, A, B, C)",
+            "Polygon(O', A', B', C')",
+            "Segment(A, O) #eq1",
+            "Segment(A, A') #eq1",
+            "Segment(B, O) #eq1",
+            "Segment(B, B') #eq1",
+            "Segment(C, O) #eq1",
+            "Segment(C, C') #eq1",
+            "Segment(O, O') #aux",
+            "Segment(A, O') #aux",
+            "Segment(B, O') #aux",
+            "Segment(C, O') #aux",
+            "Angle(O, A, O')",
+            "Angle(O, B, O')",
+            "Angle(O, C, O')",
+            "Text(\"最大体积 {Volume(Polyhedron(O, A, B, C))}\", (0, 0, h + 1))"
+          ],
+          "finalErrors": 16,
+          "finalOk": false,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "at",
+              "ok": true,
+              "detail": "图中 O(0, 0, 0)"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        }
+      ]
+    }
+  ]
+}

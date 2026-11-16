@@ -1,0 +1,3689 @@
+{
+  "date": "2026-11-12T06:04:18.607Z",
+  "set": "dev",
+  "problems": [
+    "quad-roots",
+    "quad-param",
+    "line-parabola",
+    "trig",
+    "isosceles",
+    "right-median",
+    "rectangle",
+    "tangent",
+    "parallelogram",
+    "ellipse",
+    "circle-line",
+    "lp",
+    "cube",
+    "pyramid-sphere",
+    "cylinder",
+    "moving-point",
+    "prob-cond",
+    "prob-dist",
+    "meeting"
+  ],
+  "pipelines": [
+    "best3"
+  ],
+  "withOcr": false,
+  "runs": 2,
+  "results": [
+    {
+      "model": "shuxing-2b-v3",
+      "ocrAccuracy": null,
+      "tokensPerSecond": 118.59460395212177,
+      "memoryBytes": null,
+      "byPipeline": [
+        {
+          "pipeline": "best3",
+          "all": {
+            "problems": 38,
+            "errors": 0,
+            "jsonValid": 1,
+            "firstPassRate": 1,
+            "repairTried": 0,
+            "repairAccepted": 0,
+            "finalRunnableRate": 1,
+            "checkPassRate": 1,
+            "fullyCorrectRate": 1,
+            "calls": 1,
+            "seconds": 2.040763157894737,
+            "factsSatRate": 1,
+            "completed": 0
+          },
+          "bySet": {
+            "dev": {
+              "problems": 38,
+              "errors": 0,
+              "jsonValid": 1,
+              "firstPassRate": 1,
+              "repairTried": 0,
+              "repairAccepted": 0,
+              "finalRunnableRate": 1,
+              "checkPassRate": 1,
+              "fullyCorrectRate": 1,
+              "calls": 1,
+              "seconds": 2.040763157894737,
+              "factsSatRate": 1,
+              "completed": 0
+            }
+          }
+        }
+      ],
+      "rows": [
+        {
+          "id": "quad-roots",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.644,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.63,
+              "tokensPerSecond": 112.85136168242113,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.63,
+          "tokensPerSecond": 112.85136168242113,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, xAxis, 1)",
+            "B = Intersect(f, xAxis, 2)",
+            "V = Vertex(f) \"顶点\" #result",
+            "l: x = 1 #aux"
+          ],
+          "finalCommands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, xAxis, 1)",
+            "B = Intersect(f, xAxis, 2)",
+            "V = Vertex(f) \"顶点\" #result",
+            "l: x = 1 #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "quad-roots",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.461,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.457,
+              "tokensPerSecond": 114.29168771887032,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.457,
+          "tokensPerSecond": 114.29168771887032,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, xAxis, 1)",
+            "B = Intersect(f, xAxis, 2)",
+            "V = Vertex(f) \"顶点\" #result",
+            "l: x = 1 #aux"
+          ],
+          "finalCommands": [
+            "f(x) = x^2 - 2x - 3",
+            "A = Intersect(f, xAxis, 1)",
+            "B = Intersect(f, xAxis, 2)",
+            "V = Vertex(f) \"顶点\" #result",
+            "l: x = 1 #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "quad-param",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.4,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.396,
+              "tokensPerSecond": 116.65983523487363,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.396,
+          "tokensPerSecond": 116.65983523487363,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "a = Slider(-2, 4, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(a) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P = (m, f(m)) \"最小值点\" #result",
+            "Text(\"a = {a} 时，最小值 {f(m)}\", (-1, 8))"
+          ],
+          "finalCommands": [
+            "a = Slider(-2, 4, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(a) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P = (m, f(m)) \"最小值点\" #result",
+            "Text(\"a = {a} 时，最小值 {f(m)}\", (-1, 8))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "quad-param",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.25,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.247,
+              "tokensPerSecond": 116.37149194992342,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.247,
+          "tokensPerSecond": 116.37149194992342,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "a = Slider(-2, 4, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(a) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P = (m, f(m)) \"最小值点\" #result",
+            "Text(\"a = {a} 时，最小值 {f(m)}\", (-1, 9))"
+          ],
+          "finalCommands": [
+            "a = Slider(-2, 4, 1)",
+            "f(x) = x^2 - 2a x + 3",
+            "g(a) = Function(x^2 - 2a x + 3, 0, 2) #hl",
+            "l: x = a #aux",
+            "m = If(a < 0, 0, If(a > 2, 2, a))",
+            "P = (m, f(m)) \"最小值点\" #result",
+            "Text(\"a = {a} 时，最小值 {f(m)}\", (-1, 9))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "2"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "line-parabola",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.409,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.406,
+              "tokensPerSecond": 116.28266282418875,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.406,
+          "tokensPerSecond": 116.28266282418875,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = x^2 - 1",
+            "l: y = x + 1",
+            "A = Intersect(f, l, 1) #result",
+            "B = Intersect(f, l, 2) #result"
+          ],
+          "finalCommands": [
+            "f(x) = x^2 - 1",
+            "l: y = x + 1",
+            "A = Intersect(f, l, 1) #result",
+            "B = Intersect(f, l, 2) #result"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "line-parabola",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.253,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.249,
+              "tokensPerSecond": 116.33573353747678,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.249,
+          "tokensPerSecond": 116.33573353747678,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = x^2 - 1",
+            "l: y = x + 1",
+            "A = Intersect(f, l, 1) #result",
+            "B = Intersect(f, l, 2) #result"
+          ],
+          "finalCommands": [
+            "f(x) = x^2 - 1",
+            "l: y = x + 1",
+            "A = Intersect(f, l, 1) #result",
+            "B = Intersect(f, l, 2) #result"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "2/2"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "trig",
+          "category": "三角函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.608,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.603,
+              "tokensPerSecond": 115.69432018017463,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.603,
+          "tokensPerSecond": 115.69432018017463,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = 2sin(2x + pi/3)",
+            "M = (pi/6, 2) \"最高点\" #result",
+            "N = (pi/6 + pi, 2) #aux",
+            "Segment(M, N) #hl",
+            "Text(\"一个周期 T = π\", (pi/6, 3))"
+          ],
+          "finalCommands": [
+            "f(x) = 2sin(2x + pi/3)",
+            "M = (pi/6, 2) \"最高点\" #result",
+            "N = (pi/6 + pi, 2) #aux",
+            "Segment(M, N) #hl",
+            "Text(\"一个周期 T = π\", (pi/6, 3))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "trig",
+          "category": "三角函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.435,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.433,
+              "tokensPerSecond": 116.83119803666942,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.433,
+          "tokensPerSecond": 116.83119803666942,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "f(x) = 2sin(2x + pi/3)",
+            "M = (pi/6, 2) \"最高点\" #result",
+            "N = (pi/6 + pi, 2) #aux",
+            "Segment(M, N) #hl",
+            "Text(\"一个周期 T = π\", (pi/6, 3))"
+          ],
+          "finalCommands": [
+            "f(x) = 2sin(2x + pi/3)",
+            "M = (pi/6, 2) \"最高点\" #result",
+            "N = (pi/6 + pi, 2) #aux",
+            "Segment(M, N) #hl",
+            "Text(\"一个周期 T = π\", (pi/6, 3))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "fn",
+              "ok": true,
+              "detail": "2 个函数/直线"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "isosceles",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.393,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.391,
+              "tokensPerSecond": 115.28362484267176,
+              "looped": false,
+              "errors": 0,
+              "sat": 7,
+              "total": 7,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.391,
+          "tokensPerSecond": 115.28362484267176,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "A = (0, sqrt(5^2 - 3^2))",
+            "Polygon(A, B, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"DE = {Distance(D, E)}\", (2.1, 4.9))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "A = (0, sqrt(5^2 - 3^2))",
+            "Polygon(A, B, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"DE = {Distance(D, E)}\", (2.1, 4.9))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 7,
+            "total": 7,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "isosceles",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.212,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.21,
+              "tokensPerSecond": 116.52050578124486,
+              "looped": false,
+              "errors": 0,
+              "sat": 7,
+              "total": 7,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.21,
+          "tokensPerSecond": 116.52050578124486,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "A = (0, sqrt(5^2 - 3^2))",
+            "Polygon(A, B, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"DE = {Distance(D, E)}\", (2.1, 4.9))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "B = (-3, 0)",
+            "C = (3, 0)",
+            "A = (0, sqrt(5^2 - 3^2))",
+            "Polygon(A, B, C)",
+            "Segment(A, B) #eq1",
+            "Segment(A, C) #eq1",
+            "D = Midpoint(B, C)",
+            "Segment(A, D) #aux",
+            "E = Foot(D, Line(A, C))",
+            "Segment(D, E) #hl",
+            "Angle(D, E, C)",
+            "Text(\"DE = {Distance(D, E)}\", (2.1, 4.9))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 5"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 7,
+            "total": 7,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "right-median",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.969,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.968,
+              "tokensPerSecond": 115.22212980835651,
+              "looped": false,
+              "errors": 0,
+              "sat": 5,
+              "total": 5,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.968,
+          "tokensPerSecond": 115.22212980835651,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 8"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ACB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "B = (0, 0)",
+            "C = (8, 0)",
+            "A = (8, 6)",
+            "Polygon(A, B, C)",
+            "Angle(A, C, B)",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Segment(A, D) #eq2",
+            "Segment(D, B) #eq2",
+            "Text(\"CD = {Distance(C, D)}\", (0.5, 6.8))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "B = (0, 0)",
+            "C = (8, 0)",
+            "A = (8, 6)",
+            "Polygon(A, B, C)",
+            "Angle(A, C, B)",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Segment(A, D) #eq2",
+            "Segment(D, B) #eq2",
+            "Text(\"CD = {Distance(C, D)}\", (0.5, 6.8))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 8"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ACB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 5,
+            "total": 5,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "right-median",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.8,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.799,
+              "tokensPerSecond": 115.73885493820052,
+              "looped": false,
+              "errors": 0,
+              "sat": 5,
+              "total": 5,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.799,
+          "tokensPerSecond": 115.73885493820052,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 8"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ACB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "B = (0, 0)",
+            "C = (8, 0)",
+            "A = (8, 6)",
+            "Polygon(A, B, C)",
+            "Angle(A, C, B)",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Segment(A, D) #eq2",
+            "Segment(D, B) #eq2",
+            "Text(\"CD = {Distance(C, D)}\", (0.5, 6.8))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "B = (0, 0)",
+            "C = (8, 0)",
+            "A = (8, 6)",
+            "Polygon(A, B, C)",
+            "Angle(A, C, B)",
+            "D = Midpoint(A, B)",
+            "Segment(C, D) #hl",
+            "Segment(A, D) #eq2",
+            "Segment(D, B) #eq2",
+            "Text(\"CD = {Distance(C, D)}\", (0.5, 6.8))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AC = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 8"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ACB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 5,
+            "total": 5,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "rectangle",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.952,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.95,
+              "tokensPerSecond": 116.42127838553363,
+              "looped": false,
+              "errors": 0,
+              "sat": 10,
+              "total": 10,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.95,
+          "tokensPerSecond": 116.42127838553363,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 8"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BE = 2"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "D = (6, 8)",
+            "Polygon(A, B, C, D)",
+            "E = (2, 0)",
+            "Segment(A, E)",
+            "F = Foot(D, Line(A, E))",
+            "Segment(D, F) #hl",
+            "Angle(D, F, A)",
+            "Text(\"DF = {Distance(D, F)}\", (3.9, 8.8))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "D = (6, 8)",
+            "Polygon(A, B, C, D)",
+            "E = (2, 0)",
+            "Segment(A, E)",
+            "F = Foot(D, Line(A, E))",
+            "Segment(D, F) #hl",
+            "Angle(D, F, A)",
+            "Text(\"DF = {Distance(D, F)}\", (3.9, 8.8))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 8"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BE = 2"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 10,
+            "total": 10,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "rectangle",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.786,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.785,
+              "tokensPerSecond": 115.66297849178879,
+              "looped": false,
+              "errors": 0,
+              "sat": 10,
+              "total": 10,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.785,
+          "tokensPerSecond": 115.66297849178879,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 8"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BE = 2"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "D = (6, 8)",
+            "Polygon(A, B, C, D)",
+            "E = (2, 0)",
+            "Segment(A, E)",
+            "F = Foot(D, Line(A, E))",
+            "Segment(D, F) #hl",
+            "Angle(D, F, A)",
+            "Text(\"DF = {Distance(D, F)}\", (3.9, 8.8))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 8)",
+            "B = (0, 0)",
+            "C = (6, 0)",
+            "D = (6, 8)",
+            "Polygon(A, B, C, D)",
+            "E = (2, 0)",
+            "Segment(A, E)",
+            "F = Foot(D, Line(A, E))",
+            "Segment(D, F) #hl",
+            "Angle(D, F, A)",
+            "Text(\"DF = {Distance(D, F)}\", (3.9, 8.8))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 8"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 6"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BE = 2"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            },
+            {
+              "type": "perp",
+              "ok": true,
+              "detail": "图中夹角 90°"
+            },
+            {
+              "type": "collinear",
+              "ok": true,
+              "detail": "在直线上"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 10,
+            "total": 10,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "tangent",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.381,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.381,
+              "tokensPerSecond": 115.50200627894371,
+              "looped": false,
+              "errors": 0,
+              "sat": 5,
+              "total": 5,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.381,
+          "tokensPerSecond": 115.50200627894371,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OA = 3"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OP = 5"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠OAP = 90°"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "c = Circle(O, 3)",
+            "P = (5, 0)",
+            "A = (3^2/5, 3*sqrt(5^2 - 3^2)/5)",
+            "Segment(O, A)",
+            "Segment(O, P) #aux",
+            "Segment(P, A) #hl",
+            "Angle(O, A, P)",
+            "Text(\"PA = {Distance(P, A)}\", (2.5, 4))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "c = Circle(O, 3)",
+            "P = (5, 0)",
+            "A = (3^2/5, 3*sqrt(5^2 - 3^2)/5)",
+            "Segment(O, A)",
+            "Segment(O, P) #aux",
+            "Segment(P, A) #hl",
+            "Angle(O, A, P)",
+            "Text(\"PA = {Distance(P, A)}\", (2.5, 4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OA = 3"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OP = 5"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠OAP = 90°"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 5,
+            "total": 5,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "tangent",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.075,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.075,
+              "tokensPerSecond": 115.39663820865465,
+              "looped": false,
+              "errors": 0,
+              "sat": 5,
+              "total": 5,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.075,
+          "tokensPerSecond": 115.39663820865465,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OA = 3"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OP = 5"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠OAP = 90°"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "c = Circle(O, 3)",
+            "P = (5, 0)",
+            "A = (3^2/5, 3*sqrt(5^2 - 3^2)/5)",
+            "Segment(O, A)",
+            "Segment(O, P) #aux",
+            "Segment(P, A) #hl",
+            "Angle(O, A, P)",
+            "Text(\"PA = {Distance(P, A)}\", (2.5, 4))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "O = (0, 0)",
+            "c = Circle(O, 3)",
+            "P = (5, 0)",
+            "A = (3^2/5, 3*sqrt(5^2 - 3^2)/5)",
+            "Segment(O, A)",
+            "Segment(O, P) #aux",
+            "Segment(P, A) #hl",
+            "Angle(O, A, P)",
+            "Text(\"PA = {Distance(P, A)}\", (2.5, 4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OA = 3"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 OP = 5"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠OAP = 90°"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 5,
+            "total": 5,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "parallelogram",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.288,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.287,
+              "tokensPerSecond": 113.90256779760963,
+              "looped": false,
+              "errors": 0,
+              "sat": 6,
+              "total": 6,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.287,
+          "tokensPerSecond": 113.90256779760963,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AD = 4"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠DAB = 60°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 CD = 6"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (4cos(60°), 4sin(60°))",
+            "C = B + D - A",
+            "Polygon(A, B, C, D)",
+            "Segment(B, D) #hl",
+            "Segment(A, C) #hl",
+            "Angle(B, A, D)",
+            "Text(\"BD = {Distance(B, D)}，AC = {Distance(A, C)}\", (0, 4.5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (4cos(60°), 4sin(60°))",
+            "C = B + D - A",
+            "Polygon(A, B, C, D)",
+            "Segment(B, D) #hl",
+            "Segment(A, C) #hl",
+            "Angle(B, A, D)",
+            "Text(\"BD = {Distance(B, D)}，AC = {Distance(A, C)}\", (0, 4.5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AD = 4"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠DAB = 60°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 CD = 6"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 6,
+            "total": 6,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "parallelogram",
+          "category": "平面几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.092,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.09,
+              "tokensPerSecond": 116.0808212718105,
+              "looped": false,
+              "errors": 0,
+              "sat": 6,
+              "total": 6,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.09,
+          "tokensPerSecond": 116.0808212718105,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AD = 4"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠DAB = 60°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 CD = 6"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (4cos(60°), 4sin(60°))",
+            "C = B + D - A",
+            "Polygon(A, B, C, D)",
+            "Segment(B, D) #hl",
+            "Segment(A, C) #hl",
+            "Angle(B, A, D)",
+            "Text(\"BD = {Distance(B, D)}，AC = {Distance(A, C)}\", (0, 4.5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0)",
+            "B = (6, 0)",
+            "D = (4cos(60°), 4sin(60°))",
+            "C = B + D - A",
+            "Polygon(A, B, C, D)",
+            "Segment(B, D) #hl",
+            "Segment(A, C) #hl",
+            "Angle(B, A, D)",
+            "Text(\"BD = {Distance(B, D)}，AC = {Distance(A, C)}\", (0, 4.5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 6"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AD = 4"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠DAB = 60°"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 CD = 6"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 6,
+            "total": 6,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "ellipse",
+          "category": "解析几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.951,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.935,
+              "tokensPerSecond": 114.57662210845167,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.935,
+          "tokensPerSecond": 114.57662210845167,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "m = 1",
+            "E: x^2/4 + y^2/3 = 1",
+            "l: y = x + m",
+            "A = Intersect(E, l, 1)",
+            "B = Intersect(E, l, 2)",
+            "Segment(A, B) #hl",
+            "Text(\"|AB| = {Distance(A, B)}\", (-2, 4))"
+          ],
+          "finalCommands": [
+            "m = 1",
+            "E: x^2/4 + y^2/3 = 1",
+            "l: y = x + m",
+            "A = Intersect(E, l, 1)",
+            "B = Intersect(E, l, 2)",
+            "Segment(A, B) #hl",
+            "Text(\"|AB| = {Distance(A, B)}\", (-2, 4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "ellipse",
+          "category": "解析几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.704,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.692,
+              "tokensPerSecond": 119.07832182143159,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.692,
+          "tokensPerSecond": 119.07832182143159,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "m = 1",
+            "E: x^2/4 + y^2/3 = 1",
+            "l: y = x + m",
+            "A = Intersect(E, l, 1)",
+            "B = Intersect(E, l, 2)",
+            "Segment(A, B) #hl",
+            "Text(\"|AB| = {Distance(A, B)}\", (-4, 5))"
+          ],
+          "finalCommands": [
+            "m = 1",
+            "E: x^2/4 + y^2/3 = 1",
+            "l: y = x + m",
+            "A = Intersect(E, l, 1)",
+            "B = Intersect(E, l, 2)",
+            "Segment(A, B) #hl",
+            "Text(\"|AB| = {Distance(A, B)}\", (-4, 5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "circle-line",
+          "category": "解析几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.042,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.033,
+              "tokensPerSecond": 120.56227229742713,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.033,
+          "tokensPerSecond": 120.56227229742713,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "M = (1, -2) \"圆心\"",
+            "C: (x - 1)^2 + (y + 2)^2 = 4",
+            "l: x - y + 1 = 0",
+            "H = Foot(M, l)",
+            "Segment(M, H) #aux",
+            "A = Intersect(C, l, 1)",
+            "B = Intersect(C, l, 2)",
+            "Text(\"d = {Distance(M, H)}，r = 2\", (0, 0))"
+          ],
+          "finalCommands": [
+            "M = (1, -2) \"圆心\"",
+            "C: (x - 1)^2 + (y + 2)^2 = 4",
+            "l: x - y + 1 = 0",
+            "H = Foot(M, l)",
+            "Segment(M, H) #aux",
+            "A = Intersect(C, l, 1)",
+            "B = Intersect(C, l, 2)",
+            "Text(\"d = {Distance(M, H)}，r = 2\", (0, 0))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "circle-line",
+          "category": "解析几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.894,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.885,
+              "tokensPerSecond": 121.20321542477168,
+              "looped": false,
+              "errors": 0,
+              "sat": 3,
+              "total": 3,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.885,
+          "tokensPerSecond": 121.20321542477168,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "M = (1, -2) \"圆心\"",
+            "C: (x - 1)^2 + (y + 2)^2 = 4",
+            "l: x - y + 1 = 0",
+            "H = Foot(M, l)",
+            "Segment(M, H) #aux",
+            "A = Intersect(C, l, 1)",
+            "B = Intersect(C, l, 2)",
+            "Text(\"d = {Distance(M, H)}，r = 2\", (0.5, 1))"
+          ],
+          "finalCommands": [
+            "M = (1, -2) \"圆心\"",
+            "C: (x - 1)^2 + (y + 2)^2 = 4",
+            "l: x - y + 1 = 0",
+            "H = Foot(M, l)",
+            "Segment(M, H) #aux",
+            "A = Intersect(C, l, 1)",
+            "B = Intersect(C, l, 2)",
+            "Text(\"d = {Distance(M, H)}，r = 2\", (0.5, 1))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            },
+            {
+              "type": "through",
+              "ok": true,
+              "detail": "1/3"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 3,
+            "total": 3,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "lp",
+          "category": "不等式",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.881,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.877,
+              "tokensPerSecond": 120.39871355442844,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.877,
+          "tokensPerSecond": 120.39871355442844,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Region(x + y <= 4, x >= 0, y >= 0)",
+            "P = (4, 0) \"最优解\" #result",
+            "z = Slider(0, 12, 5)",
+            "l: 2x + y = z #hl",
+            "Text(\"z = {z}\", (4.5, 4))"
+          ],
+          "finalCommands": [
+            "Region(x + y <= 4, x >= 0, y >= 0)",
+            "P = (4, 0) \"最优解\" #result",
+            "z = Slider(0, 12, 5)",
+            "l: 2x + y = z #hl",
+            "Text(\"z = {z}\", (4.5, 4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "lp",
+          "category": "不等式",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.747,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.744,
+              "tokensPerSecond": 118.94580365006958,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.744,
+          "tokensPerSecond": 118.94580365006958,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Region(x + y <= 4, x >= 0, y >= 0)",
+            "P = (4, 0) \"最优解\" #result",
+            "z = Slider(0, 12, 5)",
+            "l: 2x + y = z #hl",
+            "Text(\"z = {z}\", (4.5, 4))"
+          ],
+          "finalCommands": [
+            "Region(x + y <= 4, x >= 0, y >= 0)",
+            "P = (4, 0) \"最优解\" #result",
+            "z = Slider(0, 12, 5)",
+            "l: 2x + y = z #hl",
+            "Text(\"z = {z}\", (4.5, 4))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "cube",
+          "category": "立体几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.932,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.931,
+              "tokensPerSecond": 120.44499346078011,
+              "looped": false,
+              "errors": 0,
+              "sat": 7,
+              "total": 7,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.931,
+          "tokensPerSecond": 120.44499346078011,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 1，BC = 1，AA1 = 1，CC1 = 1"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠A1AB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "D = (0, 0, 0)",
+            "A = (1, 0, 0)",
+            "B = (1, 1, 0)",
+            "C = (0, 1, 0)",
+            "D1 = (0, 0, 1)",
+            "A1 = (1, 0, 1)",
+            "B1 = (1, 1, 1)",
+            "C1 = (0, 1, 1)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, D)",
+            "Segment(D, A)",
+            "Segment(A1, B1)",
+            "Segment(B1, C1)",
+            "Segment(C1, D1)",
+            "Segment(D1, A1)",
+            "Segment(A, A1)",
+            "Segment(B, B1)",
+            "Segment(C, C1)",
+            "Segment(D, D1)",
+            "E = Midpoint(B, B1)",
+            "Segment(A, E) #hl",
+            "Segment(B1, C) #hl",
+            "Angle(A, E, B1) \"θ\""
+          ],
+          "finalCommands": [
+            "D = (0, 0, 0)",
+            "A = (1, 0, 0)",
+            "B = (1, 1, 0)",
+            "C = (0, 1, 0)",
+            "D1 = (0, 0, 1)",
+            "A1 = (1, 0, 1)",
+            "B1 = (1, 1, 1)",
+            "C1 = (0, 1, 1)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, D)",
+            "Segment(D, A)",
+            "Segment(A1, B1)",
+            "Segment(B1, C1)",
+            "Segment(C1, D1)",
+            "Segment(D1, A1)",
+            "Segment(A, A1)",
+            "Segment(B, B1)",
+            "Segment(C, C1)",
+            "Segment(D, D1)",
+            "E = Midpoint(B, B1)",
+            "Segment(A, E) #hl",
+            "Segment(B1, C) #hl",
+            "Angle(A, E, B1) \"θ\""
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 1，BC = 1，AA1 = 1，CC1 = 1"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠A1AB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 7,
+            "total": 7,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "cube",
+          "category": "立体几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.711,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.71,
+              "tokensPerSecond": 123.59913227452557,
+              "looped": false,
+              "errors": 0,
+              "sat": 7,
+              "total": 7,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.71,
+          "tokensPerSecond": 123.59913227452557,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 1，BC = 1，AA1 = 1，CC1 = 1"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠A1AB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "D = (0, 0, 0)",
+            "A = (1, 0, 0)",
+            "B = (1, 1, 0)",
+            "C = (0, 1, 0)",
+            "D1 = (0, 0, 1)",
+            "A1 = (1, 0, 1)",
+            "B1 = (1, 1, 1)",
+            "C1 = (0, 1, 1)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, D)",
+            "Segment(D, A)",
+            "Segment(A1, B1)",
+            "Segment(B1, C1)",
+            "Segment(C1, D1)",
+            "Segment(D1, A1)",
+            "Segment(A, A1)",
+            "Segment(B, B1)",
+            "Segment(C, C1)",
+            "Segment(D, D1)",
+            "E = Midpoint(B, B1)",
+            "Segment(A, E) #hl",
+            "Segment(B1, C) #hl",
+            "Angle(A, E, B1) \"θ\""
+          ],
+          "finalCommands": [
+            "D = (0, 0, 0)",
+            "A = (1, 0, 0)",
+            "B = (1, 1, 0)",
+            "C = (0, 1, 0)",
+            "D1 = (0, 0, 1)",
+            "A1 = (1, 0, 1)",
+            "B1 = (1, 1, 1)",
+            "C1 = (0, 1, 1)",
+            "Segment(A, B)",
+            "Segment(B, C)",
+            "Segment(C, D)",
+            "Segment(D, A)",
+            "Segment(A1, B1)",
+            "Segment(B1, C1)",
+            "Segment(C1, D1)",
+            "Segment(D1, A1)",
+            "Segment(A, A1)",
+            "Segment(B, B1)",
+            "Segment(C, C1)",
+            "Segment(D, D1)",
+            "E = Midpoint(B, B1)",
+            "Segment(A, E) #hl",
+            "Segment(B1, C) #hl",
+            "Angle(A, E, B1) \"θ\""
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 1，BC = 1，AA1 = 1，CC1 = 1"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠A1AB = 90°"
+            },
+            {
+              "type": "midpoint",
+              "ok": true,
+              "detail": "是中点"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 7,
+            "total": 7,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "pyramid-sphere",
+          "category": "立体几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.534,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.533,
+              "tokensPerSecond": 122.2526467274997,
+              "looped": false,
+              "errors": 0,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.533,
+          "tokensPerSecond": 122.2526467274997,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 PA = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 2"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAB = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAC = 90°"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Polygon(A, B, C)",
+            "Segment(P, A)",
+            "Segment(P, B)",
+            "Segment(P, C)",
+            "Angle(A, B, C)",
+            "Angle(P, A, B)",
+            "O = Midpoint(P, C) #result",
+            "Sphere(O, Distance(O, P)) #aux",
+            "Segment(P, C) #hl",
+            "Text(\"R = {Distance(O, P)}\", (0, 0, 3))"
+          ],
+          "finalCommands": [
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Polygon(A, B, C)",
+            "Segment(P, A)",
+            "Segment(P, B)",
+            "Segment(P, C)",
+            "Angle(A, B, C)",
+            "Angle(P, A, B)",
+            "O = Midpoint(P, C) #result",
+            "Sphere(O, Distance(O, P)) #aux",
+            "Segment(P, C) #hl",
+            "Text(\"R = {Distance(O, P)}\", (0, 0, 3))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 PA = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 2"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAB = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAC = 90°"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 8,
+            "total": 8,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "pyramid-sphere",
+          "category": "立体几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.416,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.415,
+              "tokensPerSecond": 120.74640497425052,
+              "looped": false,
+              "errors": 0,
+              "sat": 8,
+              "total": 8,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.415,
+          "tokensPerSecond": 120.74640497425052,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 PA = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 2"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAB = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAC = 90°"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Polygon(A, B, C)",
+            "Segment(P, A)",
+            "Segment(P, B)",
+            "Segment(P, C)",
+            "Angle(A, B, C)",
+            "Angle(P, A, B)",
+            "O = Midpoint(P, C) #result",
+            "Sphere(O, Distance(O, P)) #aux",
+            "Segment(P, C) #hl",
+            "Text(\"R = {Distance(O, P)}\", (0, 0, 3))"
+          ],
+          "finalCommands": [
+            "B = (0, 0, 0)",
+            "A = (2, 0, 0)",
+            "C = (0, 2, 0)",
+            "P = (2, 0, 2)",
+            "Polygon(A, B, C)",
+            "Segment(P, A)",
+            "Segment(P, B)",
+            "Segment(P, C)",
+            "Angle(A, B, C)",
+            "Angle(P, A, B)",
+            "O = Midpoint(P, C) #result",
+            "Sphere(O, Distance(O, P)) #aux",
+            "Segment(P, C) #hl",
+            "Text(\"R = {Distance(O, P)}\", (0, 0, 3))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 PA = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 2"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 BC = 2"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠ABC = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAB = 90°"
+            },
+            {
+              "type": "angle",
+              "ok": true,
+              "detail": "图中 ∠PAC = 90°"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 8,
+            "total": 8,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "cylinder",
+          "category": "立体几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.742,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.742,
+              "tokensPerSecond": 122.94317031578558,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.742,
+          "tokensPerSecond": 122.94317031578558,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "O = (0, 0, 0)",
+            "O1 = (0, 0, 5)",
+            "Cylinder(O, O1, 2)",
+            "A = (2, 0, 0)",
+            "A1 = (2, 0, 5)",
+            "Segment(A, A1) #hl",
+            "Segment(O, A) #aux",
+            "Segment(O, O1) #aux"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "O1 = (0, 0, 5)",
+            "Cylinder(O, O1, 2)",
+            "A = (2, 0, 0)",
+            "A1 = (2, 0, 5)",
+            "Segment(A, A1) #hl",
+            "Segment(O, A) #aux",
+            "Segment(O, O1) #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "cylinder",
+          "category": "立体几何",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.592,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.592,
+              "tokensPerSecond": 122.85458027973924,
+              "looped": false,
+              "errors": 0,
+              "sat": 2,
+              "total": 2,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.592,
+          "tokensPerSecond": 122.85458027973924,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "O = (0, 0, 0)",
+            "O1 = (0, 0, 5)",
+            "Cylinder(O, O1, 2)",
+            "A = (2, 0, 0)",
+            "A1 = (2, 0, 5)",
+            "Segment(A, A1) #hl",
+            "Segment(O, A) #aux",
+            "Segment(O, O1) #aux"
+          ],
+          "finalCommands": [
+            "O = (0, 0, 0)",
+            "O1 = (0, 0, 5)",
+            "Cylinder(O, O1, 2)",
+            "A = (2, 0, 0)",
+            "A1 = (2, 0, 5)",
+            "Segment(A, A1) #hl",
+            "Segment(O, A) #aux",
+            "Segment(O, O1) #aux"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是立体图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 2,
+            "total": 2,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "moving-point",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.868,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.867,
+              "tokensPerSecond": 122.31211665592707,
+              "looped": false,
+              "errors": 0,
+              "sat": 6,
+              "total": 6,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.867,
+          "tokensPerSecond": 122.31211665592707,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 4，BC = 4，CD = 4，DA = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 4"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 4) #fixed",
+            "B = (0, 0) #fixed",
+            "C = (4, 0) #fixed",
+            "D = (4, 4) #fixed",
+            "Polygon(A, B, C, D)",
+            "s = Slider(0, 8, 2) \"路程 x\"",
+            "P = (If(s <= 4, 0, s - 4), If(s <= 4, 4 - s, 0)) #hl",
+            "Polygon(A, P, D) #hl",
+            "Text(\"x = {s}，y = {Area(Polygon(A, P, D))}\", (0, 5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 4) #fixed",
+            "B = (0, 0) #fixed",
+            "C = (4, 0) #fixed",
+            "D = (4, 4) #fixed",
+            "Polygon(A, B, C, D)",
+            "s = Slider(0, 8, 2) \"路程 x\"",
+            "P = (If(s <= 4, 0, s - 4), If(s <= 4, 4 - s, 0)) #hl",
+            "Polygon(A, P, D) #hl",
+            "Text(\"x = {s}，y = {Area(Polygon(A, P, D))}\", (0, 5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 4，BC = 4，CD = 4，DA = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 4"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 6,
+            "total": 6,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "moving-point",
+          "category": "函数",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.709,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.708,
+              "tokensPerSecond": 122.19692182973499,
+              "looped": false,
+              "errors": 0,
+              "sat": 6,
+              "total": 6,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.708,
+          "tokensPerSecond": 122.19692182973499,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 4，BC = 4，CD = 4，DA = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 4"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 4) #fixed",
+            "B = (0, 0) #fixed",
+            "C = (4, 0) #fixed",
+            "D = (4, 4) #fixed",
+            "Polygon(A, B, C, D)",
+            "s = Slider(0, 8, 2) \"路程 x\"",
+            "P = (If(s <= 4, 0, s - 4), If(s <= 4, 4 - s, 0)) #hl",
+            "Polygon(A, P, D) #hl",
+            "Text(\"x = {s}，y = {Area(Polygon(A, P, D))}\", (0, 5))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 4) #fixed",
+            "B = (0, 0) #fixed",
+            "C = (4, 0) #fixed",
+            "D = (4, 4) #fixed",
+            "Polygon(A, B, C, D)",
+            "s = Slider(0, 8, 2) \"路程 x\"",
+            "P = (If(s <= 4, 0, s - 4), If(s <= 4, 4 - s, 0)) #hl",
+            "Polygon(A, P, D) #hl",
+            "Text(\"x = {s}，y = {Area(Polygon(A, P, D))}\", (0, 5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "1"
+            },
+            {
+              "type": "equal",
+              "ok": true,
+              "detail": "图中 AB = 4，BC = 4，CD = 4，DA = 4"
+            },
+            {
+              "type": "dist",
+              "ok": true,
+              "detail": "图中 AB = 4"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 6,
+            "total": 6,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "prob-cond",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.176,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.175,
+              "tokensPerSecond": 121.93836015893964,
+              "looped": false,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.175,
+          "tokensPerSecond": 121.93836015893964,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 6 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(两次摸球的结果)",
+            "Row(第一次, 第二次, 概率)",
+            "Row(红, 红, 3/5*2/4)",
+            "Row(红, 白, 3/5*2/4)",
+            "Row(白, 红, 2/5*3/4)",
+            "Row(白, 白, 2/5*1/4)",
+            "Row(P(第二次红|第一次红), (3/5*2/4)/(3/5))"
+          ],
+          "finalCommands": [
+            "Table(两次摸球的结果)",
+            "Row(第一次, 第二次, 概率)",
+            "Row(红, 红, 3/5*2/4)",
+            "Row(红, 白, 3/5*2/4)",
+            "Row(白, 红, 2/5*3/4)",
+            "Row(白, 白, 2/5*1/4)",
+            "Row(P(第二次红|第一次红), (3/5*2/4)/(3/5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 6 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "prob-cond",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.016,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.016,
+              "tokensPerSecond": 121.75269772412642,
+              "looped": false,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.016,
+          "tokensPerSecond": 121.75269772412642,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 6 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(两次摸球的结果)",
+            "Row(第一次, 第二次, 概率)",
+            "Row(红, 红, 3/5*2/4)",
+            "Row(红, 白, 3/5*2/4)",
+            "Row(白, 红, 2/5*3/4)",
+            "Row(白, 白, 2/5*1/4)",
+            "Row(P(第二次红|第一次红), (3/5*2/4)/(3/5))"
+          ],
+          "finalCommands": [
+            "Table(两次摸球的结果)",
+            "Row(第一次, 第二次, 概率)",
+            "Row(红, 红, 3/5*2/4)",
+            "Row(红, 白, 3/5*2/4)",
+            "Row(白, 红, 2/5*3/4)",
+            "Row(白, 白, 2/5*1/4)",
+            "Row(P(第二次红|第一次红), (3/5*2/4)/(3/5))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 6 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "prob-dist",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.363,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.363,
+              "tokensPerSecond": 122.92728598443706,
+              "looped": false,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.363,
+          "tokensPerSecond": 122.92728598443706,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 2 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(X 的分布列)",
+            "Row(X, 0, 1, 2, 3)",
+            "Row(P, (0.5)^3, 3*(0.5)^1*(0.5)^2, (0.5)^3)"
+          ],
+          "finalCommands": [
+            "Table(X 的分布列)",
+            "Row(X, 0, 1, 2, 3)",
+            "Row(P, (0.5)^3, 3*(0.5)^1*(0.5)^2, (0.5)^3)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 2 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "prob-dist",
+          "category": "概率统计",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 1.199,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 1.199,
+              "tokensPerSecond": 123.06271700412726,
+              "looped": false,
+              "errors": 0,
+              "sat": 1,
+              "total": 1,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 1.199,
+          "tokensPerSecond": 123.06271700412726,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 2 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "Table(X 的分布列)",
+            "Row(X, 0, 1, 2, 3)",
+            "Row(P, (0.5)^3, 3*(0.5)^1*(0.5)^2, (0.5)^3)"
+          ],
+          "finalCommands": [
+            "Table(X 的分布列)",
+            "Row(X, 0, 1, 2, 3)",
+            "Row(P, (0.5)^3, 3*(0.5)^1*(0.5)^2, (0.5)^3)"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "表格有 2 行"
+            },
+            {
+              "type": "cells",
+              "ok": true,
+              "detail": "表格里的数对"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 1,
+            "total": 1,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        },
+        {
+          "id": "meeting",
+          "category": "应用题",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.891,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.89,
+              "tokensPerSecond": 122.60898668643138,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.89,
+          "tokensPerSecond": 122.60898668643138,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "3"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0) \"甲地\" #fixed",
+            "B = (12, 0) \"乙地\" #fixed",
+            "Segment(A, B)",
+            "Brace(A, B, \"全程 360 千米\")",
+            "t = Slider(0, 4, 1.5) \"时间 t（小时）\"",
+            "P = (70t/30, 0) #hl #nolabel",
+            "Q = (12 - 50t/30, 0) #result #nolabel",
+            "Segment(A, P) #hl",
+            "Segment(Q, B) #result",
+            "Brace(P, A, \"甲车行 {70t} 千米\")",
+            "Brace(B, Q, \"乙车行 {50t} 千米\")",
+            "Text(\"经过 {t} 小时，两车相距 {abs(360 - 120t)} 千米\", (2, 2.8))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0) \"甲地\" #fixed",
+            "B = (12, 0) \"乙地\" #fixed",
+            "Segment(A, B)",
+            "Brace(A, B, \"全程 360 千米\")",
+            "t = Slider(0, 4, 1.5) \"时间 t（小时）\"",
+            "P = (70t/30, 0) #hl #nolabel",
+            "Q = (12 - 50t/30, 0) #result #nolabel",
+            "Segment(A, P) #hl",
+            "Segment(Q, B) #result",
+            "Brace(P, A, \"甲车行 {70t} 千米\")",
+            "Brace(B, Q, \"乙车行 {50t} 千米\")",
+            "Text(\"经过 {t} 小时，两车相距 {abs(360 - 120t)} 千米\", (2, 2.8))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "3"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 1
+        },
+        {
+          "id": "meeting",
+          "category": "应用题",
+          "set": "dev",
+          "pipeline": "best3",
+          "seconds": 2.773,
+          "calls": 1,
+          "attempts": [
+            {
+              "kind": "analyze",
+              "attempt": 1,
+              "temperature": 0.2,
+              "seconds": 2.773,
+              "tokensPerSecond": 121.140290278328,
+              "looped": false,
+              "errors": 0,
+              "sat": 0,
+              "total": 0,
+              "added": 0
+            }
+          ],
+          "json": "ok",
+          "analyzeSeconds": 2.773,
+          "tokensPerSecond": 121.140290278328,
+          "firstErrors": 0,
+          "firstOk": true,
+          "firstChecks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "3"
+            }
+          ],
+          "source": "first",
+          "commands": [
+            "ShowAxes(false)",
+            "A = (0, 0) \"甲地\" #fixed",
+            "B = (12, 0) \"乙地\" #fixed",
+            "Segment(A, B)",
+            "Brace(A, B, \"全程 360 千米\")",
+            "t = Slider(0, 4, 1.5) \"时间 t（小时）\"",
+            "P = (70t/30, 0) #hl #nolabel",
+            "Q = (12 - 50t/30, 0) #result #nolabel",
+            "Segment(A, P) #hl",
+            "Segment(Q, B) #result",
+            "Brace(P, A, \"甲车行 {70t} 千米\")",
+            "Brace(B, Q, \"乙车行 {50t} 千米\")",
+            "Text(\"经过 {t} 小时，两车相距 {abs(360 - 120t)} 千米\", (2, 2.8))"
+          ],
+          "finalCommands": [
+            "ShowAxes(false)",
+            "A = (0, 0) \"甲地\" #fixed",
+            "B = (12, 0) \"乙地\" #fixed",
+            "Segment(A, B)",
+            "Brace(A, B, \"全程 360 千米\")",
+            "t = Slider(0, 4, 1.5) \"时间 t（小时）\"",
+            "P = (70t/30, 0) #hl #nolabel",
+            "Q = (12 - 50t/30, 0) #result #nolabel",
+            "Segment(A, P) #hl",
+            "Segment(Q, B) #result",
+            "Brace(P, A, \"甲车行 {70t} 千米\")",
+            "Brace(B, Q, \"乙车行 {50t} 千米\")",
+            "Text(\"经过 {t} 小时，两车相距 {abs(360 - 120t)} 千米\", (2, 2.8))"
+          ],
+          "finalErrors": 0,
+          "finalOk": true,
+          "checks": [
+            {
+              "type": "mode",
+              "ok": true,
+              "detail": "图是平面图"
+            },
+            {
+              "type": "kind",
+              "ok": true,
+              "detail": "3"
+            }
+          ],
+          "correct": true,
+          "facts": {
+            "sat": 0,
+            "total": 0,
+            "added": [],
+            "violated": []
+          },
+          "run": 2
+        }
+      ]
+    }
+  ]
+}
