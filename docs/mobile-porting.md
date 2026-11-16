@@ -105,6 +105,6 @@ npx cap open ios        # 或 npx cap open android
 - [x] 本机模型客户端 `api-device.js`（可用 `?engine=device` 在电脑上调试）
 - [x] llama.cpp iOS 框架（v0.9.0 / b12110，含看图的 mtmd）+ Swift 插件 `LocalModel`（`native/local-model`，见 [native/README.md](../native/README.md)）
 - [x] 初始化 Capacitor 工程（Swift Package Manager），配置相机、相册权限和“文件”共享（需要连接电脑时再配置明文 HTTP）
-- [x] 在 iOS 模拟器上跑通：模型在模拟器里本地运行，文字题从分析、核对题目条件到作图全部完成（模拟器用 CPU，一次分析约 76 秒，不代表真机速度）
+- [x] 在 iOS 模拟器上跑通：模型在模拟器里本地运行，文字题从分析、核对题目条件到作图全部完成（模拟器用 CPU；2026-11-15 实测：未微调约 77 秒，微调 + 短提示约 14 秒，不代表真机速度）
 - [ ] 真机测试（iPhone 17 Pro）：速度、内存、发热、拍照识别、流式输出、横竖屏
 - [ ] （可选）HTTPS，让 PWA 在手机上也能离线使用

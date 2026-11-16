@@ -10,7 +10,7 @@
 - `model`：当前（或默认）模型名
 - `models`：手机上已有的模型
 - `tuned`：这个模型的文件夹里有数形自己训练的 LoRA（`adapter.gguf`，见 `train/`）时为 `true`。这时网页在分析题意、修正命令时带上 `lora: true`，并改用短系统提示（`ANALYZE_SYSTEM_TUNED`）
-- `ocrTuned`：文件夹里有识别用的 LoRA（`adapter-ocr.gguf`，见 `train/ocr/`）时为 `true`。这时网页识别题目时带上 `lora: "ocr"`，提示词不变
+- `ocrTuned`：文件夹里有识别用的 LoRA（`adapter-ocr.gguf`，见 `train/ocr/`）时为 `true`。这时网页识别题目时带上 `lora: "ocr"`，提示词不变。注意：第一个识别 LoRA（ocr-v1）在真实过去问上比原模型差（影响题意的错 4 → 34 题，见 `eval/exam/ocr-review-v3.md`），没有放进手机的模型文件夹，所以现在 `ocrTuned` 为 `false`，识别用原模型
 - `error`：未就绪时给用户看的中文原因（例如“模型还没有下载”“内存不足”）
 
 ### `generate(options) → { stats }`
@@ -46,10 +46,11 @@
 - **聊天模板**：Qwen3.5 使用 ChatML（`<|im_start|>system … <|im_end|>`）。分析、识别、修正时关闭思考（相当于 Ollama 的 `think: false`）。
 - **图片**：用 llama.cpp 的 mtmd 模块和模型配套的视觉投影文件（mmproj）编码图片；图片放在用户消息里文字之前。
 - **语法约束**：分析和修正必须带 `grammar`，否则小模型容易输出不合法的 JSON。
-- **上下文长度**：8192（系统提示约 2700 token + 用户消息 + 输出最多 4096；解题最多 6144）。
+- **上下文长度**：8192。分析：系统提示约 220 token（微调模型）+ 题目 + 输出上限 1536；识别：图片约 400～1024 token + 输出上限 3584；解题最多 6144。
+- **模拟器实测（iPhone 16 / iOS 18.6，CPU，2026-11-15）**：未微调（完整提示 2794 token）预填 71 秒、生成 4.9 秒、总 77 秒；微调 + 短提示（270 token）预填 7.6 秒、生成 6.1 秒、总 14 秒。真机 Metal 未测，不能把模拟器时间当手机时间。
 - **内存**：2B 模型约 1.3 GB + 视觉投影 0.7 GB（F16；换成 Q8 约 0.35 GB）。在 iPhone 上建议申请 `com.apple.developer.kernel.increased-memory-limit`。 6 GB 以下内存的设备上，不看图的请求开始前会释放看图模块（约 0.67 GB），下次识别再加载（约 1 秒）。
 - **线程**：推理放在后台线程，`token` 事件切回主线程再通知 JS。
-- **系统提示缓存（已实现，`LlamaEngine.restorePrefix`）**：分析、修正、重新生成用同一份系统提示（约 2700 token）。第一次计算后用 `llama_state_seq_get_data` 保存整段序列状态（约 54 MB），放在内存（最多 3 份：识别、分析、解题）和 `Caches/shuxing-prefix/`；之后直接 `llama_state_seq_set_data` 恢复，只计算新增的用户消息。Qwen3.5 有循环层，不能只截取 KV 缓存，所以保存的是整段状态。缓存的键包含模型、提示内容和 llama.cpp 版本。实测：恢复后的输出和从头计算的完全相同；Mac GPU 上输入阶段 1.6 秒 → 0.0 秒，只能用 CPU 的设备上省得更多。
+- **系统提示缓存（已实现，`LlamaEngine.restorePrefix`）**：分析、修正、重新生成用同一份系统提示（微调模型约 220 token，原模型约 2700 token）。第一次计算后用 `llama_state_seq_get_data` 保存整段序列状态（原模型约 54 MB），放在内存（最多 3 份：识别、分析、解题）和 `Caches/shuxing-prefix/`；之后直接 `llama_state_seq_set_data` 恢复，只计算新增的用户消息。Qwen3.5 有循环层，不能只截取 KV 缓存，所以保存的是整段状态。缓存的键包含模型、提示内容和 llama.cpp 版本。实测：恢复后的输出和从头计算的完全相同；Mac GPU 上输入阶段 1.6 秒 → 0.0 秒，只能用 CPU 的设备上省得更多。
 - **分析不附原图**：分析只用识别出的文字（附原图时 2B 的输出多一倍，还容易绕圈子）；识别结果几乎没有题目文字时，先换个说法重新识别一次（`OCR_RETRY_HINT`），还不行才在分析时附原图补救（`public/app.js` 的 `recognize`、`analysisImage`）。
 - **温度**：重新生成时 `temperature` 是 0.7（第一次是 0.2），采样器要按每次请求的值设置，不能固定。
 - **解题时不思考**：实测 2B 在思考模式下容易反复说同一句话（低温度时更明显），一直到输出上限都没有给出解答；直接作答反而又快又对（在 Mac 上 2.6 秒对 20 秒，答案都正确）。所以手机上的“生成解题思路”默认 `think: false`；需要思考时带上 `presencePenalty` 和 `thinkBudget`。
