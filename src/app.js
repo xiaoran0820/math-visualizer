@@ -11,7 +11,7 @@ import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as llm from './llm.js';
-import { OCR_SYSTEM, ocrUserText, analyzeSystemFor, ANALYSIS_SCHEMA, analyzeUserText, REPAIR_SCHEMA, repairUserText, SOLVE_SYSTEM, solveUserText } from './prompts.js';
+import { OCR_SYSTEM, ocrUserText, analyzeSystemFor, isTunedModel, ANALYSIS_SCHEMA, analyzeUserText, REPAIR_SCHEMA, repairUserText, SOLVE_SYSTEM, solveUserText } from './prompts.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const API_VERSION = 1;
@@ -121,7 +121,8 @@ export function createApp(deps = {}) {
         { role: 'user', content: ocrUserText(typeof hint === 'string' ? hint.slice(0, 500) : ''), images: [b64] },
       ],
       think: false,
-      options: { temperature: 0.1, num_predict: 2048 },
+      // 2048 对长题不够（过去的评测里 3355 字的题会断在公式中间）；典型输出只有 187 token，不会额外耗时。
+      options: { temperature: 0.1, num_predict: 3584 },
     });
   });
 
@@ -140,7 +141,8 @@ export function createApp(deps = {}) {
       ],
       format: ANALYSIS_SCHEMA,
       think: false,
-      options: { temperature: temp, num_predict: 4096 },
+      // 微调后的输出 p95 约 380 token、最长 512；4096 只会在跑飞时把最坏耗时拖长。
+      options: { temperature: temp, num_predict: isTunedModel(m) ? 1536 : 4096 },
     });
   });
 
@@ -158,7 +160,7 @@ export function createApp(deps = {}) {
       ],
       format: REPAIR_SCHEMA,
       think: false,
-      options: { temperature: 0.1, num_predict: 3072 },
+      options: { temperature: 0.1, num_predict: isTunedModel(m) ? 1536 : 3072 },
     });
   });
 
