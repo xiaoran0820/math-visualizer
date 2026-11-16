@@ -6,6 +6,7 @@
 //   node scripts/eval.js --only isosceles,cube --no-ocr --runs 3
 //
 // --set        dev（eval/problems.js，默认）| holdout（eval/holdout.js）| fresh（eval/fresh.js，训练数据里没有的题型）| exam（eval/exam.js，旧帝大过去问）| all（dev + holdout）
+//              | exam2（eval/exam2.js，过去问第二组：神户、一桥、东京科学大学）| exam2-dev（第二组的开发集）| exam2-test（第二组的测试集，只看汇总）
 // --ocr-model  过去问集没有题目原文：先用这个模型从题目图片识别文字（默认 qwen3.5:2b-q4_K_M，手机上识别用的就是它），
 //              结果存在 eval/exam/ocr/<模型>/，之后直接复用，所有模型用同一份识别结果作图；--refresh-ocr 重新识别
 // --pipelines  baseline（改进前：生成一次，出错时修正一次）| verified（核对 + 补全 + 针对性修正）| best3（再加最多两次重新生成）
@@ -22,8 +23,8 @@ import { describeViolations } from '../public/lib/constraints.js';
 import { PROBLEMS } from '../eval/problems.js';
 import { HOLDOUT } from '../eval/holdout.js';
 import { FRESH } from '../eval/fresh.js';
-import { EXAM } from '../eval/exam.js';
-import { tooLittleText, ocrBody, ocrRetryHint, dedupeOcr, cleanModelText } from '../public/lib/prompts.js';
+import { EXAM_SETS } from '../eval/exam-sets.js';
+import { ocrQuality, ocrRetryHintFor, pickBetterOcr, ocrBody, dedupeOcr, dropOcrPreamble, cleanModelText, dropRunawayFigure, ocrRunawayWatch } from '../public/lib/prompts.js';
 import { runChecks } from '../eval/checks.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -35,7 +36,8 @@ const only = arg('only', '') ? arg('only', '').split(',') : null;
 const withOcr = !process.argv.includes('--no-ocr');
 const runsN = Math.max(1, Number(arg('runs', 1)) || 1);
 const setName = arg('set', 'dev');
-const SETS = { dev: PROBLEMS.map((p) => ({ ...p, set: 'dev' })), holdout: HOLDOUT.map((p) => ({ ...p, set: 'holdout' })), fresh: FRESH.map((p) => ({ ...p, set: 'fresh' })), exam: EXAM.map((p) => ({ ...p, set: 'exam' })) };
+const SETS = { dev: PROBLEMS.map((p) => ({ ...p, set: 'dev' })), holdout: HOLDOUT.map((p) => ({ ...p, set: 'holdout' })), fresh: FRESH.map((p) => ({ ...p, set: 'fresh' })),
+  ...Object.fromEntries(Object.entries(EXAM_SETS).map(([name, list]) => [name, list.map((p) => ({ ...p, set: name }))])) };
 const problems = (setName === 'all' ? [...SETS.dev, ...SETS.holdout] : SETS[setName] || []).filter((p) => !only || only.includes(p.id));
 if (!problems.length) { console.error('没有要评测的题目'); process.exit(1); }
 
@@ -44,11 +46,22 @@ const server = await new Promise((r) => { const s = createApp({ maxConcurrent: 4
 const base = `http://127.0.0.1:${server.address().port}`;
 const api = createApi({ baseUrl: base });
 
+// 和 App 一样：【图形】部分跑偏（同一行出现第 3 次，或超过 600 字）就停下这次识别
 async function recognizeText(image, model, hint) {
   const t0 = Date.now();
-  let text = '';
-  await api.recognize({ image, model, hint }, undefined, (ev) => { if (ev.t === 'delta') text += ev.v; });
-  return { text, seconds: (Date.now() - t0) / 1000 };
+  let text = '', looped = false;
+  const ac = new AbortController();
+  const watch = ocrRunawayWatch(() => { looped = true; ac.abort(); });
+  try {
+    await api.recognize({ image, model, hint }, ac.signal, (ev) => {
+      if (ev.t !== 'delta' || looped) return;
+      text += ev.v;
+      watch(text);
+    });
+  } catch (e) {
+    if (!looped) throw e;
+  }
+  return { text, seconds: (Date.now() - t0) / 1000, looped };
 }
 
 // 没有题目原文的题（过去问集）：和 App 一样识别——去掉代码块标记、去掉整段重复；文字太少时换个说法再识别一次，用文字多的那次
@@ -60,20 +73,31 @@ async function prepareOcr(list) {
   const dir = path.join(root, 'eval', 'exam', 'ocr', ocrModel.replace(/[^\w.-]+/g, '_'));
   fs.mkdirSync(dir, { recursive: true });
   const refresh = process.argv.includes('--refresh-ocr');
+  // 过去问是日文，开启“是否被译成中文”的检查；开发集/保留集的题图是中文，不检查翻译。
+  const ocrLang = String(setName).startsWith('exam') ? 'ja' : 'auto';
   let done = 0, made = 0;
   for (const p of need) {
     const file = path.join(dir, `${p.id}.json`);
-    if (!refresh && fs.existsSync(file)) { ocrTexts.set(p.id, JSON.parse(fs.readFileSync(file, 'utf8'))); continue; }
+    // 以前存下的识别结果也按 App 现在的做法清理一遍（开头的开场白去掉，【图形】部分跑偏的整段去掉）。
+    // 2026-11-15 加了去开场白：手机原 2B 的识别结果里有 4 题的输入因此变了，和这之前的评测结果不能直接比。
+    if (!refresh && fs.existsSync(file)) {
+      const rec = JSON.parse(fs.readFileSync(file, 'utf8'));
+      const text = dropRunawayFigure(dropOcrPreamble(rec.text));
+      ocrTexts.set(p.id, { ...rec, text, quality: ocrQuality(text, { lang: ocrLang }) });
+      continue;
+    }
     if (!made++) process.stdout.write(`识别题目图片（${ocrModel}）…\n`);
     const img = `data:image/png;base64,${fs.readFileSync(path.join(root, 'eval', p.image)).toString('base64')}`;
-    const once = async (hint) => { const o = await recognizeText(img, ocrModel, hint); return { text: dedupeOcr(cleanModelText(o.text)), seconds: o.seconds }; };
+    const once = async (hint) => { const o = await recognizeText(img, ocrModel, hint); return { text: dropRunawayFigure(dedupeOcr(dropOcrPreamble(cleanModelText(o.text)))), seconds: o.seconds }; };
     let r = await once('');
     let seconds = r.seconds, retried = false;
-    if (tooLittleText(r.text)) {
+    let q = ocrQuality(r.text, { lang: ocrLang });
+    if (q.needsRetry) {
       retried = true;
-      try { const again = await once(ocrRetryHint('')); seconds += again.seconds; if (ocrBody(again.text).length > ocrBody(r.text).length) r = again; } catch { /* 用第一次的结果 */ }
+      try { const again = await once(ocrRetryHintFor(q.reasons)); seconds += again.seconds; if (pickBetterOcr(again.text, r.text, { lang: ocrLang })) r = again; } catch { /* 用第一次的结果 */ }
+      q = ocrQuality(r.text, { lang: ocrLang });
     }
-    const rec = { text: r.text, seconds, retried };
+    const rec = { text: r.text, seconds, retried, quality: { chars: q.chars, kanaRatio: Number(q.kanaRatio.toFixed(3)), incomplete: q.incomplete, likelyTranslated: q.likelyTranslated, figureMissing: q.figureMissing } };
     fs.writeFileSync(file, JSON.stringify(rec, null, 1));
     ocrTexts.set(p.id, rec);
     console.log(`  ${p.id.padEnd(18)} ${ocrBody(r.text).length} 字 · ${seconds.toFixed(1)} 秒${retried ? ' · 重新识别过' : ''}`);
@@ -229,7 +253,7 @@ fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, `${stamp}.json`), JSON.stringify({ date: new Date().toISOString(), set: setName, problems: problems.map((p) => p.id), pipelines, withOcr, runs: runsN, results }, null, 2));
 const gb = (b) => (b ? `${(b / 1e9).toFixed(1)} GB` : '—');
 function cols0() { return results.flatMap((res) => pipelines.map((pl) => ({ model: res.model, pipeline: pl, rows: res.rows.filter((r) => r.pipeline === pl) }))); }
-const SET_NAME = { dev: '开发集', holdout: '保留集', fresh: '新题型集', exam: '过去问集' };
+const SET_NAME = { dev: '开发集', holdout: '保留集', fresh: '新题型集', exam: '过去问集', exam2: '过去问第二组', 'exam2-dev': '过去问第二组·开发集', 'exam2-test': '过去问第二组·测试集' };
 let md = `# 模型评测 ${new Date().toLocaleString('zh-CN')}\n\n题集：${setName === 'all' ? '开发集 + 保留集' : SET_NAME[setName]}，共 ${problems.length} 道${runsN > 1 ? `，每题重复 ${runsN} 次` : ''}；流程：${pipelines.join('、')}\n\n`;
 md += '| 模型 | 流程 | 题集 | 完全符合题意 | 几何条件满足 | 最终无错误 | 首次作图成功 | 修正采用 | 题目条件满足 | 程序补全 | 平均调用次数 | 平均耗时 |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n';
 for (const res of results) for (const bp of res.byPipeline) {
@@ -240,7 +264,7 @@ for (const res of results) for (const bp of res.byPipeline) {
 if (ocrTexts.size) {
   const recs = [...ocrTexts.values()];
   md += `\n题目文字由 ${ocrModel} 从图片识别（${recs.length} 题，平均 ${avg(recs.map((r) => r.seconds)).toFixed(1)} 秒，重新识别过 ${recs.filter((r) => r.retried).length} 题），所有模型用同一份识别结果作图。\n`;
-  if (setName === 'exam') {
+  if (setName.startsWith('exam')) {
     md += '\n| 模型 · 流程 | ' + [...new Set(problems.map((p) => p.category))].join(' | ') + ' |\n|---|' + [...new Set(problems.map((p) => p.category))].map(() => '---').join('|') + '|\n';
     for (const c of cols0()) md += `| ${c.model} · ${c.pipeline} | ` + [...new Set(problems.map((p) => p.category))].map((cat) => { const rs = c.rows.filter((r) => r.category === cat); return `${rs.filter((r) => r.correct).length}/${rs.length}`; }).join(' | ') + ' |\n';
   }
